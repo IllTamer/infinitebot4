@@ -23,7 +23,7 @@ public class CommandListener implements TabExecutor {
         if (!sender.isOp()) return true;
         if (args.length == 1 && "help".equalsIgnoreCase(args[0])) {
             sender.sendMessage(new String[] {
-                    "ib2:",
+                    "ib3:",
                     " ├──help: 获取帮助",
                     " ├──expansions",
                     " │   ├──list: 列出所有加载的附属名称",

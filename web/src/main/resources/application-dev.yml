@@ -1,0 +1,6 @@
+server:
+  port: 12345
+bot:
+  http-uri: 'http://zip1mask.top:5700'
+  ws-uri: 'ws://zip1mask.top:5701'
+  authorization: 'root765743073'

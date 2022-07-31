@@ -11,16 +11,26 @@ import java.util.function.Consumer;
 
 public class CQHttpWebSocketAutoConfiguration implements ApplicationRunner {
 
+    private final BotProperties botProperties;
     private final Consumer<Event> eventConsumer;
 
-    public CQHttpWebSocketAutoConfiguration(ApplicationContext context) {
+    public CQHttpWebSocketAutoConfiguration(
+            BotProperties botProperties,
+            ApplicationContext context
+    ) {
+        this.botProperties = botProperties;
         this.eventConsumer = context::publishEvent;
     }
 
     @Async
     @Override
     public void run(ApplicationArguments args) {
-        CQHttpWebSocketConfiguration.start("http://zip1mask.top:5700", "ws://zip1mask.top:5701", "root765743073", eventConsumer);
+        CQHttpWebSocketConfiguration.start(
+                botProperties.getHttpUri(),
+                botProperties.getWsUri(),
+                botProperties.getAuthorization(),
+                eventConsumer
+        );
     }
 
 }

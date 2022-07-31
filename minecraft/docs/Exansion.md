@@ -14,7 +14,7 @@ InfiniteBot-v3.+较一代完善了附属开发方面的不足，较二代补足�
 -   `onDisable` 附属卸载时调用
 -   `getExpansionName` 用于插件注册附属，不为空！
 
-其他父类自带方法详见 [IExpansion](/minecraft/src/main/java/com/illtamer/infinite/bot/minecraft/api/IExpansion.java)
+其他父类自带方法详见 [[IExpansion]](/src/main/java/com/illtamer/infinite/bot/minecraft/api/IExpansion.java)
 
 示例代码
 
@@ -55,7 +55,7 @@ IB3已预先为您封装好了配置文件实体类 `ExpansiobConfig`，您的�
  }
 ```
 
-ExpansionConfig 已封装常用方法保存/重载/获取yml文件，详见 [ExpansionConfig](/minecraft/src/main/java/com/illtamer/infinite/bot/minecraft/expansion/ExpansionConfig.java)
+ExpansionConfig 已封装常用方法保存/重载/获取yml文件，详见 [[ExpansionConfig]](/src/main/java/com/illtamer/infinite/bot/minecraft/expansion/ExpansionConfig.java)
 
 ## QQ事件监听+注册
 
@@ -117,6 +117,6 @@ ExpansionConfig 已封装常用方法保存/重载/获取yml文件，详见 [Exp
 
 ### 二：Plugin API
 
-作者所能确保的不会删减的 API 在 `com.illtamer.infinite.bot.minecraft.api` 包内，其中 [StaticAPI](/minecraft/src/main/java/com/illtamer/infinite/bot/minecraft/api/StaticAPI.java) 提供部分 API 的静态方法调用。
+作者所能确保的不会删减的 API 在 `com.illtamer.infinite.bot.minecraft.api` 包内，其中 [[StaticAPI]](/src/main/java/com/illtamer/infinite/bot/minecraft/api/StaticAPI.java) 提供部分 API 的静态方法调用。
 
-插件的启动类为 `com.illtamer.infinite.bot.minecraft.Bootstrap`，如有需要，您可获取启动类实例以获取附属加载类 [ExpansionLoader](/minecraft/src/main/java/com/illtamer/infinite/bot/minecraft/expansion/ExpansionLoader.java) 的实例，对插件的附属进行修改操作。
+插件的启动类为 `com.illtamer.infinite.bot.minecraft.Bootstrap`，如有需要，您可获取启动类实例以获取附属加载类 [[ExpansionLoader]](/src/main/java/com/illtamer/infinite/bot/minecraft/expansion/ExpansionLoader.java) 的实例，对插件的附属进行修改操作。
