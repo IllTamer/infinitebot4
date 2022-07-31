@@ -1,0 +1,49 @@
+# .___        _____.__       .__  __        __________        __    ________
+# |   | _____/ ____\__| ____ |__|/  |_  ____\______   \ _____/  |_  \_____  \
+# |   |/    \   __\|  |/    \|  \   __\/ __ \|    |  _//  _ \   __\   _(__  <
+# |   |   |  \  |  |  |   |  \  ||  | \  ___/|    |   (  <_> )  |    /       \
+# |___|___|  /__|  |__|___|  /__||__|  \___  >______  /\____/|__|   /______  /
+#          \/              \/              \/       \/                     \/
+#
+#                                                                - by IllTamer
+# Gitee: https://gitee.com/IllTamer_Gitee
+# 机器人被风控，解决措施参考: https://github.com/Mrs4s/go-cqhttp/issues/1320
+
+# 插件配置部分
+main:
+  # 尝试避免风险控制
+  #   若机器人私聊正常、群消息被屏蔽，可尝试开启
+  #   开启后群消息将被替换为 "转发消息"
+  try-avoid-risk-control: false
+  # 管理员账号列表
+  admins:
+    - 765743073
+  # 监听的群列表
+  groups:
+    - 863522624
+
+# 数据储存方式
+database:
+  # 可选择的储存方式
+  #   'yaml'  - 本地yaml储存，数据仅插件加载服可用
+  #   'mysql' - mysql数据库储存，群组服数据互通必选
+  type: 'yml'
+  config:
+    mysql:
+      host: 'localhost'
+      port: 3306
+      username: 'root'
+      password: 'root'
+      database: 'minecraft'
+
+# 连接配置项
+connection:
+  # go-cqhttp 进程所在域名
+  host: ''
+  # 服务开放端口
+  port:
+    http: 5700
+    websocket: 5701
+  # 通信验证 token
+  #   若您在 go-cqhttp 中配置了此项，请填写，否则请留空
+  authorization: ''

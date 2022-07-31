@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.illtamer.infinite.bot.starter.CQHttpWebSocketAutoConfiguration
