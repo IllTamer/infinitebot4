@@ -40,6 +40,11 @@ Infinite Bot v3 摒弃了以往将 Mirai 嵌入程序主体的做法，转而使
 
 ## Bukkit 插件安装
 
+基于 go-cqhttp 提供的 API 服务，IB3 天然支持群组服/分布式服务。
+
+您需要做的仅仅是在 BC 端上加载插件，与需要互通的其它子端配置相同地连接参数与 mysql 服务。
+接着，您可以在不同的子端上加载不同的附属：如登陆服加载 defence-manager 开启白名单验证码服务，在生存服加载 chat-manager 运行消息互通服务...
+
 更多信息请查看 [[minecraft]](/minecraft)
 
 ## 开发
