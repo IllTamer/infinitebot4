@@ -9,7 +9,7 @@
   > **Notice**: 插件本体理论支持 热加载&热卸载，但不建议 **频繁的热部署插件**。插件附属管理为插件内部支持实现，其完全支持热部署，可放心食用。
 
   请您将构建的 `InfiniteBot-minecraft-all-3.0.0-SNAPSHOT.jar` 放入服务器的 `plugins` 文件夹内。
-  待生成配置文件后，请参考 [[config.yml]](/src/main/resources/config.yml) 内注释详细配置 go-cqhttp 的连接信息。
+  待生成配置文件后，请参考 [[config.yml]](src/main/resources/config.yml) 内注释详细配置 go-cqhttp 的连接信息。
 
 
 - Plugin Expansion
