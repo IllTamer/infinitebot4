@@ -1,10 +1,12 @@
 package com.illtamer.infinite.bot.minecraft;
 
 import com.illtamer.infinite.bot.minecraft.configuration.BotNettyStarter;
+import com.illtamer.infinite.bot.minecraft.configuration.StatusCheckRunner;
 import com.illtamer.infinite.bot.minecraft.configuration.config.BotConfiguration;
 import com.illtamer.infinite.bot.minecraft.expansion.ExpansionLoader;
 import com.illtamer.infinite.bot.minecraft.listener.CommandListener;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 
 import java.util.Optional;
@@ -17,6 +19,9 @@ public class Bootstrap extends BotNettyStarter {
 
     @Override
     public void onEnable() {
+        checkConnection();
+        Bukkit.getScheduler().runTaskTimerAsynchronously(instance,
+                new StatusCheckRunner(instance), 15 * 20, 30 * 20);
         expansionLoader.loadExpansions();
         CommandListener commandListener = new CommandListener();
         final PluginCommand command = Optional.ofNullable(getServer().getPluginCommand("InfiniteBot3"))

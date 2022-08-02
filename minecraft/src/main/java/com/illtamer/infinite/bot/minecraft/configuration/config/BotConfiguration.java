@@ -65,7 +65,7 @@ public class BotConfiguration {
 
     /**
      * 加载配置类
-     * @apiNote Singleton
+     * @return Singleton instance
      * */
     public static BotConfiguration load(Plugin plugin) {
         Assert.isNull(instance, "Repeated initialization");
@@ -82,6 +82,7 @@ public class BotConfiguration {
      * */
     public static void reload() {
         instance.configFile.reload();
+        instance.loadConfigurations();
     }
 
     /**

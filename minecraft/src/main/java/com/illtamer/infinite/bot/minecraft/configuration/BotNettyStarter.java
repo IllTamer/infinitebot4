@@ -6,44 +6,67 @@ import com.illtamer.infinite.bot.minecraft.configuration.config.BotConfiguration
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class BotNettyStarter extends JavaPlugin {
 
     @Getter
     protected static BotNettyStarter instance;
 
-    protected Thread communicationThread;
+    protected ExecutorService websocketExecutor = Executors.newSingleThreadExecutor();
 
     @Override
     public void onLoad() {
         instance = this;
-        BotConfiguration.load(this);
+        BotConfiguration.load(instance);
+        connect();
+    }
+
+    /**
+     * 开启 WebSocket 连接
+     * */
+    public void connect() {
         final BotConfiguration.ConnectionConfig connection = BotConfiguration.connection;
-        communicationThread = new Thread(
-                () -> {
-                    try {
-                        CQHttpWebSocketConfiguration.start(
-                                String.format("http://%s:%d", connection.host, connection.httpPort),
-                                String.format("ws://%s:%d", connection.host, connection.websocketPort),
-                                connection.authorization,
-                                EventExecutor::dispatchListener
-                        );
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    if (CQHttpWebSocketConfiguration.isLoadSuccess()) {
-                        getLogger().info("账号连接成功");
-                    } else {
-                        getLogger().warning("账号连接失败，停止加载，请检查控制台输出");
-                    }
-                },
-                "InfiniteBot3-WebSocket-Communication-Thread"
-        );
-        communicationThread.start();
+        websocketExecutor.execute(new WebSocketRunner(connection));
+    }
+
+    protected void checkConnection() {
+        if (CQHttpWebSocketConfiguration.isRunning()) {
+            getLogger().info("账号连接成功");
+        } else {
+            getLogger().warning("账号连接失败，请检查控制台输出处理，或等待自动重连");
+        }
     }
 
     protected void close() {
-        communicationThread.stop();
-        getLogger().info("WebSocket 连接已关闭");
+        websocketExecutor.shutdown();
+        getLogger().info("WebSocket 连接关闭 " + (websocketExecutor.isShutdown() ? "成功" : "失败"));
+    }
+
+    private class WebSocketRunner implements Runnable {
+
+        private final BotConfiguration.ConnectionConfig connection;
+
+        private WebSocketRunner(BotConfiguration.ConnectionConfig connection) {
+            this.connection = connection;
+        }
+
+        @Override
+        public void run() {
+            try {
+                CQHttpWebSocketConfiguration.start(
+                        String.format("http://%s:%d", connection.host, connection.httpPort),
+                        String.format("ws://%s:%d", connection.host, connection.websocketPort),
+                        connection.authorization,
+                        EventExecutor::dispatchListener
+                );
+                getLogger().info("WebSocket 连接已关闭");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
 }

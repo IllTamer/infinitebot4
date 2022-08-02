@@ -23,6 +23,9 @@ public interface APIHandler {
      * */
     String getEndpoint();
 
+    /**
+     * @throws APIInvokeException API 调用失败异常
+     * */
     default Response request() {
         String json = HttpRequestUtil.postJson(CQHttpWebSocketConfiguration.getHttpUri() + getEndpoint(), this, HEADERS);
         Response response = new Gson().fromJson(json, Response.class);

@@ -19,7 +19,7 @@ public class HttpRequestUtil {
 
         HttpClient client = new HttpClient();
         client.getHttpConnectionManager().getParams().setConnectionTimeout(3000);
-        client.getHttpConnectionManager().getParams().setSoTimeout(3*60*1000);
+        client.getHttpConnectionManager().getParams().setSoTimeout(3000);
         client.getParams().setContentCharset("UTF-8");
         PostMethod postMethod = new PostMethod(url);
         postMethod.setRequestHeader("Content-Type", "application/json");

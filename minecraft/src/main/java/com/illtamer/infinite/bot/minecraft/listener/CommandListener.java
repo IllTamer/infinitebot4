@@ -1,6 +1,9 @@
 package com.illtamer.infinite.bot.minecraft.listener;
 
+import com.illtamer.infinite.bot.api.entity.BotStatus;
 import com.illtamer.infinite.bot.minecraft.Bootstrap;
+import com.illtamer.infinite.bot.minecraft.configuration.StatusCheckRunner;
+import com.illtamer.infinite.bot.minecraft.configuration.config.BotConfiguration;
 import com.illtamer.infinite.bot.minecraft.expansion.ExpansionLoader;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -10,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,21 +22,38 @@ import java.util.stream.Collectors;
 
 public class CommandListener implements TabExecutor {
 
+    private static final SimpleDateFormat FORMAT = new SimpleDateFormat("HH:mm:ss");
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!sender.isOp()) return true;
-        if (args.length == 1 && "help".equalsIgnoreCase(args[0])) {
-            sender.sendMessage(new String[] {
-                    "ib3:",
-                    " ├──help: 获取帮助",
-                    " ├──expansions",
-                    " │   ├──list: 列出所有加载的附属名称",
-                    " │   └──reload: 重载 expansions 目录下所有附属",
-                    " ├──unload",
-                    " │   └──[附属名称]: 卸载名称对应附属",
-                    " └──load",
-                    "     └──[附属文件名]: 加载名称对应附属"
-            });
+        if (args.length == 1) {
+            if ("help".equalsIgnoreCase(args[0])) {
+                sender.sendMessage(new String[] {
+                        "ib3:",
+                        " ├──help: 获取帮助",
+                        " ├──check: 检查账号的连接状态",
+                        " ├──reload: 重载配置文件",
+                        " ├──expansions",
+                        " │   ├──list: 列出所有加载的附属名称",
+                        " │   └──reload: 重载 expansions 目录下所有附属",
+                        " ├──load",
+                        " │   └──[附属文件名]: 加载名称对应附属",
+                        " └──unload",
+                        "     └──[附属名称]: 卸载名称对应附属"
+                });
+            } else if ("check".equalsIgnoreCase(args[0])) {
+                final long lastRefreshTime = StatusCheckRunner.getLastRefreshTime();
+                final BotStatus status = StatusCheckRunner.getStatus();
+                sender.sendMessage(String.format(
+                        "在线状态: %s\n上次更新: %s",
+                        status == null ? "失去连接" : status.getOnline(),
+                        FORMAT.format(lastRefreshTime)
+                ));
+            } else if ("reload".equalsIgnoreCase(args[0])) {
+                BotConfiguration.reload();
+                sender.sendMessage("config.yml 部分配置节点重载完成");
+            }
             return true;
         }
         if (args.length != 2) return true;
@@ -46,13 +67,6 @@ public class CommandListener implements TabExecutor {
                     loader.loadExpansions();
                 });
             }
-        } else if ("unload".equalsIgnoreCase(args[0])) {
-            final Optional<String> first = loader.getExpansionNames().stream().filter(name -> name.equals(args[1])).findFirst();
-            if (!first.isPresent()) {
-                sender.sendMessage("附属名称 " + args[0] + " 不存在");
-                return true;
-            }
-            loader.disableExpansion(first.get());
         } else if ("load".equalsIgnoreCase(args[0])) {
             File file = new File(loader.getPluginFolder(), args[1]);
             if (!file.exists() || file.isDirectory()) {
@@ -60,6 +74,13 @@ public class CommandListener implements TabExecutor {
                 return true;
             }
             loader.loadExpansion(file);
+        } else if ("unload".equalsIgnoreCase(args[0])) {
+            final Optional<String> first = loader.getExpansionNames().stream().filter(name -> name.equals(args[1])).findFirst();
+            if (!first.isPresent()) {
+                sender.sendMessage("附属名称 " + args[0] + " 不存在");
+                return true;
+            }
+            loader.disableExpansion(first.get());
         }
         return true;
     }
@@ -70,7 +91,7 @@ public class CommandListener implements TabExecutor {
         if (!sender.isOp()) return null;
         List<String> result = new ArrayList<>();
         if (args.length == 1)
-            result.addAll(Arrays.asList("help", "expansions", "unload", "load"));
+            result.addAll(Arrays.asList("help", "check", "reload", "expansions", "load", "unload"));
         else if (args.length == 2) {
             switch (args[0]) {
                 case "expansions": {

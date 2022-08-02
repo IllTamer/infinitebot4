@@ -26,6 +26,9 @@ import org.jetbrains.annotations.Nullable;
 import java.net.URI;
 import java.util.function.Consumer;
 
+/**
+ * go-cqhttp WebSocket 连接初始化类
+ * */
 @Log
 public class CQHttpWebSocketConfiguration {
 
@@ -36,7 +39,9 @@ public class CQHttpWebSocketConfiguration {
     @Getter
     private static String authorization;
     @Getter
-    private static boolean loadSuccess = false;
+    private static boolean running = false;
+    @Getter
+    private static Channel channel;
 
     public static void start(@NotNull String httpUri, @NotNull String wsUri, @Nullable String authorization, Consumer<Event> eventConsumer) {
         CQHttpWebSocketConfiguration.httpUri = httpUri;
@@ -69,7 +74,7 @@ public class CQHttpWebSocketConfiguration {
                 httpHeaders.set("Authorization", authorization);
             // 进行握手
             WebSocketClientHandshaker handshake = WebSocketClientHandshakerFactory.newHandshaker(websocketURI, WebSocketVersion.V13, null, true, httpHeaders);
-            Channel channel = bootstrap
+            channel = bootstrap
                     .connect(websocketURI.getHost(), websocketURI.getPort())
                     .sync()
                     .channel();
@@ -77,9 +82,10 @@ public class CQHttpWebSocketConfiguration {
             handshake.handshake(channel);
             // 阻塞等待是否握手成功
             eventHandler.getHandshakeFuture().sync();
-            loadSuccess = true;
+            running = true;
             log.info("go-cqhttp websocket 握手成功");
             channel.closeFuture().sync();
+            running = false;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
