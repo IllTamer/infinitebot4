@@ -23,7 +23,7 @@
 hs_err_pid*
 
 #custom
-.idea/**
-**/target/**
-**/application-*.yml
+.idea/
+**/target/
+test/
 LICENSE

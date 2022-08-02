@@ -14,7 +14,7 @@
 
 - Plugin Expansion
 
-  遵守附属开发规范的插件附属应当被放置在 `plugins\InfiniteBot3\expansions` 路径内。若附属注册了相应的配置文件，则在附属被加载后与附属注册名称相同的配置文件夹也将在同级目录下生成。
+  遵守[附属开发规范](docs/Expansion.md)的插件附属应当被放置在 `plugins\InfiniteBot3\expansions` 路径内。若附属注册了相应的配置文件，则在附属被加载后与附属注册名称相同的配置文件夹也将在同级目录下生成。
 
 ### 指令
 
@@ -23,13 +23,15 @@
 ```
 ib3:
  ├──help: 获取帮助
+ ├──check: 检查账号的连接状态
+ ├──reload: 重载配置文件
  ├──expansions
  │   ├──list: 列出所有加载的附属名称
  │   └──reload: 重载 expansions 目录下所有附属
- ├──unload
- │   └──[附属名称]: 卸载名称对应附属
- └──load
-     └──[附属文件名]: 加载名称对应附属
+ ├──load
+ │   └──[附属文件名]: 加载名称对应附属
+ └──unload
+     └──[附属名称]: 卸载名称对应附属
 ```
 
 ### 资源文件夹结构
@@ -45,7 +47,13 @@ InfiniteBot3
  └──player_data.yml: 
 ```
 
-## 附属编写
+## 附属相关
+
+### 使用
+
+详见仓库 [infinite-bot-3-expansion](https://github.com/IllTamer/infinite-bot-3-expansion)
+
+### 编写
 
 出于可用性、简洁性、不重复造轮子等方面考虑，本人强烈建议您以下方的附属开发手册为参考编写插件拓展，以快速开发代替传统附属插件编写方式——再写一个Bukkit插件。
 

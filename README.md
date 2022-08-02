@@ -33,10 +33,21 @@ Infinite Bot v3 摒弃了以往将 Mirai 嵌入程序主体的做法，转而使
 您的选择是: 0 2
 ```
 
-3. 配置 `config.yml` 的 `account` 与 `servers` 节点，如果您将 http 服务开放到公网，建议您额外配置 `default-middlewares.access-token` 字段。
-    > Notice：若您将 http/websocket 服务开放到公网，供 InfiniteBot 远程访问，请不要忘记开放对应端口。
+3. 配置生成的 `config.yml` 中的 `account` 与 `servers` 节点。
+   
+   如果您将 http 服务开放到公网，建议您额外配置 `default-middlewares.access-token` 字段，并将该 token 设置到 `plugins\InfiniteBot3\config.yml` 的 `connection.authorization` 字段，以对暴露在公网的 go-cqhttp 服务提供保护。
+   > Notice：若您将 http/websocket 服务开放到公网，供 InfiniteBot 远程访问，请不要忘记开放对应端口。
 
 4. 运行可执行文件，开启 go-cqhttp 服务。
+   
+   若您先前使用过 InfiniteBot 系列插件或其它机器人插件，可将账号登录信息直接迁移，并在 go-cqhttp 配置中使用账号密码密码登录，可大大降低被风控风险。
+   
+   > 迁移方式
+   > - InfiniteBot 系列插件：将服务器主文件夹下或 `plugins\InfiniteBot2` 文件夹下的 `InfiniteBotInfo.json` 文件复制并重命名为 `device.json`，拷贝到 go-cqhttp 目录下
+   > - 其它机器人插件：将名为 `device.json` 的文件拷贝到 go-cqhttp 目录下
+
+5. 其它
+   - [尝试解决风控措施](https://github.com/Mrs4s/go-cqhttp/issues/1320)
 
 ## Bukkit 插件安装
 
@@ -98,6 +109,6 @@ bot:
 
 ## 致谢
 
-- 感谢 polar、小豆子、1758983508 等腐竹在测试、策划方面提供的帮助与支持
+- 感谢 polar、小豆子、阿丽塔、黑土、1758983508 等腐竹在测试、策划方面提供的帮助与支持
 
 - 感谢机器人插件的先驱者 [@Albert](https://github.com/mcdoeswhat)

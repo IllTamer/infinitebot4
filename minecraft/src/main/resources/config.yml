@@ -10,10 +10,10 @@
 # 机器人被风控，解决措施参考: https://github.com/Mrs4s/go-cqhttp/issues/1320
 
 # 插件配置部分
+#   该配置可重载
 main:
-  # 尝试避免风险控制
+  # 尝试避免风险控制(暂未实现)
   #   若机器人私聊正常、群消息被屏蔽，可尝试开启
-  #   开启后群消息将被替换为 "转发消息"
   try-avoid-risk-control: false
   # 管理员账号列表
   admins:
@@ -23,11 +23,12 @@ main:
     - 863522624
 
 # 数据储存方式
+#   该配置仅在加载插件时读取
 database:
   # 可选择的储存方式
   #   'yaml'  - 本地yaml储存，数据仅插件加载服可用
   #   'mysql' - mysql数据库储存，群组服数据互通必选
-  type: 'yml'
+  type: 'yaml'
   config:
     mysql:
       host: 'localhost'
@@ -37,6 +38,7 @@ database:
       database: 'minecraft'
 
 # 连接配置项
+#   该配置可重载
 connection:
   # go-cqhttp 进程所在域名
   host: ''
