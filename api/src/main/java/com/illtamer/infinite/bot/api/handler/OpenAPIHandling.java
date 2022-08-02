@@ -1,6 +1,7 @@
 package com.illtamer.infinite.bot.api.handler;
 
 import com.illtamer.infinite.bot.api.Response;
+import com.illtamer.infinite.bot.api.entity.BotStatus;
 import com.illtamer.infinite.bot.api.message.Message;
 import com.illtamer.infinite.bot.api.message.MessageBuilder;
 
@@ -76,6 +77,14 @@ public class OpenAPIHandling {
                 .setCard(cardName)
                 .request();
         return "ok".equals(response.getStatus());
+    }
+
+    /**
+     * 获取机器人状态信息
+     * */
+    public static BotStatus getStatus() {
+        final Response response = new StatusGetHandler().request();
+        return StatusGetHandler.parse(response);
     }
 
 }
