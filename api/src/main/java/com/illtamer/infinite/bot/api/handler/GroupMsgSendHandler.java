@@ -6,8 +6,10 @@ import com.google.gson.annotations.SerializedName;
 import com.illtamer.infinite.bot.api.message.Message;
 import lombok.Getter;
 
+import java.util.Map;
+
 @Getter
-public class GroupMsgSendHandler extends AbstractAPIHandler {
+public class GroupMsgSendHandler extends AbstractAPIHandler<Map<String, Object>> {
 
     @SerializedName("group_id")
     private Long groupId;

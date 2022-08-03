@@ -1,6 +1,6 @@
 package com.illtamer.infinite.bot.api.handler;
 
-public abstract class AbstractAPIHandler implements APIHandler {
+public abstract class AbstractAPIHandler<T> implements APIHandler<T> {
 
     private transient final String endpoint;
 

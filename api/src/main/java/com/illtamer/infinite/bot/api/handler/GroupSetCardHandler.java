@@ -3,8 +3,10 @@ package com.illtamer.infinite.bot.api.handler;
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 
+import java.util.Map;
+
 @Getter
-public class GroupSetCardHandler extends AbstractAPIHandler {
+public class GroupSetCardHandler extends AbstractAPIHandler<Map<String, Object>> {
 
     /**
      * 群号

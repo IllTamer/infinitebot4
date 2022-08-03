@@ -14,7 +14,7 @@ import java.util.Map;
  * API 逻辑接口
  * @apiNote https://docs.go-cqhttp.org/api/#
  * */
-public interface APIHandler {
+public interface APIHandler<T> {
 
     Map<String, String> HEADERS = new HashMap<>(Collections.singletonMap("Authorization", CQHttpWebSocketConfiguration.getAuthorization()));
 
@@ -26,9 +26,10 @@ public interface APIHandler {
     /**
      * @throws APIInvokeException API 调用失败异常
      * */
-    default Response request() {
+    @SuppressWarnings("unchecked")
+    default Response<T> request() {
         String json = HttpRequestUtil.postJson(CQHttpWebSocketConfiguration.getHttpUri() + getEndpoint(), this, HEADERS);
-        Response response = new Gson().fromJson(json, Response.class);
+        Response<T> response = new Gson().fromJson(json, Response.class);
         if ("failed".equals(response.getStatus()))
             throw new APIInvokeException(response);
         return response;

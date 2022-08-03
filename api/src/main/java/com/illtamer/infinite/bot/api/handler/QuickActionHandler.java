@@ -7,11 +7,13 @@ import com.illtamer.infinite.bot.api.event.Event;
 import com.illtamer.infinite.bot.api.message.Message;
 import lombok.Getter;
 
+import java.util.Map;
+
 /**
  * 快速操作 APIHandler
  * */
 @Getter
-public class QuickActionHandler extends AbstractAPIHandler {
+public class QuickActionHandler extends AbstractAPIHandler<Map<String, Object>> {
 
     /**
      * 事件数据对象

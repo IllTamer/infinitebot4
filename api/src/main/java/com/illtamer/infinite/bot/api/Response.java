@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Map;
 
 @Data
-public class Response {
+public class Response<T> {
 
     /**
      * 状态, 表示 API 是否调用成功
@@ -34,11 +34,11 @@ public class Response {
     private final String wording;
 
     /**
-     * 响应数
+     * 响应数据
      * - key: 响应数据名
      * - value: 数据值
      * */
-    private final Map<String, Object> data;
+    private final T data;
 
     /**
      * '回声', 如果请求时指定了 echo, 那么响应也会包含 echo

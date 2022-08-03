@@ -6,11 +6,13 @@ import com.google.gson.annotations.SerializedName;
 import com.illtamer.infinite.bot.api.message.Message;
 import lombok.Getter;
 
+import java.util.Map;
+
 /**
  * 合并转发消息 APIHandler
  * */
 @Getter
-public class GroupForwardSendHandler extends AbstractAPIHandler {
+public class GroupForwardSendHandler extends AbstractAPIHandler<Map<String, Object>> {
 
     @SerializedName("group_id")
     private Long groupId;

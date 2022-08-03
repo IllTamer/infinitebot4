@@ -6,8 +6,10 @@ import com.google.gson.annotations.SerializedName;
 import com.illtamer.infinite.bot.api.message.Message;
 import lombok.Getter;
 
+import java.util.Map;
+
 @Getter
-public class PrivateMsgSendHandler extends AbstractAPIHandler {
+public class PrivateMsgSendHandler extends AbstractAPIHandler<Map<String, Object>> {
 
     /**
      * 对方 QQ 号
