@@ -2,6 +2,7 @@ package com.illtamer.infinite.bot.api;
 
 import com.illtamer.infinite.bot.api.config.CQHttpWebSocketConfiguration;
 import com.illtamer.infinite.bot.api.entity.BotStatus;
+import com.illtamer.infinite.bot.api.handler.OpenAPIHandling;
 import com.illtamer.infinite.bot.api.handler.StatusGetHandler;
 
 public class Tests {
@@ -11,13 +12,8 @@ public class Tests {
         CQHttpWebSocketConfiguration.setAuthorization("root765743073");
 
         // MessageBuilder.json().text("Hello World").build()
-        final Response response =
-                new StatusGetHandler()
-                        .request();
+        System.out.println(OpenAPIHandling.getGroups());
 
-        final BotStatus status = StatusGetHandler.parse(response);
-
-        System.out.println(status);
     }
 
 }
