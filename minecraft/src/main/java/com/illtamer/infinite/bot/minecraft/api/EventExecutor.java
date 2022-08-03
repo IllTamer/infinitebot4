@@ -63,7 +63,7 @@ public class EventExecutor {
      * 注销附属注册的 Bukkit 监听
      * @apiNote 在插件卸载时自动调用
      * */
-    protected void unregisterBukkitEventForExpansion(IExpansion expansion) {
+    public static void unregisterBukkitEventForExpansion(IExpansion expansion) {
         final Set<org.bukkit.event.Listener> remove = EXPANSION_BUKKIT_LISTENERS.remove(expansion);
         if (remove != null)
             remove.forEach(HandlerList::unregisterAll);

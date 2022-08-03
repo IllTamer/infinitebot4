@@ -76,6 +76,7 @@ public class InfinitePluginLoader {
             logger.info(String.format("Disabling %s", expansion.getExpansionName()));
             // 注销监听
             EventExecutor.unregisterListeners(expansion);
+            EventExecutor.unregisterBukkitEventForExpansion(expansion);
 
             InfiniteExpansion infiniteExpansion = (InfiniteExpansion) expansion;
             ClassLoader classLoader = infiniteExpansion.getClassLoader();
