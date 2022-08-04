@@ -2,8 +2,6 @@ package com.illtamer.infinite.bot.api;
 
 import lombok.Data;
 
-import java.util.Map;
-
 @Data
 public class Response<T> {
 

@@ -1,5 +1,6 @@
 package com.illtamer.infinite.bot.minecraft.api;
 
+import com.illtamer.infinite.bot.api.event.Cancellable;
 import com.illtamer.infinite.bot.api.event.Event;
 import com.illtamer.infinite.bot.api.event.MetaEvent;
 import com.illtamer.infinite.bot.api.util.Assert;
@@ -115,6 +116,7 @@ public class EventExecutor {
                         Priority current = Priority.values()[i];
                         for (Map.Entry<Method, Annotation> entry : map.getValue().entrySet()) { // method
                             if (current != ((EventHandler) entry.getValue()).priority()) continue;
+                            if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) continue;
                             Method method = entry.getKey();
                             if (method.getParameterCount() != 1) {
                                 logger.warning(String.format("Excepted parameter count: %d(%s)", method.getParameterCount(), method));
