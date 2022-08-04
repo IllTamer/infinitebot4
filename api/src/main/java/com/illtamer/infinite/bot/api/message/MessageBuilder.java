@@ -6,6 +6,8 @@ import com.illtamer.infinite.bot.api.exception.ExclusiveMessageException;
 import com.illtamer.infinite.bot.api.util.Maps;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
+
 public class MessageBuilder {
 
     private final Message message;
@@ -15,8 +17,12 @@ public class MessageBuilder {
     }
 
     public MessageBuilder text(String text) {
+        return text(text, true);
+    }
+
+    public MessageBuilder text(String text, boolean newline) {
         message.add("text", Maps.of(
-                "text", text + '\n'
+                "text", newline ? text + '\n' : text
         ));
         return this;
     }
@@ -337,6 +343,11 @@ public class MessageBuilder {
                 "text", text
         ));
         return build();
+    }
+
+    MessageBuilder property(String type, Map<String, @Nullable Object> args) {
+        message.add(type, args);
+        return this;
     }
 
     public Message build() {
