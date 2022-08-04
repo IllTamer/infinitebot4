@@ -1,11 +1,25 @@
 package com.illtamer.infinite.bot.api.message;
 
 import com.illtamer.infinite.bot.api.exception.ExclusiveMessageException;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Map;
 
 public abstract class Message implements Cloneable {
+
+   /**
+    * 获取消息元素链
+    * */
+   @NotNull
+   abstract public MessageChain getMessageChain();
+
+   /**
+    * 仅获取消息中的 text 元素
+    * */
+   @NotNull
+   abstract public List<String> getCleanMessage();
 
    /**
     * 可重复种类消息添加

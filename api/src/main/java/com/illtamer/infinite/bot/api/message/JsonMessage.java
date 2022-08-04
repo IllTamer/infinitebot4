@@ -5,23 +5,79 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.illtamer.infinite.bot.api.exception.ExclusiveMessageException;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+/**
+ * Json 类型消息
+ * <p>
+ * 用于主动传输消息
+ * */
 public class JsonMessage extends Message {
 
     private final JsonArray array;
+    private final MessageChain messageChain;
 
-    private boolean textOnly = true;
+    private boolean textOnly;
 
     public JsonMessage() {
-        this.array = new JsonArray();
+        this(new JsonArray(), true);
     }
 
     private JsonMessage(JsonArray array, boolean textOnly) {
         this.array = array;
         this.textOnly = textOnly;
+        this.messageChain = new MessageChain();
+    }
+
+//    @NotNull
+//    public List<TransferEntity> getContent(Class<? extends TransferEntity> entity) {
+//        Gson gson = new Gson();
+//        List<TransferEntity> entities = new ArrayList<>(3);
+//        for (JsonElement element : array) {
+//            JsonObject object = (JsonObject) element;
+//            if (!entity.getName().equals(object.get("type").getAsString())) continue;
+//            entities.add(gson.fromJson(object, entity));
+//        }
+//        return entities;
+//    }
+
+    @Override
+    @NotNull
+    public MessageChain getMessageChain() {
+        return messageChain;
+    }
+
+    @Override
+    @NotNull
+    public List<String> getCleanMessage() {
+        List<String> list = new ArrayList<>();
+        for (JsonElement element : array) {
+            JsonObject object = (JsonObject) element;
+            if (!"text".equals(object.get("type").getAsString())) continue;
+            list.add(object.get("data").getAsJsonObject().get("text").getAsString());
+        }
+        return list;
+    }
+
+    @Override
+    public boolean isTextOnly() {
+        return textOnly;
+    }
+
+    @Override
+    public JsonMessage clone() {
+        return new JsonMessage(array, textOnly);
+    }
+
+    @Override
+    public String toString() {
+        return array.toString();
     }
 
     @Override
@@ -29,9 +85,13 @@ public class JsonMessage extends Message {
         if (textOnly)
             textOnly = "text".equals(type);
         JsonObject dataJson = new JsonObject();
-        data.entrySet().stream()
+        final List<Map.Entry<String, Object>> notnull = data.entrySet().stream()
                 .filter(entry -> entry.getValue() != null)
-                .forEach(entry -> {
+                .collect(Collectors.toList());
+        if (notnull.size() == 0) return;
+        messageChain.boltOn(type, notnull);
+
+        notnull.forEach(entry -> {
                     Object value = entry.getValue();
                     JsonElement element;
                     if (value instanceof Message)
@@ -40,8 +100,6 @@ public class JsonMessage extends Message {
                         element = new JsonPrimitive(value.toString());
                     dataJson.add(entry.getKey(), element);
                 });
-        if (dataJson.size() == 0) return;
-
         JsonObject node = new JsonObject();
         node.add("type", new JsonPrimitive(type));
         node.add("data", dataJson);
@@ -58,21 +116,6 @@ public class JsonMessage extends Message {
             }
         }
         add(type, data);
-    }
-
-    @Override
-    public boolean isTextOnly() {
-        return textOnly;
-    }
-
-    @Override
-    public JsonMessage clone() {
-        return new JsonMessage(array, textOnly);
-    }
-
-    @Override
-    public String toString() {
-        return array.toString();
     }
 
 }
