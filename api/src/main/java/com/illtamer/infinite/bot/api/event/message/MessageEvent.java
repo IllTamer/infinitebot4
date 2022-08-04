@@ -3,6 +3,7 @@ package com.illtamer.infinite.bot.api.event.message;
 import com.google.gson.annotations.SerializedName;
 import com.illtamer.infinite.bot.api.annotation.Coordinates;
 import com.illtamer.infinite.bot.api.entity.MessageSender;
+import com.illtamer.infinite.bot.api.event.Cancellable;
 import com.illtamer.infinite.bot.api.event.Event;
 import com.illtamer.infinite.bot.api.handler.OpenAPIHandling;
 import com.illtamer.infinite.bot.api.message.Message;
@@ -21,7 +22,9 @@ import lombok.ToString;
         postType = Coordinates.PostType.MESSAGE,
         secType = "*"
 )
-public class MessageEvent extends Event {
+public class MessageEvent extends Event implements Cancellable {
+
+    private transient boolean cancelled;
 
     /**
      * 表示消息的子类型
@@ -54,9 +57,9 @@ public class MessageEvent extends Event {
 
     /**
      * 一个消息链
-     * // TODO 入方向的 Message.class Instance
+     * @apiNote {@link com.illtamer.infinite.bot.api.message.CQMessage}
      * */
-    private String message;
+    private Message message;
 
     /**
      * CQ 码格式的消息
@@ -96,6 +99,16 @@ public class MessageEvent extends Event {
      * */
     public Double sendMessage(Message message) {
         return OpenAPIHandling.sendMessage(message, userId);
+    }
+
+    @Override
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
+    }
+
+    @Override
+    public boolean isCancelled() {
+        return cancelled;
     }
 
 }
