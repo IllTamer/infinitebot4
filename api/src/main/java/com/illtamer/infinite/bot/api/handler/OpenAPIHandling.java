@@ -103,6 +103,16 @@ public class OpenAPIHandling {
     }
 
     /**
+     * @param file 图片缓存文件名
+     * */
+    public static ImageGetHandler.Image getImage(String file) {
+        final Response<Map<String, Object>> response = new ImageGetHandler()
+                .setFile(file)
+                .request();
+        return ImageGetHandler.parse(response);
+    }
+
+    /**
      * 获取机器人状态信息
      * */
     public static BotStatus getStatus() {
