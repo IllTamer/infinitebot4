@@ -48,6 +48,11 @@ public class CQMessage extends Message {
     }
 
     @Override
+    public int getSize() {
+        return list.size();
+    }
+
+    @Override
     public boolean isTextOnly() {
         return textOnly;
     }

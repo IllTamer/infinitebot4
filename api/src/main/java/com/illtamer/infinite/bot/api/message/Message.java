@@ -21,15 +21,7 @@ public abstract class Message implements Cloneable {
    @NotNull
    abstract public List<String> getCleanMessage();
 
-   /**
-    * 可重复种类消息添加
-    * */
-   abstract protected void add(String type, Map<String, @Nullable Object> data);
-
-   /**
-    * @throws ExclusiveMessageException 单一消息类型异常
-    * */
-   abstract protected void addExclusive(String type, Map<String, @Nullable Object> data);
+   abstract public int getSize();
 
    /**
     * 是否仅为文本消息
@@ -39,5 +31,15 @@ public abstract class Message implements Cloneable {
    abstract public Message clone();
 
    abstract public String toString();
+
+   /**
+    * 可重复种类消息添加
+    * */
+   abstract protected void add(String type, Map<String, @Nullable Object> data);
+
+   /**
+    * @throws ExclusiveMessageException 单一消息类型异常
+    * */
+   abstract protected void addExclusive(String type, Map<String, @Nullable Object> data);
 
 }

@@ -35,18 +35,6 @@ public class JsonMessage extends Message {
         this.messageChain = new MessageChain();
     }
 
-//    @NotNull
-//    public List<TransferEntity> getContent(Class<? extends TransferEntity> entity) {
-//        Gson gson = new Gson();
-//        List<TransferEntity> entities = new ArrayList<>(3);
-//        for (JsonElement element : array) {
-//            JsonObject object = (JsonObject) element;
-//            if (!entity.getName().equals(object.get("type").getAsString())) continue;
-//            entities.add(gson.fromJson(object, entity));
-//        }
-//        return entities;
-//    }
-
     @Override
     @NotNull
     public MessageChain getMessageChain() {
@@ -63,6 +51,11 @@ public class JsonMessage extends Message {
             list.add(object.get("data").getAsJsonObject().get("text").getAsString());
         }
         return list;
+    }
+
+    @Override
+    public int getSize() {
+        return array.size();
     }
 
     @Override
