@@ -30,8 +30,8 @@ public class MessageTypeAdapter implements JsonSerializer<Message>, JsonDeserial
                 for (int j = i; j < chars.length; ++ j) {
                     boolean end = false;
                     if (chars[j] == '[' || (end = j+1 == chars.length)) {
-                        doDeserialize(end ? cqJson.substring(i, j+1) : cqJson.substring(i+1, j), builder, true);
-                        i = j;
+                        doDeserialize(end ? cqJson.substring(i, j+1) : cqJson.substring(i, j), builder, true);
+                        i = end ? j : j-1;
                         break;
                     }
                 }
