@@ -17,12 +17,12 @@ public class MessageBuilder {
     }
 
     public MessageBuilder text(String text) {
-        return text(text, true);
+        return text(text, message.getSize() != 0);
     }
 
     public MessageBuilder text(String text, boolean newline) {
         message.add("text", Maps.of(
-                "text", newline ? text + '\n' : text
+                "text", newline ? '\n' + text : text
         ));
         return this;
     }
