@@ -14,7 +14,7 @@ public class ExpansionLogger implements Logger {
     public ExpansionLogger(IExpansion expansion) {
         String name = expansion.getExpansionName();
         this.expansionName = (name != null && !name.isEmpty()) ? name : expansion.getClass().getSimpleName();
-        this.prefix = "[InfiniteBot2]-[" + expansionName + ']';
+        this.prefix = "[" + expansionName + ']';
         this.logger = LoggerFactory.getLogger(prefix);
     }
 
@@ -60,27 +60,27 @@ public class ExpansionLogger implements Logger {
 
     @Override
     public void trace(Marker marker, String s) {
-//        logger.trace(marker, s);
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void trace(Marker marker, String s, Object o) {
-//        logger.trace(marker, s, o);
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void trace(Marker marker, String s, Object o, Object o1) {
-//        logger.trace(marker, s, o, o1);
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void trace(Marker marker, String s, Object... objects) {
-//        logger.trace(marker, s, objects);
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void trace(Marker marker, String s, Throwable throwable) {
-//        logger.trace(marker, s, throwable);
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -130,37 +130,27 @@ public class ExpansionLogger implements Logger {
 
     @Override
     public void debug(Marker marker, String s) {
-//        if (debug) {
-//            logger.debug(marker, s);
-//        }
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void debug(Marker marker, String s, Object o) {
-//        if (debug) {
-//            logger.debug(marker, s, o);
-//        }
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void debug(Marker marker, String s, Object o, Object o1) {
-//        if (debug) {
-//            logger.debug(marker, s, o, o1);
-//        }
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void debug(Marker marker, String s, Object... objects) {
-//        if (debug) {
-//            logger.debug(marker, s, objects);
-//        }
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void debug(Marker marker, String s, Throwable throwable) {
-//        if (debug) {
-//            logger.debug(marker, s, throwable);
-//        }
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -199,27 +189,27 @@ public class ExpansionLogger implements Logger {
 
     @Override
     public void info(Marker marker, String s) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void info(Marker marker, String s, Object o) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void info(Marker marker, String s, Object o, Object o1) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void info(Marker marker, String s, Object... objects) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void info(Marker marker, String s, Throwable throwable) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -259,27 +249,27 @@ public class ExpansionLogger implements Logger {
 
     @Override
     public void warn(Marker marker, String s) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void warn(Marker marker, String s, Object o) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void warn(Marker marker, String s, Object o, Object o1) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void warn(Marker marker, String s, Object... objects) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void warn(Marker marker, String s, Throwable throwable) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -318,27 +308,27 @@ public class ExpansionLogger implements Logger {
 
     @Override
     public void error(Marker marker, String s) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void error(Marker marker, String s, Object o) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void error(Marker marker, String s, Object o, Object o1) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void error(Marker marker, String s, Object... objects) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void error(Marker marker, String s, Throwable throwable) {
-
+        throw new UnsupportedOperationException();
     }
 
     public ExpansionLogger setDebug(boolean debug) {
