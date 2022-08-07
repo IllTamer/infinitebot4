@@ -1,6 +1,7 @@
 package com.illtamer.infinite.bot.api.util;
 
 import com.google.gson.Gson;
+import com.illtamer.infinite.bot.api.handler.QuickActionHandler;
 import lombok.SneakyThrows;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -15,8 +16,13 @@ public class HttpRequestUtil {
 
     @SneakyThrows(IOException.class)
     public static String postJson(String url, Object payload, @Nullable Map<String, String> headers) {
+        try {
+            new Gson().toJson(payload);
+        } catch (Exception e) {
+            System.out.println(((QuickActionHandler) payload).getContext());
+            System.out.println(((QuickActionHandler) payload).getOperation());
+        }
         final String json = new Gson().toJson(payload);
-
         HttpClient client = new HttpClient();
         client.getHttpConnectionManager().getParams().setConnectionTimeout(3000);
         client.getHttpConnectionManager().getParams().setSoTimeout(3000);
