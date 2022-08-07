@@ -25,7 +25,7 @@ public class JsonMessage extends Message {
 
     private boolean textOnly;
 
-    public JsonMessage() {
+    protected JsonMessage() {
         this(new JsonArray(), true);
     }
 
