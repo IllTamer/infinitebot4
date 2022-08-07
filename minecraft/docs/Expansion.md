@@ -67,9 +67,13 @@ ExpansionConfig 已封装常用方法保存/重载/获取yml文件，详见 [[Ex
 
 ```java
  public class ExampleListener implements Listener {
-     @EventHandler // 可选优先级设置项 property 优先级高的方法将被优先调用
+     // 可选优先级设置项 property 优先级高的方法将被优先调用
+     @EventHandler
      public void onEvent(MessageEvent event) {
-         event.reply("收到"); // 引用发送者的消息发送一条内容为“收到”的消息
+         // 引用发送者的消息发送一条内容为“收到”的消息
+         event.reply("收到");
+         // 为保证注入消息转发类的插件能够正常工作，当您在执行例如监听关键字的特定回复操作后，请务必取消时间避免消息被转发
+         event.setCancelled(true);
      }
  }
 ```
