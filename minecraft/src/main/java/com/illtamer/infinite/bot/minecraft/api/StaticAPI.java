@@ -56,6 +56,14 @@ public class StaticAPI {
     }
 
     /**
+     * 查询是否存在指定名称的附属
+     * @param name 附属名，若注册时未指定则为启动类的全限定名称
+     * */
+    public static boolean hasExpansion(String name) {
+        return Bootstrap.getInstance().getExpansionLoader().getExpansion(name) != null;
+    }
+
+    /**
      * 获取 PlayerData 持久层对象
      * */
     public static PlayerDataRepository getRepository() {
