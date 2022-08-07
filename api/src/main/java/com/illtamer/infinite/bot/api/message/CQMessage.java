@@ -22,7 +22,7 @@ public class CQMessage extends Message {
 
     private boolean textOnly;
 
-    public CQMessage() {
+    protected CQMessage() {
         this(new ArrayList<>(), true);
     }
 
@@ -71,7 +71,7 @@ public class CQMessage extends Message {
             else {
                 builder.append("[CQ:").append(entry.key);
                 for (Map.Entry<String, Object> dataEntry : entry.value.entrySet())
-                    builder.append(',').append(dataEntry.getKey()).append((String) dataEntry.getValue());
+                    builder.append(',').append(dataEntry.getKey()).append('=').append((String) dataEntry.getValue());
                 builder.append(']');
             }
         }
