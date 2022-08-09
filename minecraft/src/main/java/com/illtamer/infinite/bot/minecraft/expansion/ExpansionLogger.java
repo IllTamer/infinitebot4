@@ -8,14 +8,12 @@ import org.slf4j.Marker;
 public class ExpansionLogger implements Logger {
     private final Logger logger;
     private final String expansionName;
-    private final String prefix;
     private boolean debug = false;
 
     public ExpansionLogger(IExpansion expansion) {
         String name = expansion.getExpansionName();
         this.expansionName = (name != null && !name.isEmpty()) ? name : expansion.getClass().getSimpleName();
-        this.prefix = "[" + expansionName + ']';
-        this.logger = LoggerFactory.getLogger(prefix);
+        this.logger = LoggerFactory.getLogger("InfiniteBot3 - " + expansionName);
     }
 
     @Override
@@ -30,27 +28,27 @@ public class ExpansionLogger implements Logger {
 
     @Override
     public void trace(String s) {
-        logger.trace(prefix + s);
+        logger.trace(s);
     }
 
     @Override
     public void trace(String s, Object o) {
-        logger.trace(prefix + s, o);
+        logger.trace(s, o);
     }
 
     @Override
     public void trace(String s, Object o, Object o1) {
-        logger.trace(prefix + s, o, o1);
+        logger.trace(s, o, o1);
     }
 
     @Override
     public void trace(String s, Object... objects) {
-        logger.trace(prefix + s, objects);
+        logger.trace(s, objects);
     }
 
     @Override
     public void trace(String s, Throwable throwable) {
-        logger.trace(prefix + s, throwable);
+        logger.trace(s, throwable);
     }
 
     @Override
@@ -91,35 +89,35 @@ public class ExpansionLogger implements Logger {
     @Override
     public void debug(String s) {
         if (debug) {
-            logger.debug(prefix + s);
+            logger.debug(s);
         }
     }
 
     @Override
     public void debug(String s, Object o) {
         if (debug) {
-            logger.debug(prefix + s, o);
+            logger.debug(s, o);
         }
     }
 
     @Override
     public void debug(String s, Object o, Object o1) {
         if (debug) {
-            logger.debug(prefix + s, o, o1);
+            logger.debug(s, o, o1);
         }
     }
 
     @Override
     public void debug(String s, Object... objects) {
         if (debug) {
-            logger.debug(prefix + s, objects);
+            logger.debug(s, objects);
         }
     }
 
     @Override
     public void debug(String s, Throwable throwable) {
         if (debug) {
-            logger.debug(prefix + s, throwable);
+            logger.debug(s, throwable);
         }
     }
 
@@ -159,27 +157,27 @@ public class ExpansionLogger implements Logger {
     }
 
     public void info(String msg) {
-        logger.info(prefix + msg);
+        logger.info(msg);
     }
 
     @Override
     public void info(String s, Object o) {
-        logger.info(prefix + s, o);
+        logger.info(s, o);
     }
 
     @Override
     public void info(String s, Object o, Object o1) {
-        logger.info(prefix + s, o, o1);
+        logger.info(s, o, o1);
     }
 
     @Override
     public void info(String s, Object... objects) {
-        logger.info(prefix + s, objects);
+        logger.info(s, objects);
     }
 
     @Override
     public void info(String s, Throwable throwable) {
-        logger.info(prefix + s, throwable);
+        logger.info(s, throwable);
     }
 
     @Override
@@ -219,27 +217,27 @@ public class ExpansionLogger implements Logger {
 
     @Override
     public void warn(String s) {
-        logger.warn(prefix + s);
+        logger.warn(s);
     }
 
     @Override
     public void warn(String s, Object o) {
-        logger.warn(prefix + s, o);
+        logger.warn(s, o);
     }
 
     @Override
     public void warn(String s, Object... objects) {
-        logger.warn(prefix + s, objects);
+        logger.warn(s, objects);
     }
 
     @Override
     public void warn(String s, Object o, Object o1) {
-        logger.warn(prefix + s, o, o1);
+        logger.warn(s, o, o1);
     }
 
     @Override
     public void warn(String s, Throwable throwable) {
-        logger.warn(prefix + s, throwable);
+        logger.warn(s, throwable);
     }
 
     @Override
@@ -278,27 +276,27 @@ public class ExpansionLogger implements Logger {
     }
 
     public void error(String msg) {
-        logger.error(prefix + msg);
+        logger.error(msg);
     }
 
     @Override
     public void error(String s, Object o) {
-        logger.error(prefix + s, o);
+        logger.error(s, o);
     }
 
     @Override
     public void error(String s, Object o, Object o1) {
-        logger.error(prefix + s, o, o1);
+        logger.error(s, o, o1);
     }
 
     @Override
     public void error(String s, Object... objects) {
-        logger.error(prefix + s, objects);
+        logger.error(s, objects);
     }
 
     @Override
     public void error(String s, Throwable throwable) {
-        logger.error(prefix + s, throwable);
+        logger.error(s, throwable);
     }
 
     @Override
