@@ -2,6 +2,20 @@
 
 ## 使用
 
+### 环境
+
+#### Java 8
+
+该版本可直接运行运行插件
+
+#### Java 9+
+
+若您的服务器使用了 Java9 及以上的版本，则需在启动的批处理文件中加入以下 JVM 参数允许来自未命名模块的反射调用。
+
+```
+--add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED
+```
+
 ### 加载
 
 - Plugin
