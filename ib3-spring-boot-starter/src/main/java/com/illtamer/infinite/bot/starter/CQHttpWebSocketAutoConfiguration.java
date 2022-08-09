@@ -24,7 +24,7 @@ public class CQHttpWebSocketAutoConfiguration implements ApplicationRunner {
 
     @Async
     @Override
-    public void run(ApplicationArguments args) {
+    public void run(ApplicationArguments args) throws InterruptedException {
         CQHttpWebSocketConfiguration.start(
                 botProperties.getHttpUri(),
                 botProperties.getWsUri(),

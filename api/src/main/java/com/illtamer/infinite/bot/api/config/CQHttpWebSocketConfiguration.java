@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.function.Consumer;
 
 /**
@@ -43,7 +44,7 @@ public class CQHttpWebSocketConfiguration {
     @Getter
     private static Channel channel;
 
-    public static void start(@NotNull String httpUri, @NotNull String wsUri, @Nullable String authorization, Consumer<Event> eventConsumer) {
+    public static void start(@NotNull String httpUri, @NotNull String wsUri, @Nullable String authorization, Consumer<Event> eventConsumer) throws InterruptedException {
         CQHttpWebSocketConfiguration.httpUri = httpUri;
         CQHttpWebSocketConfiguration.authorization = authorization;
         EventHandler eventHandler = new EventHandler(eventConsumer);
@@ -52,7 +53,7 @@ public class CQHttpWebSocketConfiguration {
             Bootstrap bootstrap = new Bootstrap()
                     .group(group)
                     .option(ChannelOption.TCP_NODELAY, true)
-                    .option(ChannelOption.SO_KEEPALIVE,true)
+                    .option(ChannelOption.SO_KEEPALIVE, true)
                     .channel(NioSocketChannel.class)
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
@@ -86,7 +87,7 @@ public class CQHttpWebSocketConfiguration {
             log.info("go-cqhttp websocket 握手成功");
             channel.closeFuture().sync();
             running = false;
-        } catch (Exception e) {
+        } catch (URISyntaxException e) {
             e.printStackTrace();
         } finally {
             group.shutdownGracefully();
