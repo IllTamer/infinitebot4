@@ -19,8 +19,8 @@ public class HttpRequestUtil {
         try {
             new Gson().toJson(payload);
         } catch (Exception e) {
-            System.out.println(((QuickActionHandler) payload).getContext());
-            System.out.println(((QuickActionHandler) payload).getOperation());
+            System.err.println(((QuickActionHandler) payload).getContext());
+            System.err.println(((QuickActionHandler) payload).getOperation());
         }
         final String json = new Gson().toJson(payload);
         HttpClient client = new HttpClient();
