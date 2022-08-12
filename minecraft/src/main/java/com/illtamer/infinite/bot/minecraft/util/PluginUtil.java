@@ -1,5 +1,7 @@
 package com.illtamer.infinite.bot.minecraft.util;
 
+import com.illtamer.infinite.bot.minecraft.Bootstrap;
+
 public class PluginUtil {
 
     public static String parseColor(String s) {
@@ -21,6 +23,25 @@ public class PluginUtil {
             builder.append(chars[i]);
         }
         return builder.toString();
+    }
+
+    public static class Version {
+
+        public static final String VERSION;
+
+        static {
+            final String packageName = Bootstrap.getInstance().getServer().getClass().getPackage().getName();
+            VERSION = packageName.substring(packageName.lastIndexOf('.') + 1);
+        }
+
+        /**
+         * @param number 中版本号，例如 v1_12_R1 -> 12
+         * */
+        public static boolean upper(int number) {
+            final String[] split = VERSION.split("_");
+            return Integer.parseInt(split[1]) > number;
+        }
+
     }
 
 }
