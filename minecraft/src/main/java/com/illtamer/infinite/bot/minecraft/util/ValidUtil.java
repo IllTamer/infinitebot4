@@ -16,18 +16,27 @@ public class ValidUtil {
     private static final Gson GSON = new Gson();
 
     public static boolean isValidPlayer(@NotNull Player player) {
-        return isValidUUID(player.getUniqueId(), player.getName());
+        return isValid(player.getUniqueId(), player.getName());
     }
 
-    public static boolean isValidUUID(@NotNull UUID uuid, @NotNull String name) {
-        return isValidUUID(uuid.toString(), name);
+    public static boolean isValid(@NotNull UUID uuid, @NotNull String name) {
+        return isValid(uuid.toString(), name);
     }
 
-    public static boolean isValidUUID(@NotNull String uuid, @NotNull String name) {
+    public static boolean isValid(@NotNull String uuid, @NotNull String name) {
         final Pair<Integer, String> pair = HttpRequestUtil.getJson(SESSION_SERVER + uuid, null);
         if (pair.getKey() != 200) return false;
         final JsonObject object = GSON.fromJson(pair.getValue(), JsonObject.class);
         return name.equals(object.get("name").getAsString());
+    }
+
+    public static boolean isValidUUID(@NotNull UUID uuid) {
+        return isValidUUID(uuid.toString());
+    }
+
+    public static boolean isValidUUID(@NotNull String uuid) {
+        final Pair<Integer, String> pair = HttpRequestUtil.getJson(SESSION_SERVER + uuid, null);
+        return pair.getKey() == 200;
     }
 
 }

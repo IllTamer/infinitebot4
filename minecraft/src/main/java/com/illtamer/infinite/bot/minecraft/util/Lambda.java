@@ -17,4 +17,11 @@ public class Lambda {
         return result != null ? func.apply(result) : null;
     }
 
+    /**
+     * 三元运算
+     * */
+    public static <Type> Type ternary(boolean condition, Type pass, Type deny) {
+        return condition ? pass : deny;
+    }
+
 }

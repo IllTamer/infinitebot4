@@ -6,7 +6,7 @@
 
     <groupId>com.illtamer.infinite.bot</groupId>
     <artifactId>minecraft</artifactId>
-    <version>3.0.2</version>
+    <version>3.0.3-1</version>
     <name>minecraft</name>
     <description>Infinite Bot for Minecraft</description>
 
