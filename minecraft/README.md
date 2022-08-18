@@ -72,3 +72,15 @@ InfiniteBot3
 出于可用性、简洁性、不重复造轮子等方面考虑，本人强烈建议您以下方的附属开发手册为参考编写插件拓展，以快速开发代替传统附属插件编写方式——再写一个Bukkit插件。
 
 [Expansion-附属开发手册](docs/Expansion.md)
+
+## 开发
+
+### Maven
+
+```xml
+<dependency>
+  <groupId>com.illtamer.infinite.bot</groupId>
+  <artifactId>minecraft</artifactId>
+  <version>3.0.2</version>
+</dependency>
+```

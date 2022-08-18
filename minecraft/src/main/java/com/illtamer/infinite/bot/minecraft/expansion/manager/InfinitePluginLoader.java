@@ -43,7 +43,6 @@ public class InfinitePluginLoader {
      * */
     public void enableExpansion(IExpansion expansion) {
         Assert.isTrue(expansion instanceof InfiniteExpansion, "Expansion is not associated with this PluginLoader");
-
         if (!expansion.isEnabled()) {
             final Logger logger = Bootstrap.getInstance().getLogger();
             logger.info(String.format("Enabling %s", expansion.getExpansionName()));
