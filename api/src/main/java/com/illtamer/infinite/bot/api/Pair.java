@@ -7,8 +7,8 @@ import java.util.Map;
 @Data
 public class Pair<K, V> implements Map.Entry<K, V> {
 
-    private final K k;
-    private final V v;
+    private transient final K k;
+    private transient final V v;
 
     public Pair(K k, V v) {
         this.k = k;
