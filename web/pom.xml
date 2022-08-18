@@ -11,12 +11,13 @@
 
     <groupId>com.illtamer.infinite.bot</groupId>
     <artifactId>web</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>web</name>
 
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>8</java.version>
         <illtamer.derive.version>0.0.1-SNAPSHOT</illtamer.derive.version>
+        <ib3.version>3.0.0-SNAPSHOT</ib3.version>
     </properties>
 
     <dependencies>
@@ -32,7 +33,7 @@
         <dependency>
             <groupId>com.illtamer.infinite.bot</groupId>
             <artifactId>ib3-spring-boot-starter</artifactId>
-            <version>${project.version}</version>
+            <version>${ib3.version}</version>
         </dependency>
         <dependency>
             <groupId>com.illtamer.infinite.derive</groupId>
