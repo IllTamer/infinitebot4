@@ -90,9 +90,9 @@ InfiniteBot-v3 为支持 go-cqhttp 实现了一系列包括事件监听、消息
 
 ```xml
 <dependency>
-    <groupId>com.illtamer.infinite.bot</groupId>
-    <artifactId>api</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+   <groupId>com.illtamer.infinite.bot</groupId>
+   <artifactId>api</artifactId>
+   <version>1.0.1</version>
 </dependency>
 ```
 
@@ -112,9 +112,9 @@ InfiniteBot-v3 额外优化了在 SpringBoot 框架下的开发体验。您只�
 1. 导入 ib3-spring-boot-starter
 ```xml
 <dependency>
-    <groupId>com.illtamer.infinite.bot</groupId>
-    <artifactId>ib3-spring-boot-starter</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+   <groupId>com.illtamer.infinite.bot</groupId>
+   <artifactId>ib3-spring-boot-starter</artifactId>
+   <version>1.0.1</version>
 </dependency>
 ```
 
@@ -128,6 +128,6 @@ bot:
 
 ## 致谢
 
-- 感谢 polar、小豆子、阿丽塔、黑土、1758983508 等腐竹在测试、策划方面提供的帮助与支持
+- 感谢 小豆子、阿丽塔、polar、一口小雨、黑土、仔仔 等腐竹在测试、策划方面提供的帮助与支持
 
 - 感谢机器人插件的先驱者 [@Albert](https://github.com/mcdoeswhat)

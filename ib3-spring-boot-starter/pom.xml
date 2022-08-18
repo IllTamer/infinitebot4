@@ -6,7 +6,7 @@
     <parent>
         <artifactId>infinitebot3</artifactId>
         <groupId>com.illtamer.infinite.bot</groupId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>1.0.1</version>
     </parent>
 
     <artifactId>ib3-spring-boot-starter</artifactId>
