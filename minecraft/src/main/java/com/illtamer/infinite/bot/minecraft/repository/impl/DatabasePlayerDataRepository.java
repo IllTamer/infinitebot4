@@ -35,11 +35,12 @@ public class DatabasePlayerDataRepository implements PlayerDataRepository {
                 return false;
             }
             PreparedStatement ps = connection.prepareStatement(
-                    "INSERT INTO `infinite_bot_3` (uuid, user_id, permission) VALUES (?, ?, ?)",
+                    "INSERT INTO `infinite_bot_3` (uuid, valid_uuid, user_id, permission) VALUES (?, ?, ?, ?)",
                     Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, data.getUuid());
-            ps.setLong(2, data.getUserId());
-            ps.setString(3, StringUtil.parseString(data.getPermission()));
+            ps.setString(2, data.getValidUUID());
+            ps.setLong(3, data.getUserId());
+            ps.setString(4, StringUtil.parseString(data.getPermission()));
             execute = ps.execute();
             setId(data, ps);
         } catch (SQLException e) {
@@ -136,7 +137,7 @@ public class DatabasePlayerDataRepository implements PlayerDataRepository {
     @Nullable
     protected PlayerData getPlayerDataByUUIDorUserId(PlayerData data) throws SQLException {
         PlayerData query = null;
-        final String uuid = data.getUuid();
+        final String uuid = data.getUuid() == null ? data.getValidUUID() : data.getUuid();
         if (uuid != null) {
             query = doQueryByUUID(uuid);
         }
@@ -154,13 +155,14 @@ public class DatabasePlayerDataRepository implements PlayerDataRepository {
         try (final Connection connection = getConnection()) {
             statement = connection.createStatement();
             statement.execute(
-                    "CREATE TABLE IF NOT EXISTS `infinite_bot_3` (\n" +
-                            "  `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,\n" +
+                    "CREATE TABLE `infinite_bot_3` (\n" +
+                            "  `id` int NOT NULL AUTO_INCREMENT,\n" +
                             "  `uuid` varchar(45) DEFAULT NULL,\n" +
-                            "  `user_id` integer DEFAULT NULL,\n" +
+                            "  `valid_uuid` varchar(45) DEFAULT NULL,\n" +
+                            "  `user_id` int DEFAULT NULL,\n" +
                             "  `permission` text,\n" +
                             "  PRIMARY KEY (`id`)\n" +
-                            ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci"
+                            ") ENGINE=InnoDB DEFAULT CHARSET=utf8"
             );
         } catch (SQLException e) {
             log.warning("Some exceptions occurred when create table 'infinite_bot_3'");
@@ -180,9 +182,10 @@ public class DatabasePlayerDataRepository implements PlayerDataRepository {
     protected PlayerData doQueryByUUID(@NotNull String uuid) throws SQLException {
         try (final Connection connection = getConnection()) {
             PreparedStatement ps;
-            String sql = "SELECT * FROM `infinite_bot_3` WHERE uuid = ?";
+            String sql = "SELECT * FROM `infinite_bot_3` WHERE uuid = ? OR valid_uuid = ?";
             ps = connection.prepareStatement(sql);
             ps.setString(1, uuid);
+            ps.setString(2, uuid);
             final List<PlayerData> list = parseResultSet(ps.executeQuery());
             return singletonEntity(list);
         }
@@ -219,6 +222,7 @@ public class DatabasePlayerDataRepository implements PlayerDataRepository {
             final int id = set.getInt("id");
             data.setId(id == 0 ? null : id);
             data.setUuid(set.getString("uuid"));
+            data.setValidUUID(set.getString("valid_uuid"));
             final long userId = set.getLong("user_id");
             data.setUserId(userId != 0 ? userId : null);
             data.setPermission(StringUtil.parseList(set.getString("permission")));

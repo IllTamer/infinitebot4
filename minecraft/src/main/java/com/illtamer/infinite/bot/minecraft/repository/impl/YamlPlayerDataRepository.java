@@ -33,6 +33,7 @@ public class YamlPlayerDataRepository implements PlayerDataRepository {
             final ConfigurationSection section = config.getConfigurationSection(id);
             if (section == null) return playerData;
             playerData.setUuid(section.getString("uuid", null));
+            playerData.setValidUUID(section.getString("valid_uuid", null));
             playerData.setUserId(section.getLong("user_id") != 0 ? section.getLong("user_id") : null);
             playerData.setPermission(section.getStringList("permission"));
             return playerData;
@@ -107,6 +108,7 @@ public class YamlPlayerDataRepository implements PlayerDataRepository {
                 section = config.createSection(key, value.toMap());
             else {
                 section.set("uuid", value.getUuid());
+                section.set("valid_uuid", value.getValidUUID());
                 section.set("user_id", value.getUserId());
                 section.set("permission", value.getPermission());
             }
@@ -117,7 +119,7 @@ public class YamlPlayerDataRepository implements PlayerDataRepository {
     @Nullable
     protected Map.Entry<String, PlayerData> getEntryByUUIDorUserId(PlayerData data) {
         Map.Entry<String, PlayerData> dataEntry = null;
-        final String uuid = data.getUuid();
+        final String uuid = data.getUuid() == null ? data.getValidUUID() : data.getUuid();
         if (uuid != null) {
             dataEntry = doQueryByUUID(uuid);
         }
@@ -134,7 +136,8 @@ public class YamlPlayerDataRepository implements PlayerDataRepository {
         Optional<Map.Entry<String, PlayerData>> first = playerDataMap.entrySet().stream()
                 .filter(entry -> {
                     final PlayerData data = entry.getValue();
-                    return data != null && data.getUuid().equals(uuid);
+                    if (data == null) return false;
+                    return uuid.equals(data.getUuid()) || uuid.equals(data.getValidUUID());
                 }).findFirst();
         return first.orElse(null);
     }

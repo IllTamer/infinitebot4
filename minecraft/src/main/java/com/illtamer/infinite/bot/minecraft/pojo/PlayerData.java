@@ -24,6 +24,11 @@ public class PlayerData {
     private String uuid;
 
     /**
+     * Valid UUID by MoJang
+     * */
+    private String validUUID;
+
+    /**
      * qq 号
      * */
     private Long userId;
