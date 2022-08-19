@@ -1,9 +1,7 @@
 package com.illtamer.infinite.bot.api.message;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
+import com.google.gson.*;
+import com.illtamer.infinite.bot.api.Pair;
 import com.illtamer.infinite.bot.api.exception.ExclusiveMessageException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -109,6 +107,20 @@ public class JsonMessage extends Message {
             }
         }
         add(type, data);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected List<Pair<String, Map<String, @NotNull Object>>> entryList() {
+        final Gson gson = new Gson();
+        List<Pair<String, Map<String, @NotNull Object>>> list = new ArrayList<>(array.size());
+        for (JsonElement element : array) {
+            JsonObject node = (JsonObject) element;
+            final String type = node.get("type").getAsString();
+            final Map<String, Object> data = gson.fromJson(node.get("data"), Map.class);
+            list.add(new Pair<>(type, data));
+        }
+        return list;
     }
 
 }

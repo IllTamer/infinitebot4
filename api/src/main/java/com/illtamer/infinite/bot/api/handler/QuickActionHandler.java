@@ -11,8 +11,10 @@ import java.util.Map;
 
 /**
  * 快速操作 APIHandler
+ * TODO deprecated
  * */
 @Getter
+@Deprecated
 public class QuickActionHandler extends AbstractAPIHandler<Map<String, Object>> {
 
     /**

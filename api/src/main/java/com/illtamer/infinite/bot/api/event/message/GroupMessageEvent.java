@@ -9,6 +9,7 @@ import com.illtamer.infinite.bot.api.event.QuickAction;
 import com.illtamer.infinite.bot.api.handler.OpenAPIHandling;
 import com.illtamer.infinite.bot.api.handler.QuickActionHandler;
 import com.illtamer.infinite.bot.api.message.Message;
+import com.illtamer.infinite.bot.api.message.MessageBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -51,22 +52,24 @@ public class GroupMessageEvent extends MessageEvent implements QuickAction {
     }
 
     /**
-     * 回复消息时是否要在回复开头 at 发送者 (自动添加)
-     * <p>
-     * 发送者是匿名用户时无效
+     * 回复该条消息
+     * @deprecated #reply(String, boolean)
      * */
+    @Deprecated
     public void reply(Message message, boolean atSender) {
-        new QuickActionHandler(this)
-                .addOperation("reply", message)
-                .addOperation("auto_escape", message.isTextOnly())
-                .addOperation("at_sender", atSender)
-                .request();
+        final MessageBuilder builder = MessageBuilder.json().reply(getMessageId());
+        if (atSender)
+            builder.at(getUserId());
+        builder.addAll(message);
+        OpenAPIHandling.sendGroupMessage(builder.build(), groupId);
     }
 
     /**
      * 撤回该条消息
+     * @deprecated 快速操作API不稳定
      * */
     @Untested
+    @Deprecated
     public void recall() {
         new QuickActionHandler(this)
                 .addOperation("delete", true)
@@ -77,8 +80,10 @@ public class GroupMessageEvent extends MessageEvent implements QuickAction {
      * 把发送者踢出群组 (需要登录号权限足够)
      * <p>
      * 不拒绝此人后续加群请求, 发送者是匿名用户时无效
+     * @deprecated 快速操作API不稳定
      * */
     @Untested
+    @Deprecated
     public void kick() {
         new QuickActionHandler(this)
                 .addOperation("kick", true)
@@ -89,8 +94,10 @@ public class GroupMessageEvent extends MessageEvent implements QuickAction {
      * 把发送者禁言30分钟
      * <p>
      * 对匿名用户也有效
+     * @deprecated 快速操作API不稳定
      * */
     @Untested
+    @Deprecated
     public void ban() {
         ban(30);
     }
@@ -99,8 +106,10 @@ public class GroupMessageEvent extends MessageEvent implements QuickAction {
      * 把发送者禁言指定时长
      * <p>
      * 对匿名用户也有效
+     * @deprecated 快速操作API不稳定
      * */
     @Untested
+    @Deprecated
     public void ban(int minute) {
         new QuickActionHandler(this)
                 .addOperation("ban", true)

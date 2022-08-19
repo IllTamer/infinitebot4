@@ -4,8 +4,10 @@ import com.google.gson.annotations.SerializedName;
 import com.illtamer.infinite.bot.api.annotation.Coordinates;
 import com.illtamer.infinite.bot.api.entity.MessageSender;
 import com.illtamer.infinite.bot.api.event.QuickAction;
+import com.illtamer.infinite.bot.api.handler.OpenAPIHandling;
 import com.illtamer.infinite.bot.api.handler.QuickActionHandler;
 import com.illtamer.infinite.bot.api.message.Message;
+import com.illtamer.infinite.bot.api.message.MessageBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -39,10 +41,9 @@ public class PrivateMessageEvent extends MessageEvent implements QuickAction {
      * */
     @Override
     public void reply(Message message) {
-        new QuickActionHandler(this)
-                .addOperation("reply", message)
-                .addOperation("auto_escape", message.isTextOnly())
-                .request();
+        final MessageBuilder builder = MessageBuilder.json().reply(getMessageId());
+        builder.addAll(message);
+        OpenAPIHandling.sendMessage(builder.build(), getUserId());
     }
 
 }

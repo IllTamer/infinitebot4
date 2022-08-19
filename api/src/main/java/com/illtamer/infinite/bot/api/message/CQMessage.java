@@ -1,13 +1,11 @@
 package com.illtamer.infinite.bot.api.message;
 
+import com.illtamer.infinite.bot.api.Pair;
 import com.illtamer.infinite.bot.api.exception.ExclusiveMessageException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -17,7 +15,7 @@ import java.util.stream.Collectors;
  * */
 public class CQMessage extends Message {
 
-    private final List<Entry> list;
+    private final List<Pair<String, Map<String, @NotNull Object>>> list;
     private final MessageChain messageChain;
 
     private boolean textOnly;
@@ -26,7 +24,7 @@ public class CQMessage extends Message {
         this(new ArrayList<>(), true);
     }
 
-    private CQMessage(List<Entry> list, boolean textOnly) {
+    private CQMessage(List<Pair<String, Map<String, @NotNull Object>>> list, boolean textOnly) {
         this.list = list;
         this.textOnly = textOnly;
         this.messageChain = new MessageChain();
@@ -42,8 +40,8 @@ public class CQMessage extends Message {
     @NotNull
     public List<String> getCleanMessage() {
         return list.stream()
-                .filter(entry -> "text".equals(entry.key))
-                .map(entry -> (String) entry.value.get("text"))
+                .filter(entry -> "text".equals(entry.getKey()))
+                .map(entry -> (String) entry.getValue().get("text"))
                 .collect(Collectors.toList());
     }
 
@@ -65,12 +63,12 @@ public class CQMessage extends Message {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        for (Entry entry : list) {
-            if ("text".equals(entry.key))
-                builder.append((String) entry.value.get("text"));
+        for (Pair<String, Map<String, @NotNull Object>> entry : list) {
+            if ("text".equals(entry.getKey()))
+                builder.append((String) entry.getValue().get("text"));
             else {
-                builder.append("[CQ:").append(entry.key);
-                for (Map.Entry<String, Object> dataEntry : entry.value.entrySet())
+                builder.append("[CQ:").append(entry.getKey());
+                for (Map.Entry<String, Object> dataEntry : entry.getValue().entrySet())
                     builder.append(',').append(dataEntry.getKey()).append('=').append((String) dataEntry.getValue());
                 builder.append(']');
             }
@@ -82,7 +80,7 @@ public class CQMessage extends Message {
     protected void add(String type, Map<String, @Nullable Object> data) {
         if (textOnly)
             textOnly = "text".equals(type);
-        Entry entryObject = new Entry(type);
+        Pair<String, Map<String, @NotNull Object>> entryObject = new Pair<>(type, new HashMap<>());
         final List<Map.Entry<String, Object>> notnull = data.entrySet().stream()
                 .filter(entry -> entry.getValue() != null)
                 .collect(Collectors.toList());
@@ -96,7 +94,7 @@ public class CQMessage extends Message {
                         element = ((CQMessage) value).list;
                     else
                         element = value.toString();
-                    entryObject.putValue(entry.getKey(), element);
+                    entryObject.getValue().put(entry.getKey(), element);
                 });
         list.add(entryObject);
     }
@@ -104,7 +102,7 @@ public class CQMessage extends Message {
     @Override
     protected void addExclusive(String type, Map<String, @Nullable Object> data) {
         if (!list.isEmpty()) {
-            for (Entry entry : list) {
+            for (Pair<String, Map<String, @NotNull Object>> entry : list) {
                 if (!entry.getKey().equals(type))
                     throw new ExclusiveMessageException(type);
             }
@@ -112,36 +110,9 @@ public class CQMessage extends Message {
         add(type, data);
     }
 
-    public static class Entry implements Map.Entry<String, Map<String, Object>> {
-
-        private final String key;
-        private final Map<String, Object> value;
-
-        private Entry(String key) {
-            this.key = key;
-            this.value = new LinkedHashMap<>();
-        }
-
-
-        @Override
-        public String getKey() {
-            return key;
-        }
-
-        public void putValue(String vKey, Object vValue) {
-            value.put(vKey, vValue);
-        }
-
-        @Override
-        public Map<String, Object> getValue() {
-            return value;
-        }
-
-        @Override
-        public Map<String, Object> setValue(Map<String, Object> value) {
-            throw new UnsupportedOperationException();
-        }
-
+    @Override
+    protected List<Pair<String, Map<String, @NotNull Object>>> entryList() {
+        return list;
     }
 
 }
