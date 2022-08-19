@@ -5,7 +5,6 @@ import com.illtamer.infinite.bot.minecraft.configuration.StatusCheckRunner;
 import com.illtamer.infinite.bot.minecraft.configuration.config.BotConfiguration;
 import com.illtamer.infinite.bot.minecraft.expansion.ExpansionLoader;
 import com.illtamer.infinite.bot.minecraft.listener.CommandListener;
-import com.illtamer.infinite.bot.minecraft.util.PluginUtil;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
@@ -13,6 +12,7 @@ import org.bukkit.command.PluginCommand;
 import java.util.Optional;
 
 // TODO 集中help管理
+//      libs folder
 public class Bootstrap extends BotNettyStarter {
 
     @Getter
