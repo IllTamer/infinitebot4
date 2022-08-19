@@ -1,11 +1,13 @@
 package com.illtamer.infinite.bot.api.message;
 
+import com.illtamer.infinite.bot.api.Pair;
 import com.illtamer.infinite.bot.api.exception.ExclusiveMessageException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public abstract class Message implements Cloneable {
 
@@ -41,5 +43,7 @@ public abstract class Message implements Cloneable {
     * @throws ExclusiveMessageException 单一消息类型异常
     * */
    abstract protected void addExclusive(String type, Map<String, @Nullable Object> data);
+
+   abstract protected List<Pair<String, Map<String, @NotNull Object>>> entryList();
 
 }

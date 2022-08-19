@@ -345,6 +345,14 @@ public class MessageBuilder {
         return build();
     }
 
+    /**
+     * @since 3.0.4
+     * */
+    public MessageBuilder addAll(Message message) {
+        message.entryList().forEach(pair -> property(pair.getKey(), pair.getValue()));
+        return this;
+    }
+
     MessageBuilder property(String type, Map<String, @Nullable Object> args) {
         message.add(type, args);
         return this;
@@ -360,6 +368,13 @@ public class MessageBuilder {
 
     public static MessageBuilder json() {
         return new MessageBuilder(new JsonMessage());
+    }
+
+    /**
+     * @since 3.0.4
+     * */
+    public static MessageBuilder parse(Message message) {
+        return new MessageBuilder(message);
     }
 
     @Nullable

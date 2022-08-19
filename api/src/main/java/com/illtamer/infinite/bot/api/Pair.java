@@ -1,14 +1,18 @@
 package com.illtamer.infinite.bot.api;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 
 import java.util.Map;
 
 @Data
 public class Pair<K, V> implements Map.Entry<K, V> {
 
-    private transient final K k;
-    private transient final V v;
+    @Getter(AccessLevel.NONE)
+    private final K k;
+    @Getter(AccessLevel.NONE)
+    private final V v;
 
     public Pair(K k, V v) {
         this.k = k;
