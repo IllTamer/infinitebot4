@@ -92,7 +92,7 @@ InfiniteBot-v3 为支持 go-cqhttp 实现了一系列包括事件监听、消息
 <dependency>
    <groupId>com.illtamer.infinite.bot</groupId>
    <artifactId>api</artifactId>
-   <version>1.0.1</version>
+   <version>1.0.3</version>
 </dependency>
 ```
 
@@ -114,7 +114,7 @@ InfiniteBot-v3 额外优化了在 SpringBoot 框架下的开发体验。您只�
 <dependency>
    <groupId>com.illtamer.infinite.bot</groupId>
    <artifactId>ib3-spring-boot-starter</artifactId>
-   <version>1.0.1</version>
+   <version>1.0.3</version>
 </dependency>
 ```
 
