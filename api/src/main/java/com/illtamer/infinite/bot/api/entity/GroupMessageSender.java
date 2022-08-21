@@ -44,7 +44,7 @@ public class GroupMessageSender extends MessageSender {
      * 向该消息发送者发送消息
      * @return 消息 ID
      * */
-    public Double sendGroupMessage(String message) {
+    public Integer sendGroupMessage(String message) {
         return OpenAPIHandling.sendGroupMessage(message, groupId);
     }
 
@@ -52,7 +52,7 @@ public class GroupMessageSender extends MessageSender {
      * 向该消息发送者发送消息
      * @return 消息 ID
      * */
-    public Double sendGroupMessage(Message message) {
+    public Integer sendGroupMessage(Message message) {
         return OpenAPIHandling.sendGroupMessage(message, groupId);
     }
 

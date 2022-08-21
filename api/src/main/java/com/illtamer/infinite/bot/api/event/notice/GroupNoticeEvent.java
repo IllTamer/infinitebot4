@@ -31,7 +31,7 @@ public abstract class GroupNoticeEvent extends NoticeEvent {
      * 向该消息发送者发送消息
      * @return 消息 ID
      * */
-    public Double sendGroupMessage(String message) {
+    public Integer sendGroupMessage(String message) {
         return OpenAPIHandling.sendGroupMessage(message, groupId);
     }
 
@@ -39,7 +39,7 @@ public abstract class GroupNoticeEvent extends NoticeEvent {
      * 向该消息发送者发送消息
      * @return 消息 ID
      * */
-    public Double sendGroupMessage(Message message) {
+    public Integer sendGroupMessage(Message message) {
         return OpenAPIHandling.sendGroupMessage(message, groupId);
     }
 

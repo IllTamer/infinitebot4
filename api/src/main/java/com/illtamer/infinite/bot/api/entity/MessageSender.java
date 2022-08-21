@@ -33,7 +33,7 @@ public class MessageSender {
      * 向该消息发送者发送消息
      * @return 消息 ID
      * */
-    public Double sendMessage(String message) {
+    public Integer sendMessage(String message) {
         return OpenAPIHandling.sendMessage(message, userId);
     }
 
@@ -41,7 +41,7 @@ public class MessageSender {
      * 向该消息发送者发送消息
      * @return 消息 ID
      * */
-    public Double sendMessage(Message message) {
+    public Integer sendMessage(Message message) {
         return OpenAPIHandling.sendMessage(message, userId);
     }
 
