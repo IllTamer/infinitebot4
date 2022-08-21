@@ -35,7 +35,7 @@ public class CommandListener implements TabExecutor {
                         "ib3:",
                         " ├──help: 获取帮助",
                         " ├──check: 检查账号的连接状态",
-                        " ├──reload: 重载配置文件",
+                        " ├──reload: 重载本体配置文件",
                         " ├──expansions",
                         " │   ├──list: 列出所有加载的附属名称",
                         " │   └──reload: 重载 expansions 目录下所有附属",
