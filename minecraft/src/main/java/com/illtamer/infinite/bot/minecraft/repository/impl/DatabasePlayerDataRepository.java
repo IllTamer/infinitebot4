@@ -159,7 +159,7 @@ public class DatabasePlayerDataRepository implements PlayerDataRepository {
                             "  `id` int NOT NULL AUTO_INCREMENT,\n" +
                             "  `uuid` varchar(45) DEFAULT NULL,\n" +
                             "  `valid_uuid` varchar(45) DEFAULT NULL,\n" +
-                            "  `user_id` int DEFAULT NULL,\n" +
+                            "  `user_id` BIGINT(16) DEFAULT NULL,\n" +
                             "  `permission` text,\n" +
                             "  PRIMARY KEY (`id`)\n" +
                             ") ENGINE=InnoDB DEFAULT CHARSET=utf8"
