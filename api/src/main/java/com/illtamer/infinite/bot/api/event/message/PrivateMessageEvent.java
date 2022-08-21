@@ -5,7 +5,6 @@ import com.illtamer.infinite.bot.api.annotation.Coordinates;
 import com.illtamer.infinite.bot.api.entity.MessageSender;
 import com.illtamer.infinite.bot.api.event.QuickAction;
 import com.illtamer.infinite.bot.api.handler.OpenAPIHandling;
-import com.illtamer.infinite.bot.api.handler.QuickActionHandler;
 import com.illtamer.infinite.bot.api.message.Message;
 import com.illtamer.infinite.bot.api.message.MessageBuilder;
 import lombok.Getter;

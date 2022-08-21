@@ -1,12 +1,9 @@
 package com.illtamer.infinite.bot.api.config;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.illtamer.infinite.bot.api.event.Event;
 import com.illtamer.infinite.bot.api.event.EventResolver;
-import com.illtamer.infinite.bot.api.message.Message;
-import com.illtamer.infinite.bot.api.message.MessageTypeAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.channel.SimpleChannelInboundHandler;
