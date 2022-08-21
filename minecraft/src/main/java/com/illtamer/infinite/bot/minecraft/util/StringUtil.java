@@ -1,6 +1,7 @@
 package com.illtamer.infinite.bot.minecraft.util;
 
 import com.illtamer.infinite.bot.minecraft.Bootstrap;
+import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
+@UtilityClass
 public class StringUtil {
 
     private static final Logger log = Bootstrap.getInstance().getLogger();

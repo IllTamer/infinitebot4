@@ -1,7 +1,9 @@
 package com.illtamer.infinite.bot.minecraft.util;
 
 import com.illtamer.infinite.bot.minecraft.Bootstrap;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class PluginUtil {
 
     public static String parseColor(String s) {
@@ -15,7 +17,7 @@ public class PluginUtil {
         for(int i = 0; i < chars.length; ++i) {
             if (chars[i] == 167 && i + 1 <= chars.length) {
                 int next = chars[i + 1];
-                if (next >= '0' && next <= '9' || next >= 'a' && next <= 'f' || next >= 'l' && next <= 'o' || next == 'r') {
+                if ((next >= '0' && next <= '9') || (next >= 'a' && next <= 'f') || (next >= 'k' && next <= 'o') || next == 'r' || next == 'x') {
                     ++i;
                     continue;
                 }
