@@ -68,12 +68,8 @@ public class GroupMessageEvent extends MessageEvent implements QuickAction {
      * 撤回该条消息
      * @deprecated 快速操作API不稳定
      * */
-    @Untested
-    @Deprecated
     public void recall() {
-        new QuickActionHandler(this)
-                .addOperation("delete", true)
-                .request();
+        OpenAPIHandling.deleteMessage(getMessageId());
     }
 
     /**
@@ -93,11 +89,8 @@ public class GroupMessageEvent extends MessageEvent implements QuickAction {
     /**
      * 把发送者禁言30分钟
      * <p>
-     * 对匿名用户也有效
-     * @deprecated 快速操作API不稳定
+     * 对匿名用户无效
      * */
-    @Untested
-    @Deprecated
     public void ban() {
         ban(30);
     }
@@ -105,23 +98,17 @@ public class GroupMessageEvent extends MessageEvent implements QuickAction {
     /**
      * 把发送者禁言指定时长
      * <p>
-     * 对匿名用户也有效
-     * @deprecated 快速操作API不稳定
+     * 对匿名用户也无效
      * */
-    @Untested
-    @Deprecated
     public void ban(int minute) {
-        new QuickActionHandler(this)
-                .addOperation("ban", true)
-                .addOperation("ban_duration", minute)
-                .request();
+        OpenAPIHandling.groupBan(groupId, getUserId(), minute * 60);
     }
 
     /**
      * 向该消息发送者发送消息
      * @return 消息 ID
      * */
-    public Double sendGroupMessage(String message) {
+    public Integer sendGroupMessage(String message) {
         return OpenAPIHandling.sendGroupMessage(message, groupId);
     }
 
@@ -129,7 +116,7 @@ public class GroupMessageEvent extends MessageEvent implements QuickAction {
      * 向该消息发送者发送消息
      * @return 消息 ID
      * */
-    public Double sendGroupMessage(Message message) {
+    public Integer sendGroupMessage(Message message) {
         return OpenAPIHandling.sendGroupMessage(message, groupId);
     }
 

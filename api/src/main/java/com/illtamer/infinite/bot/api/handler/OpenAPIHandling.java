@@ -3,6 +3,7 @@ package com.illtamer.infinite.bot.api.handler;
 import com.illtamer.infinite.bot.api.Response;
 import com.illtamer.infinite.bot.api.entity.BotStatus;
 import com.illtamer.infinite.bot.api.entity.Group;
+import com.illtamer.infinite.bot.api.exception.APIInvokeException;
 import com.illtamer.infinite.bot.api.message.Message;
 import com.illtamer.infinite.bot.api.message.MessageBuilder;
 
@@ -12,63 +13,90 @@ import java.util.Map;
 public class OpenAPIHandling {
 
     /**
-     * 发送消息
-     * @return 消息 ID
+     * 撤回消息
+     * @param messageId 消息 ID
+     * @throws APIInvokeException 当机器人权限不足（管理员撤回群主消息）时，会抛出 RECALL_API_ERROR
      * */
-    public static Double sendMessage(String message, long userId) {
-        Response<Map<String, Object>> response = new PrivateMsgSendHandler()
-                .setUserId(userId)
-                .setMessage(MessageBuilder.json().text(message).build())
+    public static boolean deleteMessage(int messageId) {
+        Response<Map<String, Object>> response = new DeleteMsgHandler()
+                .setMessageId(messageId)
                 .request();
-        return (Double) response.getData().get("message_id");
+        return "ok".equals(response.getStatus());
+    }
+
+    /**
+     * 群组单人禁言
+     * @param groupId 群号
+     * @param userId 要禁言的 QQ 号
+     * @param duration 禁言时长, 单位秒, 0 表示取消禁言
+     * */
+    public static boolean groupBan(long groupId, long userId, int duration) {
+        Response<Map<String, Object>> response = new GroupBanAPIHandler()
+                .setGroupId(groupId)
+                .setUserId(userId)
+                .setDuration(duration)
+                .request();
+        return "ok".equals(response.getStatus());
     }
 
     /**
      * 发送消息
      * @return 消息 ID
      * */
-    public static Double sendMessage(Message message, long userId) {
+    public static Integer sendMessage(String message, long userId) {
+        Response<Map<String, Object>> response = new PrivateMsgSendHandler()
+                .setUserId(userId)
+                .setMessage(MessageBuilder.json().text(message).build())
+                .request();
+        return (Integer) response.getData().get("message_id");
+    }
+
+    /**
+     * 发送消息
+     * @return 消息 ID
+     * */
+    public static Integer sendMessage(Message message, long userId) {
         Response<Map<String, Object>> response = new PrivateMsgSendHandler()
                 .setUserId(userId)
                 .setMessage(message)
                 .request();
-        return (Double) response.getData().get("message_id");
+        return (Integer) response.getData().get("message_id");
     }
 
     /**
      * 发送群消息
      * @return 消息 ID
      * */
-    public static Double sendGroupMessage(String message, long groupId) {
+    public static Integer sendGroupMessage(String message, long groupId) {
         Response<Map<String, Object>> response = new GroupMsgSendHandler()
                 .setGroupId(groupId)
                 .setMessage(MessageBuilder.json().text(message).build())
                 .request();
-        return (Double) response.getData().get("message_id");
+        return (Integer) response.getData().get("message_id");
     }
 
     /**
      * 发送群消息
      * @return 消息 ID
      * */
-    public static Double sendGroupMessage(Message message, long groupId) {
+    public static Integer sendGroupMessage(Message message, long groupId) {
         Response<Map<String, Object>> response = new GroupMsgSendHandler()
                 .setGroupId(groupId)
                 .setMessage(message)
                 .request();
-        return (Double) response.getData().get("message_id");
+        return (Integer) response.getData().get("message_id");
     }
 
     /**
      * 发送自定义合并消息到群
      * @param messageNode 构造的节点消息
      * */
-    public static Double sendGroupForwardMessage(Message messageNode, long groupId) {
+    public static Integer sendGroupForwardMessage(Message messageNode, long groupId) {
         Response<Map<String, Object>> response = new GroupForwardSendHandler()
                 .setGroupId(groupId)
                 .setMessages(messageNode)
                 .request();
-        return (Double) response.getData().get("message_id");
+        return (Integer) response.getData().get("message_id");
     }
 
     /**

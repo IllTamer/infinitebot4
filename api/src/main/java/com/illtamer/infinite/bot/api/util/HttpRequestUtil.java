@@ -2,7 +2,7 @@ package com.illtamer.infinite.bot.api.util;
 
 import com.google.gson.Gson;
 import com.illtamer.infinite.bot.api.Pair;
-import com.illtamer.infinite.bot.api.handler.QuickActionHandler;
+import com.illtamer.infinite.bot.api.handler.APIHandler;
 import lombok.SneakyThrows;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -57,8 +57,8 @@ public class HttpRequestUtil {
         try {
             content = new Gson().toJson(payload);
         } catch (Exception e) {
-            System.err.println(((QuickActionHandler) payload).getContext());
-            System.err.println(((QuickActionHandler) payload).getOperation());
+            System.err.printf("Some exception occurred when parse payload with endpoint: %s, %s",
+                    ((APIHandler<?>) payload).getEndpoint(), e);
         }
         return content;
     }

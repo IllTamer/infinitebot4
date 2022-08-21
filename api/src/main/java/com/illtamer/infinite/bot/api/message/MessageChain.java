@@ -5,7 +5,10 @@ import com.illtamer.infinite.bot.api.entity.TransferEntity;
 import com.illtamer.infinite.bot.api.entity.transfer.*;
 import lombok.Getter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -51,8 +54,11 @@ public class MessageChain {
         map.put(Forward.class.getSimpleName().toLowerCase(), Forward.class);
         map.put(Image.class.getSimpleName().toLowerCase(), Image.class);
         map.put(Record.class.getSimpleName().toLowerCase(), Record.class);
+        map.put(Redbag.class.getSimpleName().toLowerCase(), Redbag.class);
         map.put(Reply.class.getSimpleName().toLowerCase(), Reply.class);
+        map.put(Share.class.getSimpleName().toLowerCase(), Share.class);
         map.put(Text.class.getSimpleName().toLowerCase(), Text.class);
+        map.put(Video.class.getSimpleName().toLowerCase(), Video.class);
         MAPPER = map;
     }
 

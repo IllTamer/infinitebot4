@@ -40,9 +40,48 @@ public class MessageBuilder {
         return this;
     }
 
-    // 语音
+    /**
+     * 语音
+     * @param file 语音文件名(URL)
+     * */
+    public Message record(String file) {
+        return record(file, null, null, null, null);
+    }
 
-    // 短视频
+    /**
+     * 语音
+     * @param file 语音文件名(URL)
+     * @param magic 发送时可选, 默认 0, 设置为 1 表示变声
+     * @param cache 只在通过网络 URL 发送时有效, 表示是否使用已缓存的文件, 默认 1
+     * @param proxy 只在通过网络 URL 发送时有效, 表示是否通过代理下载文件 ( 需通过环境变量或配置文件配置代理 ) , 默认 1
+     * @param timeout 只在通过网络 URL 发送时有效, 单位秒, 表示下载网络文件的超时时间 , 默认不超时
+     * */
+    public Message record(String file, @Nullable String magic, @Nullable Integer cache, @Nullable Integer proxy, @Nullable Integer timeout) {
+        message.addExclusive("record", Maps.of(
+                "file", file,
+                "magic", magic,
+                "cache", cache,
+                "proxy", proxy,
+                "timeout", timeout
+        ));
+        return build();
+    }
+
+    /**
+     * 短视频
+     * @param file 视频地址, 支持http和file发送
+     * @param cover 视频封面, 支持http, file和base64发送, 格式必须为jpg
+     * @param c 通过网络下载视频时的线程数, 默认单线程. (在资源不支持并发时会自动处理)
+     * @apiNote go-cqhttp-v0.9.38 起开始支持发送，需要依赖ffmpeg
+     * */
+    public Message video(String file, String cover, @Nullable Integer c) {
+        message.addExclusive("video", Maps.of(
+                "file", file,
+                "cover", cover,
+                "c", c
+        ));
+        return build();
+    }
 
     /**
      * @ 某人
@@ -89,7 +128,7 @@ public class MessageBuilder {
      * @param image 发送时可选, 图片 URL
      * @throws ExclusiveMessageException 单一消息类型异常
      * */
-    public Message link(String url, String title, @SendOnly(nullable = true) String content, @SendOnly(nullable = true) String image) {
+    public Message share(String url, String title, @SendOnly(nullable = true) String content, @SendOnly(nullable = true) String image) {
         message.addExclusive("share", Maps.of(
                 "url", url,
                 "title", title,
