@@ -2,6 +2,9 @@ package com.illtamer.infinite.bot.minecraft.expansion;
 
 import com.illtamer.infinite.bot.api.util.Assert;
 import com.illtamer.infinite.bot.minecraft.api.IExpansion;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 /**
  * 语言消息配置类
@@ -18,6 +21,7 @@ public class Language {
      * 获取语言文本
      * @param nodes 配置节点
      * */
+    @NotNull
     public String get(String... nodes) {
         Assert.notEmpty(nodes, "Language nodes can not be empty!");
         StringBuilder builder = new StringBuilder();
@@ -26,7 +30,7 @@ public class Language {
             builder.append('.').append(node);
         }
         builder.deleteCharAt(0);
-        return lanConfig.getConfig().getString(builder.toString());
+        return Optional.ofNullable(lanConfig.getConfig().getString(builder.toString())).orElse("");
     }
 
     /**

@@ -45,7 +45,7 @@ IB3已预先为您封装好了配置文件实体类 `ExpansiobConfig`，您的�
 ```java
  public class ExampleExapnsion extends InfiniteExpansion {
      private IExpansion instance;
-     private ExpansiobConfig configFile;
+     private ExpansionConfig configFile;
      @Override
      public void onEnable() {
          instance = this;
@@ -56,6 +56,11 @@ IB3已预先为您封装好了配置文件实体类 `ExpansiobConfig`，您的�
 ```
 
 ExpansionConfig 已封装常用方法保存/重载/获取yml文件，详见 [[ExpansionConfig]](../src/main/java/com/illtamer/infinite/bot/minecraft/expansion/ExpansionConfig.java)
+
+## 语言文件
+
+语言文件基于 ExpansionConfig 二次封装实现，其固定格式为 `{name}-{type}.yml` (如 `language-zh_CN.yml`)。
+语言文件相关 API 详见类 [[Language]](../src/main/java/com/illtamer/infinite/bot/minecraft/expansion/Language.java)，且在不断完善中。
 
 ## QQ事件监听+注册
 
@@ -108,8 +113,6 @@ ExpansionConfig 已封装常用方法保存/重载/获取yml文件，详见 [[Ex
 -   `com.illtamer.infinite.bot.api.event` 包内是支持的 QQ 事件类型
 
 -   `com.illtamer.infinite.bot.api.message` 包内是封装的消息对象。
-
-    -   需要注意的是，目前仅支持进行 Json 消息的构建
 
 -   `com.illtamer.infinite.bot.api.entity` 包内是事件中产生的实体类
 
