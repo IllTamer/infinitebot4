@@ -5,9 +5,12 @@ import com.google.gson.JsonObject;
 import com.illtamer.infinite.bot.api.Pair;
 import com.illtamer.infinite.bot.api.util.HttpRequestUtil;
 import lombok.experimental.UtilityClass;
+import org.apache.commons.httpclient.ConnectTimeoutException;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.UUID;
 
 @UtilityClass
@@ -35,8 +38,13 @@ public class ValidUtil {
     }
 
     public static boolean isValidUUID(@NotNull String uuid) {
-        final Pair<Integer, String> pair = HttpRequestUtil.getJson(SESSION_SERVER + uuid, null);
-        return pair.getKey() == 200;
+        try {
+            final Pair<Integer, String> pair = HttpRequestUtil.getJson(SESSION_SERVER + uuid, null);
+            return pair.getKey() == 200;
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return false;
+        }
     }
 
 }
