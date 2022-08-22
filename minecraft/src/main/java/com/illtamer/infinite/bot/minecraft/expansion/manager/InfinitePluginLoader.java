@@ -70,7 +70,7 @@ public class InfinitePluginLoader {
     public void disableExpansion(IExpansion expansion) {
         Assert.isTrue(expansion instanceof InfiniteExpansion, "Expansion is not associated with this PluginLoader");
 
-        if (expansion.isEnabled()) {
+        if (expansion.isEnabled() && !expansion.persist()) {
             final Logger logger = Bootstrap.getInstance().getLogger();
             logger.info(String.format("Disabling %s", expansion.getExpansionName()));
             // 注销监听

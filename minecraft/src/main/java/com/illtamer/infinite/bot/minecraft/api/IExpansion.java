@@ -45,4 +45,9 @@ public interface IExpansion {
      * 储存附属jar中的资源文件到附属文件夹
      * */
     void saveResource(String path, boolean replace);
+
+    /**
+     * 是否为外部插件（不随InfiniteBot重载）
+     * */
+    boolean persist();
 }

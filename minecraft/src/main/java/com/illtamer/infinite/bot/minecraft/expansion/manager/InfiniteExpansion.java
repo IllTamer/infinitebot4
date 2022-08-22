@@ -23,7 +23,7 @@ public abstract class InfiniteExpansion implements IExpansion {
         if (!(classLoader instanceof PluginClassLoader)) {
             throw new IllegalStateException("InfiniteExpansion requires " + PluginClassLoader.class.getName());
         }
-        ((PluginClassLoader)classLoader).initialize(this);
+        ((PluginClassLoader) classLoader).initialize(this);
     }
 
     protected InfiniteExpansion(InfinitePluginLoader loader, File jarFile, String folderName) {
@@ -50,7 +50,7 @@ public abstract class InfiniteExpansion implements IExpansion {
 
     /**
      * bot内部开启/关闭拓展
-     * */
+     */
     protected void setEnabled(boolean enabled) {
         if (this.isEnabled != enabled) {
             this.isEnabled = enabled;
@@ -123,4 +123,8 @@ public abstract class InfiniteExpansion implements IExpansion {
         return logger;
     }
 
+    @Override
+    public boolean persist() {
+        return false;
+    }
 }
