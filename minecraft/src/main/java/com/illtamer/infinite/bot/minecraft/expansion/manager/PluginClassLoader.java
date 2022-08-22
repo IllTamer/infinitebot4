@@ -132,7 +132,7 @@ public class PluginClassLoader extends URLClassLoader {
      * @see Class#newInstance() {@link InfiniteExpansion()}
      * */
     synchronized void initialize(InfiniteExpansion infiniteExpansion) {
-        Assert.notNull(infiniteExpansion, "Initializing expansion cannot be null");
+        Assert.notNull(infiniteExpansion, "The expansion to initialize cannot be null");
         Assert.isTrue((infiniteExpansion.getClass().getClassLoader() == this), "Cannot initialize expansion outside of this class loader");
         if (this.expansion != null || this.expansionInit != null) {
             throw new IllegalArgumentException("Expansion already initialized!", this.expansionState);
