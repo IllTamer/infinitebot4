@@ -45,11 +45,11 @@ IB3已预先为您封装好了配置文件实体类 `ExpansiobConfig`，您的�
 ```java
  public class ExampleExapnsion extends InfiniteExpansion {
      private IExpansion instance;
-     private ExpansiobConfig configFile;
+     private ExpansionConfig configFile;
      @Override
      public void onEnable() {
          instance = this;
-         configFile = new ExpansiobConfig("config.yml", instance);
+         configFile = new ExpansionConfig("config.yml", instance);
          // ...
      }
  }
