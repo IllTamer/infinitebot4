@@ -48,7 +48,7 @@ public class OpenAPIHandling {
                 .setUserId(userId)
                 .setMessage(MessageBuilder.json().text(message).build())
                 .request();
-        return (Integer) response.getData().get("message_id");
+        return (int) ((Double) response.getData().get("message_id")).doubleValue();
     }
 
     /**
@@ -60,7 +60,7 @@ public class OpenAPIHandling {
                 .setUserId(userId)
                 .setMessage(message)
                 .request();
-        return (Integer) response.getData().get("message_id");
+        return (int) ((Double) response.getData().get("message_id")).doubleValue();
     }
 
     /**
@@ -72,7 +72,7 @@ public class OpenAPIHandling {
                 .setGroupId(groupId)
                 .setMessage(MessageBuilder.json().text(message).build())
                 .request();
-        return (Integer) response.getData().get("message_id");
+        return (int) ((Double) response.getData().get("message_id")).doubleValue();
     }
 
     /**
@@ -84,7 +84,7 @@ public class OpenAPIHandling {
                 .setGroupId(groupId)
                 .setMessage(message)
                 .request();
-        return (Integer) response.getData().get("message_id");
+        return (int) ((Double) response.getData().get("message_id")).doubleValue();
     }
 
     /**
@@ -96,7 +96,7 @@ public class OpenAPIHandling {
                 .setGroupId(groupId)
                 .setMessages(messageNode)
                 .request();
-        return (Integer) response.getData().get("message_id");
+        return (int) ((Double) response.getData().get("message_id")).doubleValue();
     }
 
     /**
