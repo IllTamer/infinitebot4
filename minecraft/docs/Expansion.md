@@ -19,7 +19,7 @@ InfiniteBot-v3.+较一代完善了附属开发方面的不足，较二代补足�
 示例代码
 
 ```java
- public class ExampleExapnsion extends InfiniteExpansion {
+ public class ExampleExpansion extends InfiniteExpansion {
      @Override
      public void onEnable() {
          //TODO
@@ -33,23 +33,23 @@ InfiniteBot-v3.+较一代完善了附属开发方面的不足，较二代补足�
      @Override
      @NotNull
      public String getExpansionName() {
-         return "ExampleExapnsion";
+         return "ExampleExpansion";
      }
  }
 ```
 
 ## 附属配置文件注册
 
-IB3已预先为您封装好了配置文件实体类 `ExpansiobConfig`，您的配置文件应在附属初始化时被注册。当插件加载附属配置文件时，会从附属jar中寻找对应URL，若找到加载到缓存并自动生成到 `plugins/InfiniteBot3/expansions/附属名称` 下 示例代码
+IB3已预先为您封装好了配置文件实体类 `ExpansionConfig`，您的配置文件应在附属初始化时被注册。当插件加载附属配置文件时，会从附属jar中寻找对应URL，若找到加载到缓存并自动生成到 `plugins/InfiniteBot3/expansions/附属名称` 下 示例代码
 
 ```java
- public class ExampleExapnsion extends InfiniteExpansion {
+ public class ExampleExpansion extends InfiniteExpansion {
      private IExpansion instance;
      private ExpansionConfig configFile;
      @Override
      public void onEnable() {
          instance = this;
-         configFile = new ExpansiobConfig("config.yml", instance);
+         configFile = new ExpansionConfig("config.yml", instance);
          // ...
      }
  }
@@ -88,7 +88,7 @@ ExpansionConfig 已封装常用方法保存/重载/获取yml文件，详见 [[Ex
 > 附属注册的所有事件均会在附属卸载后自动被注销
 
 ```java
- public class ExampleExapnsion extends InfiniteExpansion {
+ public class ExampleExpansion extends InfiniteExpansion {
      private IExpansion instance;
      @Override
      public void onEnable() {
