@@ -34,12 +34,6 @@ public class ClientStatusChangeEvent extends NoticeEvent {
     /**
      * @apiNote null
      * */
-    @SerializedName("self_id")
-    private Long selfId = null;
-
-    /**
-     * @apiNote null
-     * */
     private Date time = null;
 
 }
