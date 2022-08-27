@@ -2,6 +2,7 @@ package com.illtamer.infinite.bot.api.message;
 
 import com.google.gson.*;
 import com.illtamer.infinite.bot.api.util.Assert;
+import lombok.extern.java.Log;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -10,6 +11,7 @@ import java.util.Map;
 /**
  * Gson {@link Message} TypeAdapter
  * */
+@Log
 public class MessageTypeAdapter implements JsonSerializer<Message>, JsonDeserializer<Message> {
 
     @Override
@@ -54,8 +56,13 @@ public class MessageTypeAdapter implements JsonSerializer<Message>, JsonDeserial
             Assert.isTrue(params[0].startsWith("CQ:"), "CQ Code format error");
             Map<String, Object> args = new HashMap<>(params.length-1);
             for (int i = 1; i < params.length; ++ i) {
-                final String[] split = params[i].split("=");
-                args.put(split[0], split[1]);
+                try {
+                    final String[] split = params[i].split("=");
+                    args.put(split[0], split[1]);
+                } catch (Exception e) {
+                    log.severe("Error occurred in deserializing CQ(" + cqCode +")");
+                    e.printStackTrace();
+                }
             }
             builder.property(params[0].substring(3), args);
         }
