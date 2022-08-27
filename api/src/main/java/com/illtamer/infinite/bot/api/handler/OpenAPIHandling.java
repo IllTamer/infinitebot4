@@ -3,6 +3,8 @@ package com.illtamer.infinite.bot.api.handler;
 import com.illtamer.infinite.bot.api.Response;
 import com.illtamer.infinite.bot.api.entity.BotStatus;
 import com.illtamer.infinite.bot.api.entity.Group;
+import com.illtamer.infinite.bot.api.entity.GroupMember;
+import com.illtamer.infinite.bot.api.entity.Stranger;
 import com.illtamer.infinite.bot.api.exception.APIInvokeException;
 import com.illtamer.infinite.bot.api.message.Message;
 import com.illtamer.infinite.bot.api.message.MessageBuilder;
@@ -20,6 +22,17 @@ public class OpenAPIHandling {
     public static boolean deleteMessage(int messageId) {
         Response<Map<String, Object>> response = new DeleteMsgHandler()
                 .setMessageId(messageId)
+                .request();
+        return "ok".equals(response.getStatus());
+    }
+
+    /**
+     * 删除好友
+     * @param friendId 好友 QQ 号
+     * */
+    public static boolean deleteFriend(long friendId) {
+        final Response<Map<String, Object>> response = new FriendDeleteHandler()
+                .setFriendId(friendId)
                 .request();
         return "ok".equals(response.getStatus());
     }
@@ -130,6 +143,19 @@ public class OpenAPIHandling {
         return getGroups();
     }
 
+    public static GroupMember getGroupMember(long groupId, long userId) {
+        return getGroupMember(groupId, userId, true);
+    }
+
+    public static GroupMember getGroupMember(long groupId, long userId, boolean cache) {
+        final Response<Map<String, Object>> response = new GroupMemberGetHandler()
+                .setGroupId(groupId)
+                .setUserId(userId)
+                .setNoCache(!cache)
+                .request();
+        return GroupMemberGetHandler.parse(response);
+    }
+
     /**
      * @param file 图片缓存文件名
      * */
@@ -140,6 +166,26 @@ public class OpenAPIHandling {
         return ImageGetHandler.parse(response);
     }
 
+    /**
+     * 获取陌生人信息
+     * @param userId 用户 QQ
+     * */
+    public static Stranger getStranger(long userId) {
+        return getStranger(userId, true);
+    }
+
+    /**
+     * 获取陌生人信息
+     * @param userId 用户 QQ
+     * @param cache 是否使用缓存
+     * */
+    public static Stranger getStranger(long userId, boolean cache) {
+        final Response<Map<String, Object>> response = new StrangerGetHandler()
+                .setUserId(userId)
+                .setNoCache(!cache)
+                .request();
+        return StrangerGetHandler.parse(response);
+    }
     /**
      * 获取机器人状态信息
      * */
