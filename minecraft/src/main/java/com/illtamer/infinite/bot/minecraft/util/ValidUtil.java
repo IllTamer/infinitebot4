@@ -4,13 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.illtamer.infinite.bot.api.Pair;
 import com.illtamer.infinite.bot.api.util.HttpRequestUtil;
+import com.illtamer.infinite.bot.minecraft.Bootstrap;
 import lombok.experimental.UtilityClass;
-import org.apache.commons.httpclient.ConnectTimeoutException;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.util.UUID;
 
 @UtilityClass
@@ -27,10 +25,20 @@ public class ValidUtil {
     }
 
     public static boolean isValid(@NotNull String uuid, @NotNull String name) {
-        final Pair<Integer, String> pair = HttpRequestUtil.getJson(SESSION_SERVER + uuid, null);
-        if (pair.getKey() != 200) return false;
-        final JsonObject object = GSON.fromJson(pair.getValue(), JsonObject.class);
-        return name.equals(object.get("name").getAsString());
+        try {
+            final Pair<Integer, String> pair = HttpRequestUtil.getJson(SESSION_SERVER + uuid, null);
+            final Integer status = pair.getKey();
+            if (status == 400) return false;
+            if (status != 200) {
+                Bootstrap.getInstance().getLogger().warning("验证服务器意思不可用，状态码: " + status);
+                return false;
+            }
+            final JsonObject object = GSON.fromJson(pair.getValue(), JsonObject.class);
+            return name.equals(object.get("name").getAsString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public static boolean isValidUUID(@NotNull UUID uuid) {
@@ -40,11 +48,13 @@ public class ValidUtil {
     public static boolean isValidUUID(@NotNull String uuid) {
         try {
             final Pair<Integer, String> pair = HttpRequestUtil.getJson(SESSION_SERVER + uuid, null);
-            return pair.getKey() == 200;
+            final Integer status = pair.getKey();
+            if (status == 200) return true;
+            Bootstrap.getInstance().getLogger().warning("验证服务器意思不可用，状态码: " + status);
         } catch (Exception e) {
             System.err.println(e.getMessage());
-            return false;
         }
+        return false;
     }
 
 }
