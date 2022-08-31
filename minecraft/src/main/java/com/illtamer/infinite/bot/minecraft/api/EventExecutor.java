@@ -8,7 +8,7 @@ import com.illtamer.infinite.bot.api.util.ClassUtil;
 import com.illtamer.infinite.bot.minecraft.Bootstrap;
 import com.illtamer.infinite.bot.minecraft.api.event.EventHandler;
 import com.illtamer.infinite.bot.minecraft.api.event.Listener;
-import com.illtamer.infinite.bot.minecraft.api.event.Priority;
+import com.illtamer.infinite.bot.minecraft.api.event.EventPriority;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 
@@ -108,31 +108,31 @@ public class EventExecutor {
                 MetaEvent meta = (MetaEvent) event;
                 if (meta.isHeartbeat()) return;
             }
-            try {
-                final Logger logger = Bootstrap.getInstance().getLogger();
-                for (Map.Entry<Listener, HashMap<Method, Annotation>> map : METHODS.entrySet()) { // class
-                    Object instance = map.getKey();
-                    for (int i = Priority.values().length-1; i >= 0; i --) {
-                        Priority current = Priority.values()[i];
-                        for (Map.Entry<Method, Annotation> entry : map.getValue().entrySet()) { // method
-                            if (current != ((EventHandler) entry.getValue()).priority()) continue;
-                            if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) continue;
-                            Method method = entry.getKey();
-                            if (method.getParameterCount() != 1) {
-                                logger.warning(String.format("Excepted parameter count: %d(%s)", method.getParameterCount(), method));
-                                continue;
-                            }
-                            Class<?> paramType = method.getParameterTypes()[0];
-                            if (!Event.class.isAssignableFrom(paramType))
-                                logger.warning(String.format("Unknown param type(%s) in %s", paramType, method));
-                            if (paramType.isInstance(event)) {
+            final Logger logger = Bootstrap.getInstance().getLogger();
+            for (Map.Entry<Listener, HashMap<Method, Annotation>> map : METHODS.entrySet()) { // class
+                Object instance = map.getKey();
+                for (int i = EventPriority.values().length-1; i >= 0; i --) {
+                    EventPriority current = EventPriority.values()[i];
+                    for (Map.Entry<Method, Annotation> entry : map.getValue().entrySet()) { // method
+                        if (current != ((EventHandler) entry.getValue()).priority()) continue;
+                        if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) continue;
+                        Method method = entry.getKey();
+                        if (method.getParameterCount() != 1) {
+                            logger.warning(String.format("Excepted parameter count: %d(%s)", method.getParameterCount(), method));
+                            continue;
+                        }
+                        Class<?> paramType = method.getParameterTypes()[0];
+                        if (!Event.class.isAssignableFrom(paramType))
+                            logger.warning(String.format("Unknown param type(%s) in %s", paramType, method));
+                        if (paramType.isInstance(event)) {
+                            try {
                                 method.invoke(instance, event);
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         }
                     }
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
 
