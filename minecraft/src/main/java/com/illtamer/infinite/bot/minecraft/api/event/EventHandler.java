@@ -10,6 +10,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EventHandler {
 
-    Priority priority() default Priority.DEFAULT;
+    EventPriority priority() default EventPriority.DEFAULT;
 
 }

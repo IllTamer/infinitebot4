@@ -1,9 +1,9 @@
 package com.illtamer.infinite.bot.minecraft.api.event;
 
 /**
- * 优先级枚举
+ * 事件优先级枚举
  * */
-public enum Priority {
+public enum EventPriority {
 
     /**
      * 最高 (最先触发)
