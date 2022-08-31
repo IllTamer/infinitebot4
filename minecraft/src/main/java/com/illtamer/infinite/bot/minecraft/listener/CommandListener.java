@@ -2,24 +2,21 @@ package com.illtamer.infinite.bot.minecraft.listener;
 
 import com.illtamer.infinite.bot.api.entity.BotStatus;
 import com.illtamer.infinite.bot.minecraft.Bootstrap;
+import com.illtamer.infinite.bot.minecraft.api.IExpansion;
+import com.illtamer.infinite.bot.minecraft.api.IExternalExpansion;
 import com.illtamer.infinite.bot.minecraft.configuration.StatusCheckRunner;
 import com.illtamer.infinite.bot.minecraft.configuration.config.BotConfiguration;
 import com.illtamer.infinite.bot.minecraft.expansion.ExpansionLoader;
-import com.illtamer.infinite.bot.minecraft.util.ValidUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CommandListener implements TabExecutor {
@@ -62,11 +59,13 @@ public class CommandListener implements TabExecutor {
         final ExpansionLoader loader = Bootstrap.getInstance().getExpansionLoader();
         if ("expansions".equalsIgnoreCase(args[0])) {
             if ("list".equalsIgnoreCase(args[1])) {
-                sender.sendMessage(loader.getExpansionNames().toString());
+                final Set<String> set = loader.getExpansionKeySet();
+                String[] keyArray = new String[set.size()];
+                sender.sendMessage(set.toArray(keyArray));
             } else if ("reload".equalsIgnoreCase(args[1])) {
                 Bukkit.getScheduler().runTaskAsynchronously(Bootstrap.getInstance(), () -> {
-                    loader.disableExpansions();
-                    loader.loadExpansions();
+                    loader.disableExpansions(true);
+                    loader.loadExpansions(true);
                 });
             }
         } else if ("load".equalsIgnoreCase(args[0])) {
@@ -77,12 +76,16 @@ public class CommandListener implements TabExecutor {
             }
             loader.loadExpansion(file);
         } else if ("unload".equalsIgnoreCase(args[0])) {
-            final Optional<String> first = loader.getExpansionNames().stream().filter(name -> name.equals(args[1])).findFirst();
-            if (!first.isPresent()) {
-                sender.sendMessage("附属名称 " + args[0] + " 不存在");
+            final IExpansion expansion = loader.getExpansion(args[1]);
+            if (expansion == null) {
+                sender.sendMessage("附属标识符 " + args[1] + " 不存在");
                 return true;
             }
-            loader.disableExpansion(first.get());
+            if (expansion instanceof IExternalExpansion && ((IExternalExpansion) expansion).isPersist()) {
+                sender.sendMessage("该附属为持久化附属，不可通过指令卸载!");
+                return true;
+            }
+            loader.disableExpansion(args[1]);
         }
         return true;
     }
@@ -103,7 +106,7 @@ public class CommandListener implements TabExecutor {
                 }
                 case "unload": {
                     final ExpansionLoader loader = Bootstrap.getInstance().getExpansionLoader();
-                    result.addAll(loader.getExpansionNames());
+                    result.addAll(loader.getExpansionKeySet());
                     break;
                 }
                 case "load": {

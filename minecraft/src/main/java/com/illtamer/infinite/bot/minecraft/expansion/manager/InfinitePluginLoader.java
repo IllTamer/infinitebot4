@@ -5,10 +5,13 @@ import com.illtamer.infinite.bot.api.util.Assert;
 import com.illtamer.infinite.bot.minecraft.Bootstrap;
 import com.illtamer.infinite.bot.minecraft.api.EventExecutor;
 import com.illtamer.infinite.bot.minecraft.api.IExpansion;
+import com.illtamer.infinite.bot.minecraft.api.IExternalExpansion;
 import com.illtamer.infinite.bot.minecraft.exception.InvalidExpansionException;
+import com.illtamer.infinite.bot.minecraft.util.ExpansionUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLClassLoader;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -39,40 +42,58 @@ public class InfinitePluginLoader {
     }
 
     /**
-     * 开启插件
+     * 开启附属
      * */
     public void enableExpansion(IExpansion expansion) {
         Assert.isTrue(expansion instanceof InfiniteExpansion, "Expansion is not associated with this PluginLoader");
         if (!expansion.isEnabled()) {
             final Logger logger = Bootstrap.getInstance().getLogger();
-            logger.info(String.format("Enabling %s", expansion.getExpansionName()));
+            logger.info(String.format("Enabling %s", ExpansionUtil.formatIdentifier(expansion)));
             InfiniteExpansion infiniteExpansion = (InfiniteExpansion) expansion;
             PluginClassLoader pluginLoader = (PluginClassLoader)infiniteExpansion.getClassLoader();
 
             if (!this.loaders.contains(pluginLoader)) {
                 this.loaders.add(pluginLoader);
-                logger.warning("Enabled plugin with unregistered PluginClassLoader " + infiniteExpansion.getExpansionName());
+                logger.warning("Enabled expansion " + ExpansionUtil.formatIdentifier(expansion) + " with unregistered PluginClassLoader");
             }
 
             try {
                 infiniteExpansion.setEnabled(true);
             } catch (Throwable ex) {
-                logger.severe("Error occurred while enabling " + infiniteExpansion.getExpansionName() + " (Is it up to date?)");
+                logger.severe("Error occurred while enabling " + ExpansionUtil.formatIdentifier(expansion) + " (Is it up to date?)");
                 ex.printStackTrace();
             }
-            // 启用监听
         }
     }
 
     /**
-     * 关闭插件
+     * 开启外置附属
+     * */
+    public void enableExternalExpansion(IExternalExpansion expansion) {
+        Assert.isTrue(expansion instanceof AbstractExternalExpansion, "ExternalExpansion is not associated with this PluginLoader");
+        if (!expansion.isEnabled()) {
+            final Logger logger = Bootstrap.getInstance().getLogger();
+            logger.info(String.format("Enabling external-expansion %s", ExpansionUtil.formatIdentifier(expansion)));
+            AbstractExternalExpansion externalExpansion = (AbstractExternalExpansion) expansion;
+
+            try {
+                externalExpansion.setEnabled(true);
+            } catch (Throwable ex) {
+                logger.severe("Error occurred while enabling " + ExpansionUtil.formatIdentifier(expansion) + " (Is it up to date?)");
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 关闭附属
      * */
     public void disableExpansion(IExpansion expansion) {
         Assert.isTrue(expansion instanceof InfiniteExpansion, "Expansion is not associated with this PluginLoader");
 
         if (expansion.isEnabled()) {
             final Logger logger = Bootstrap.getInstance().getLogger();
-            logger.info(String.format("Disabling %s", expansion.getExpansionName()));
+            logger.info(String.format("Disabling expansion %s", ExpansionUtil.formatIdentifier(expansion)));
             // 注销监听
             EventExecutor.unregisterListeners(expansion);
             EventExecutor.unregisterBukkitEventForExpansion(expansion);
@@ -83,7 +104,7 @@ public class InfinitePluginLoader {
             try {
                 infiniteExpansion.setEnabled(false);
             } catch (Throwable ex) {
-                logger.severe("Error occurred while disabling " + infiniteExpansion.getExpansionName() + " (Is it up to date?)");
+                logger.severe("Error occurred while disabling " + ExpansionUtil.formatIdentifier(infiniteExpansion) + " (Is it up to date?)");
                 ex.printStackTrace();
             }
 
@@ -99,6 +120,30 @@ public class InfinitePluginLoader {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            }
+        }
+    }
+
+    /**
+     * 关闭外置附属
+     * */
+    public void disableExternalExpansion(IExternalExpansion expansion) {
+        Assert.isTrue(expansion instanceof AbstractExternalExpansion, "ExternalExpansion is not associated with this PluginLoader");
+
+        if (expansion.isEnabled()) {
+            final Logger logger = Bootstrap.getInstance().getLogger();
+            logger.info(String.format("Disabling external-expansion %s", ExpansionUtil.formatIdentifier(expansion)));
+            // 注销监听
+            EventExecutor.unregisterListeners(expansion);
+            EventExecutor.unregisterBukkitEventForExpansion(expansion);
+
+            AbstractExternalExpansion externalExpansion = (AbstractExternalExpansion) expansion;
+
+            try {
+                externalExpansion.setEnabled(false);
+            } catch (Throwable ex) {
+                logger.severe("Error occurred while disabling " + ExpansionUtil.formatIdentifier(externalExpansion) + " (Is it up to date?)");
+                ex.printStackTrace();
             }
         }
     }
@@ -135,4 +180,5 @@ public class InfinitePluginLoader {
     public Map<String, Class<?>> getGlobalClasses() {
         return globalClasses;
     }
+
 }
