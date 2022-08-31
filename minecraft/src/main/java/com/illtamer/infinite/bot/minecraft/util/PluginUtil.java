@@ -3,6 +3,10 @@ package com.illtamer.infinite.bot.minecraft.util;
 import com.illtamer.infinite.bot.minecraft.Bootstrap;
 import lombok.experimental.UtilityClass;
 
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
+
 @UtilityClass
 public class PluginUtil {
 
@@ -16,8 +20,8 @@ public class PluginUtil {
 
         for(int i = 0; i < chars.length; ++i) {
             if (chars[i] == 167 && i + 1 <= chars.length) {
-                int next = chars[i + 1];
-                if ((next >= '0' && next <= '9') || (next >= 'a' && next <= 'f') || (next >= 'k' && next <= 'o') || next == 'r' || next == 'x') {
+                char next = chars[i + 1];
+                if (checkColor(next)) {
                     ++i;
                     continue;
                 }
@@ -25,6 +29,13 @@ public class PluginUtil {
             builder.append(chars[i]);
         }
         return builder.toString();
+    }
+
+    private static boolean checkColor(char next) {
+        if (next >= '0' && next <= '9') return true;
+        if ((next >= 'a' && next <= 'f') || (next >= 'A' && next <= 'F')) return true;
+        if ((next >= 'k' && next <= 'o') || (next >= 'K' && next <= 'O')) return true;
+        return next == 'r' || next == 'x' || next == 'R' || next == 'X';
     }
 
     public static class Version {
