@@ -4,6 +4,8 @@ version: 3.0.0-SNAPSHOT
 
 author: IllTamer
 
+load: POSTWORLD
+
 commands:
   InfiniteBot3:
     aliases:
