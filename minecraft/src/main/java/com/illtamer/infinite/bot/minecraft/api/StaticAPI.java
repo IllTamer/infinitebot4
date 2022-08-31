@@ -2,9 +2,15 @@ package com.illtamer.infinite.bot.minecraft.api;
 
 import com.illtamer.infinite.bot.api.handler.OpenAPIHandling;
 import com.illtamer.infinite.bot.api.message.Message;
+import com.illtamer.infinite.bot.api.util.Assert;
 import com.illtamer.infinite.bot.minecraft.Bootstrap;
 import com.illtamer.infinite.bot.minecraft.configuration.config.BotConfiguration;
+import com.illtamer.infinite.bot.minecraft.expansion.ExpansionLoader;
+import com.illtamer.infinite.bot.minecraft.pojo.ExpansionIdentifier;
 import com.illtamer.infinite.bot.minecraft.repository.PlayerDataRepository;
+import com.illtamer.infinite.bot.minecraft.util.ExpansionUtil;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class StaticAPI {
 
@@ -59,12 +65,60 @@ public class StaticAPI {
      * 查询是否存在指定名称的附属
      * @param name 附属名，若注册时未指定则为启动类的全限定名称
      * */
+    @Deprecated
     public static boolean hasExpansion(String name) {
-        return Bootstrap.getInstance().getExpansionLoader().getExpansion(name) != null;
+        return false;
     }
 
     /**
-     * 获取 PlayerData 持久层对象
+     * 查询是否存在指定名称与作者的附属
+     * @param name 附属名，若注册时未指定则为启动类的全限定名称
+     * @param author 作者名称
+     * */
+    public static boolean hasExpansion(@NotNull String name, @NotNull String author) {
+        return getExpansion(name, author) != null;
+    }
+
+    /**
+     * 查询是否存在指定名称、作者与版本的附属
+     * @param name 附属名，若注册时未指定则为启动类的全限定名称
+     * @param version 指定版本
+     * @param author 作者名称
+     * */
+    public static boolean hasExpansion(@NotNull String name, @NotNull String version, @NotNull String author) {
+        return getExpansion(name, version, author) != null;
+    }
+
+    /**
+     * 获取指定名称与作者的附属
+     * @param name 附属名，若注册时未指定则为启动类的全限定名称
+     * @param author 作者名称
+     */
+    @Nullable
+    public static IExpansion getExpansion(@NotNull String name, @NotNull String author) {
+        final ExpansionLoader loader = Bootstrap.getInstance().getExpansionLoader();
+        for (String identifier : loader.getExpansionKeySet()){
+            if (!identifier.startsWith(name)) continue;
+            final ExpansionIdentifier ei = ExpansionUtil.parseIdentifier(identifier);
+            Assert.notNull(ei, "Unauthenticated identifier: " + identifier);
+            if (ei.getName().equals(name) && ei.getAuthor().equals(author))
+                return loader.getExpansion(identifier);
+        }
+        return null;
+    }
+
+    /**
+     * 获取指定名称、作者与版本的附属
+     * @param name 附属名，若注册时未指定则为启动类的全限定名称
+     * @param version 指定版本
+     * @param author 作者名称
+     * */
+    public static IExpansion getExpansion(@NotNull String name, @NotNull String version, @NotNull String author) {
+        return Bootstrap.getInstance().getExpansionLoader().getExpansion(ExpansionUtil.formatIdentifier(name, version, author));
+    }
+
+    /**
+     * 获取 PlayerData 持久层实例
      * */
     public static PlayerDataRepository getRepository() {
         return BotConfiguration.getInstance().getRepository();
