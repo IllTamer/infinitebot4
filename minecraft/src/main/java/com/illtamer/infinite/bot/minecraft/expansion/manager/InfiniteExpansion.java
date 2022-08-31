@@ -5,13 +5,16 @@ import com.illtamer.infinite.bot.minecraft.Bootstrap;
 import com.illtamer.infinite.bot.minecraft.api.IExpansion;
 import com.illtamer.infinite.bot.minecraft.configuration.config.BotConfiguration;
 import com.illtamer.infinite.bot.minecraft.expansion.ExpansionLogger;
+import com.illtamer.infinite.bot.minecraft.util.ExpansionUtil;
+import com.illtamer.infinite.bot.minecraft.util.PluginUtil;
+import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
-import java.net.URL;
-import java.net.URLConnection;
+import java.io.File;
+import java.io.InputStream;
+import java.util.Objects;
 
 public abstract class InfiniteExpansion implements IExpansion {
-    private boolean isEnabled = false;
+    private boolean enabled = false;
     private InfinitePluginLoader loader;
     private File jarFile;
     private ClassLoader classLoader;
@@ -37,7 +40,7 @@ public abstract class InfiniteExpansion implements IExpansion {
 
     @Override
     public boolean isEnabled() {
-        return isEnabled;
+        return enabled;
     }
 
     final void init(InfinitePluginLoader loader, File jarFile, ClassLoader classLoader, String folderName) {
@@ -45,6 +48,7 @@ public abstract class InfiniteExpansion implements IExpansion {
         this.jarFile = jarFile;
         this.classLoader = classLoader;
         this.logger = new ExpansionLogger(this);
+        folderName = getExpansionName() != null && getExpansionName().length() != 0 ? getExpansionName() : folderName;
         this.dataFolder = new File(Bootstrap.getInstance().getDataFolder(), '/' + BotConfiguration.EXPANSION_FOLDER_NAME + '/' + folderName);
     }
 
@@ -52,8 +56,8 @@ public abstract class InfiniteExpansion implements IExpansion {
      * bot内部开启/关闭拓展
      * */
     protected void setEnabled(boolean enabled) {
-        if (this.isEnabled != enabled) {
-            this.isEnabled = enabled;
+        if (this.enabled != enabled) {
+            this.enabled = enabled;
             if (enabled) {
                 onEnable();
             } else {
@@ -68,17 +72,7 @@ public abstract class InfiniteExpansion implements IExpansion {
 
     @Override
     public InputStream getResource(String name) {
-        URL url = classLoader.getResource(name);
-        if (url == null) {
-            return null;
-        }
-        try {
-            URLConnection connection = url.openConnection();
-            connection.setUseCaches(false);
-            return connection.getInputStream();
-        } catch (IOException e) {
-            return null;
-        }
+        return ExpansionUtil.getPluginResource(name, classLoader);
     }
 
     @Override
@@ -87,30 +81,7 @@ public abstract class InfiniteExpansion implements IExpansion {
         path = path.replace("\\", "/");
         InputStream input = getResource(path);
         Assert.notNull(input, String.format("Can't find the resource '%s' in %s", path, jarFile));
-
-        File outFile = new File(this.dataFolder, path);
-        int lastIndex = path.lastIndexOf('/');
-        File outDir = new File(this.dataFolder, path.substring(0, Math.max(lastIndex, 0)));
-        if (!outDir.exists()) {
-            outDir.mkdirs();
-        }
-
-        try {
-            if (!outFile.exists() || replace) {
-                OutputStream out = new FileOutputStream(outFile);
-                byte[] buf = new byte[1024];
-                int len;
-                while ((len = input.read(buf)) > 0) {
-                    out.write(buf, 0, len);
-                }
-                out.close();
-                input.close();
-            } else {
-                this.logger.warn("Could not save " + outFile.getName() + " to " + outFile + " because " + outFile.getName() + " already exists !");
-            }
-        } catch (IOException ex) {
-            this.logger.error("Could not save " + outFile.getName() + " to " + outFile, ex);
-        }
+        ExpansionUtil.savePluginResource(path, replace, dataFolder, input);
     }
 
     @Override
@@ -121,6 +92,17 @@ public abstract class InfiniteExpansion implements IExpansion {
     @Override
     public ExpansionLogger getLogger() {
         return logger;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getExpansionName(), getVersion(), getAuthor());
+    }
+
+    @Override
+    @NotNull
+    public String toString() {
+        return ExpansionUtil.formatIdentifier(this);
     }
 
 }
