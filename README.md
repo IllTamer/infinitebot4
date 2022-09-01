@@ -15,6 +15,10 @@
 
 - 若您为 Minecraft 公益服主且服务器资源难以承受 go-cqhttp 的运行，欢迎 [[联系我]](https://api.vvhan.com/api/qqCard?qq=765743073) 。我与我的云服务很乐意为您提供一份力所能及的援助。
 
+## 简介
+
+第三代 Infinite QQ 机器人，定位为 go-cqhttp Java 环境下 sdk，为 JavaSE、Spring 与 Bukkit 下 QQ 机器人的开发提供支持。
+
 ## 运行环境
 
 ### 前置安装
@@ -92,7 +96,7 @@ InfiniteBot-v3 为支持 go-cqhttp 实现了一系列包括事件监听、消息
 <dependency>
    <groupId>com.illtamer.infinite.bot</groupId>
    <artifactId>api</artifactId>
-   <version>1.0.3</version>
+   <version>1.0.5</version>
 </dependency>
 ```
 
@@ -114,7 +118,7 @@ InfiniteBot-v3 额外优化了在 SpringBoot 框架下的开发体验。您只�
 <dependency>
    <groupId>com.illtamer.infinite.bot</groupId>
    <artifactId>ib3-spring-boot-starter</artifactId>
-   <version>1.0.3</version>
+   <version>1.0.5</version>
 </dependency>
 ```
 
