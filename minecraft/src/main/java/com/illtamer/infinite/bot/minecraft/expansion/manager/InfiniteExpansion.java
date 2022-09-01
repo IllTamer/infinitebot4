@@ -6,7 +6,6 @@ import com.illtamer.infinite.bot.minecraft.api.IExpansion;
 import com.illtamer.infinite.bot.minecraft.configuration.config.BotConfiguration;
 import com.illtamer.infinite.bot.minecraft.expansion.ExpansionLogger;
 import com.illtamer.infinite.bot.minecraft.util.ExpansionUtil;
-import com.illtamer.infinite.bot.minecraft.util.PluginUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

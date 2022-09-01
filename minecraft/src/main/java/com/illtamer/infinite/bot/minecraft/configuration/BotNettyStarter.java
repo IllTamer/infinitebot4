@@ -1,8 +1,6 @@
 package com.illtamer.infinite.bot.minecraft.configuration;
 
 import com.illtamer.infinite.bot.api.config.CQHttpWebSocketConfiguration;
-import com.illtamer.infinite.bot.api.entity.File;
-import com.illtamer.infinite.bot.minecraft.Bootstrap;
 import com.illtamer.infinite.bot.minecraft.api.EventExecutor;
 import com.illtamer.infinite.bot.minecraft.configuration.config.BotConfiguration;
 import lombok.Getter;
@@ -12,9 +10,9 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.concurrent.*;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class BotNettyStarter extends JavaPlugin {
@@ -30,11 +28,6 @@ public class BotNettyStarter extends JavaPlugin {
 
     @Override
     public void onLoad() {
-//        System.setProperty("add-exports", "java.base/sun.nio.ch=ALL-UNNAMED");
-//        System.setProperty("add-opens", "java.base/java.lang=ALL-UNNAMED");
-//        System.setProperty("add-opens", "java.base/java.io=ALL-UNNAMED");
-//        System.setProperty("add-opens", "java.base/java.io=ALL-UNNAMED");
-//        System.setProperty("add-exports", "jdk.unsupported/sun.misc=ALL-UNNAMED");
         instance = this;
         BotConfiguration.load(instance);
         connect();

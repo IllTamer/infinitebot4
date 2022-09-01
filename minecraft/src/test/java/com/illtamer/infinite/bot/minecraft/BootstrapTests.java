@@ -1,19 +1,16 @@
 package com.illtamer.infinite.bot.minecraft;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
-import java.lang.reflect.Field;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
+import com.illtamer.infinite.bot.minecraft.util.ExpansionUtil;
+
+import java.util.Arrays;
 
 public class BootstrapTests {
 
     public static void main(String[] args) {
+        System.out.println(Arrays.toString(ExpansionUtil.IDENTIFIER.split("ChatManager-2.0: IllTamer")));
+//        StackTraceElement[] elements = Thread.currentThread().getStackTrace();
+//        System.out.println(elements[elements.length - 1].getClassName());
+
 //        ThreadPoolExecutor websocketExecutor = new ThreadPoolExecutor(1, 1,
 //                0L, TimeUnit.MILLISECONDS,
 //                new LinkedBlockingQueue<>());

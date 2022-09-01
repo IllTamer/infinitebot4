@@ -3,10 +3,6 @@ package com.illtamer.infinite.bot.minecraft.util;
 import com.illtamer.infinite.bot.minecraft.Bootstrap;
 import lombok.experimental.UtilityClass;
 
-import java.io.*;
-import java.net.URL;
-import java.net.URLConnection;
-
 @UtilityClass
 public class PluginUtil {
 

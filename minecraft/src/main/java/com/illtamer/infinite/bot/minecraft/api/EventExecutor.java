@@ -7,8 +7,8 @@ import com.illtamer.infinite.bot.api.util.Assert;
 import com.illtamer.infinite.bot.api.util.ClassUtil;
 import com.illtamer.infinite.bot.minecraft.Bootstrap;
 import com.illtamer.infinite.bot.minecraft.api.event.EventHandler;
-import com.illtamer.infinite.bot.minecraft.api.event.Listener;
 import com.illtamer.infinite.bot.minecraft.api.event.EventPriority;
+import com.illtamer.infinite.bot.minecraft.api.event.Listener;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 

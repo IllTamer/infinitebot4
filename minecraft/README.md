@@ -81,6 +81,6 @@ InfiniteBot3
 <dependency>
   <groupId>com.illtamer.infinite.bot</groupId>
   <artifactId>minecraft</artifactId>
-  <version>3.0.5</version>
+  <version>3.1.0</version>
 </dependency>
 ```

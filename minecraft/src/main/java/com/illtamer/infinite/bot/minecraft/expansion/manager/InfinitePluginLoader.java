@@ -11,7 +11,6 @@ import com.illtamer.infinite.bot.minecraft.util.ExpansionUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URLClassLoader;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
