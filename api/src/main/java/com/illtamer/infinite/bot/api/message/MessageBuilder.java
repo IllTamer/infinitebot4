@@ -395,10 +395,13 @@ public class MessageBuilder {
     }
 
     /**
+     * @apiNote 判断 Text 类型时需注意：如生成 Text 时 message 不为空，则会自动在行首加上换行符 \n。您也可以使用
+     * {@link #text(String, boolean)} 来避免不必要的符号添加。
      * @since 3.1.1
      * */
-    public void removeIf(Predicate<TransferEntity> predicate) {
+    public MessageBuilder removeIf(Predicate<TransferEntity> predicate) {
         message.removeIf(predicate);
+        return this;
     }
 
     MessageBuilder property(String type, Map<String, @Nullable Object> args) {

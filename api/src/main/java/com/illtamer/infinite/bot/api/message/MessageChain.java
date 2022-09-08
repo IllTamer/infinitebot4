@@ -45,8 +45,9 @@ public class MessageChain {
             final TransferEntity entity = each.next();
             if (predicate.test(entity)) {
                 each.remove();
-                consumer.accept(index ++);
+                consumer.accept(index);
             }
+            ++ index;
         }
     }
 
