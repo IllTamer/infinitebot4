@@ -51,8 +51,12 @@ public class BotNettyStarter extends JavaPlugin {
     }
 
     protected void close() {
-        websocketExecutor.shutdown();
-        getLogger().info("WebSocket 连接关闭 " + (websocketExecutor.isShutdown() ? "成功" : "失败"));
+        try {
+            websocketExecutor.shutdown();
+            getLogger().info("WebSocket 连接关闭 " + (websocketExecutor.isShutdown() ? "成功" : "失败"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     {

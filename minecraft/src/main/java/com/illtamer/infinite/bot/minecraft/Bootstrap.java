@@ -35,10 +35,10 @@ public class Bootstrap extends BotNettyStarter {
 
     @Override
     public void onDisable() {
+        close();
         expansionLoader.disableExpansions(false);
         BotConfiguration.saveAndClose();
         instance = null;
-        close();
     }
 
     public static Bootstrap getInstance() {
