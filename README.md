@@ -28,16 +28,17 @@ Infinite Bot v3 摒弃了以往将 Mirai 嵌入程序主体的做法，转而使
 1. 获取 go-cqhttp 的最新 [[release]](https://github.com/Mrs4s/go-cqhttp/releases)
 
 2. 运行压缩包中的可执行文件，生成 `http` + `正向websocket` 配置文件 `config.yml`
-```text
-未找到配置文件，正在为您生成配置文件中！
-请选择你需要的通信方式:
-> 0: HTTP通信
-> 1: 云函数服务
-> 2: 正向 Websocket 通信
-> 3: 反向 Websocket 通信
-请输入你需要的编号(0-9)，可输入多个，同一编号也可输入多个(如: 233)
-您的选择是: 0 2
-```
+
+   ```text
+   未找到配置文件，正在为您生成配置文件中！
+   请选择你需要的通信方式:
+   > 0: HTTP通信
+   > 1: 云函数服务
+   > 2: 正向 Websocket 通信
+   > 3: 反向 Websocket 通信
+   请输入你需要的编号(0-9)，可输入多个，同一编号也可输入多个(如: 233)
+   您的选择是: 0 2
+   ```
 
 3. 配置生成的 `config.yml` 中的 `account` 与 `servers` 节点。
    
@@ -114,21 +115,23 @@ CQHttpWebSocketConfiguration.start(httpUri, wsUri, authorization, eventConsumer)
 InfiniteBot-v3 额外优化了在 SpringBoot 框架下的开发体验。您只需要进行以下操作即可使用 InfiniteBot
 
 1. 导入 ib3-spring-boot-starter
-```xml
-<dependency>
-   <groupId>com.illtamer.infinite.bot</groupId>
-   <artifactId>ib3-spring-boot-starter</artifactId>
-   <version>1.0.5</version>
-</dependency>
-```
+
+   ```xml
+   <dependency>
+      <groupId>com.illtamer.infinite.bot</groupId>
+      <artifactId>ib3-spring-boot-starter</artifactId>
+      <version>1.0.5</version>
+   </dependency>
+   ```
 
 2. 在`application.yml`填写以下配置节点
-```yaml
-bot:
-  http-uri: ''
-  ws-uri: ''
-  authorization: ''
-```
+
+   ```yaml
+   bot:
+     http-uri: ''
+     ws-uri: ''
+     authorization: ''
+   ```
 
 ## 致谢
 

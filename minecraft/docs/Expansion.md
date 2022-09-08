@@ -8,34 +8,93 @@ InfiniteBot-v3.+较一代完善了附属开发方面的不足，较二代补足�
 
 ## 附属主类注册
 
+### Standard
+
 附属主类需继承抽象类 `InfiniteExpansion` 并重写方法
 
 -   `onEnable` 附属加载时调用
 -   `onDisable` 附属卸载时调用
--   `getExpansionName` 用于插件注册附属，不为空！
+-   `getExpansionName` 用于注册附属，不为空！
+-   `getVersion` 用于注册附属，不为空！
+-   `getAuthor` 用于注册附属，不为空！
+
+> `expansionName`, `version` 与 `author` 共同组成了附属唯一性标识 `expansionName-version::author`。
+> 一个唯一性标识最多允许注册一个
 
 其他父类自带方法详见 [[IExpansion]](../src/main/java/com/illtamer/infinite/bot/minecraft/api/IExpansion.java)
 
 示例代码
 
 ```java
- public class ExampleExpansion extends InfiniteExpansion {
-     @Override
-     public void onEnable() {
-         //TODO
-     }
- 
-     @Override
-     public void onDisable() {
-         //TODO
-     }
- 
-     @Override
-     @NotNull
-     public String getExpansionName() {
-         return "ExampleExpansion";
-     }
+public class ExampleExpansion extends InfiniteExpansion {
+    @Override
+    public void onEnable() {
+        //TODO
+    }
+    @Override
+    public void onDisable() {
+        //TODO
+    }
+    @Override
+    @NotNull
+    public String getExpansionName() {
+        return "ExampleExpansion";
+    }
+    @Override
+    @NotNull
+    public String getVersion() {
+        return "1.0";
+    }
+    @Override
+    @NotNull
+    public String getAuthor() {
+        return "IllTamer";
+    }
  }
+```
+
+### With a Plugin
+
+若您希望您的插件能与 `InfiniteBot3-minecraft` 挂钩(hook)，可以按以下形式在您的插件中新建一个附属类并将其注册为外部附属(External Expansion)
+
+编写附属类
+
+```java
+public class ExternalExpansion extends AbstractExternalExpansion {
+    @Override
+    public void onEnable() {
+        // TODO
+    }
+    @Override
+    public void onDisable() {
+        // TODO
+    }
+    @Override
+    public String getExpansionName() {
+        return "ExternalExpansion";
+    }
+    @Override
+    public String getVersion() {
+        return "1.0-SNAPSHOT";
+    }
+    @Override
+    public String getAuthor() {
+        return "IllTamer";
+    }
+}
+```
+
+注册外部附属
+
+```java
+public class TestPlugin extends JavaPlugin {
+
+    @Override
+    public void onEnable() {
+        new ExternalExpansion().register(this);
+    }
+
+}
 ```
 
 ## 附属配置文件注册
