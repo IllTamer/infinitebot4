@@ -1,6 +1,5 @@
 package com.illtamer.infinite.bot.api.event.notice;
 
-import com.google.gson.annotations.SerializedName;
 import com.illtamer.infinite.bot.api.annotation.Coordinates;
 import com.illtamer.infinite.bot.api.entity.Device;
 import lombok.Getter;

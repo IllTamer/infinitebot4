@@ -3,7 +3,6 @@ package com.illtamer.infinite.bot.api.handler;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.illtamer.infinite.bot.api.Response;
-import com.illtamer.infinite.bot.api.entity.BotStatus;
 import com.illtamer.infinite.bot.api.entity.Stranger;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
