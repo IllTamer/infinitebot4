@@ -143,8 +143,10 @@ public class ExpansionLoader {
     public void disableExpansions(boolean persist) {
         for (Map.Entry<String, IExpansion> entry : EXPANSION_MAP.entrySet()) {
             final IExpansion expansion = entry.getValue();
-            if (persist && expansion instanceof IExternalExpansion && ((IExternalExpansion) expansion).isPersist())
+            if (persist && expansion instanceof IExternalExpansion && ((IExternalExpansion) expansion).isPersist()) {
+                log.info("持久化外部附属 " + entry.getKey() + " 跳过卸载");
                 continue;
+            }
             if (expansion instanceof IExternalExpansion)
                 PLUGIN_LOADER.disableExternalExpansion((IExternalExpansion) expansion);
             else
