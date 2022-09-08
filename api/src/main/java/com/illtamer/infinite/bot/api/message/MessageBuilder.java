@@ -1,12 +1,14 @@
 package com.illtamer.infinite.bot.api.message;
 
 import com.illtamer.infinite.bot.api.annotation.SendOnly;
+import com.illtamer.infinite.bot.api.entity.TransferEntity;
 import com.illtamer.infinite.bot.api.entity.enumerate.MusicType;
 import com.illtamer.infinite.bot.api.exception.ExclusiveMessageException;
 import com.illtamer.infinite.bot.api.util.Maps;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.function.Predicate;
 
 public class MessageBuilder {
 
@@ -390,6 +392,13 @@ public class MessageBuilder {
     public MessageBuilder addAll(Message message) {
         message.entryList().forEach(pair -> property(pair.getKey(), pair.getValue()));
         return this;
+    }
+
+    /**
+     * @since 3.1.1
+     * */
+    public void removeIf(Predicate<TransferEntity> predicate) {
+        message.removeIf(predicate);
     }
 
     MessageBuilder property(String type, Map<String, @Nullable Object> args) {

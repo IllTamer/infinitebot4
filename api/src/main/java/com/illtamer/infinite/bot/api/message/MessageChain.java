@@ -5,10 +5,9 @@ import com.illtamer.infinite.bot.api.entity.TransferEntity;
 import com.illtamer.infinite.bot.api.entity.transfer.*;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -36,6 +35,18 @@ public class MessageChain {
         } catch (Exception e) {
             System.err.println("Unknown error when transferring type: " + type);
             e.printStackTrace();
+        }
+    }
+
+    protected void removeWith(Predicate<TransferEntity> predicate, Consumer<Integer> consumer) {
+        final Iterator<TransferEntity> each = entities.iterator();
+        int index = 0;
+        while (each.hasNext()) {
+            final TransferEntity entity = each.next();
+            if (predicate.test(entity)) {
+                each.remove();
+                consumer.accept(index ++);
+            }
         }
     }
 

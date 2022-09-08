@@ -2,13 +2,16 @@ package com.illtamer.infinite.bot.api.message;
 
 import com.google.gson.*;
 import com.illtamer.infinite.bot.api.Pair;
+import com.illtamer.infinite.bot.api.entity.TransferEntity;
 import com.illtamer.infinite.bot.api.exception.ExclusiveMessageException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -95,6 +98,11 @@ public class JsonMessage extends Message {
         node.add("type", new JsonPrimitive(type));
         node.add("data", dataJson);
         array.add(node);
+    }
+
+    @Override
+    protected void removeIf(Predicate<TransferEntity> predicate) {
+        messageChain.removeWith(predicate, array::remove);
     }
 
     @Override

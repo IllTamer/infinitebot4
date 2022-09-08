@@ -1,12 +1,14 @@
 package com.illtamer.infinite.bot.api.message;
 
 import com.illtamer.infinite.bot.api.Pair;
+import com.illtamer.infinite.bot.api.entity.TransferEntity;
 import com.illtamer.infinite.bot.api.exception.ExclusiveMessageException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 public abstract class Message implements Cloneable {
 
@@ -37,6 +39,8 @@ public abstract class Message implements Cloneable {
     * 可重复种类消息添加
     * */
    abstract protected void add(String type, Map<String, @Nullable Object> data);
+
+   abstract protected void removeIf(Predicate<TransferEntity> predicate);
 
    /**
     * @throws ExclusiveMessageException 单一消息类型异常
