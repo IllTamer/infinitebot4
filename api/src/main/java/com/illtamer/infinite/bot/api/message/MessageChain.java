@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.illtamer.infinite.bot.api.entity.TransferEntity;
 import com.illtamer.infinite.bot.api.entity.transfer.*;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 /**
  * Message 中所有 {@link com.illtamer.infinite.bot.api.entity.TransferEntity} 构成的链表
  * */
-public class MessageChain {
+public class MessageChain implements Iterable<TransferEntity> {
 
     private static final Map<String, Class<? extends TransferEntity>> MAPPER;
     @Getter
@@ -49,6 +50,22 @@ public class MessageChain {
             }
             ++ index;
         }
+    }
+
+    @NotNull
+    @Override
+    public Iterator<TransferEntity> iterator() {
+        return entities.iterator();
+    }
+
+    @Override
+    public void forEach(Consumer<? super TransferEntity> action) {
+        entities.forEach(action);
+    }
+
+    @Override
+    public Spliterator<TransferEntity> spliterator() {
+        return entities.spliterator();
     }
 
     @Override
