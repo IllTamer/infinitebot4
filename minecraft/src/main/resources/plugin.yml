@@ -6,6 +6,11 @@ author: IllTamer
 
 load: POSTWORLD
 
+softdepend:
+  - PlaceholderAPI
+  - PlayerPoints
+  - Vault
+
 commands:
   InfiniteBot3:
     aliases:
