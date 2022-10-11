@@ -76,7 +76,7 @@ public class EventExecutor {
      * */
     public static void unregisterListeners(IExpansion instance) {
         final Set<Listener> listeners = LISTENERS.remove(instance);
-        Assert.notNull(listeners, "Expansion instance(%s) is repeatedly logged out", instance);
+        if (listeners == null) return;
         // 卸载注册方法
         synchronized (METHODS) {
             listeners.forEach(METHODS::remove);
