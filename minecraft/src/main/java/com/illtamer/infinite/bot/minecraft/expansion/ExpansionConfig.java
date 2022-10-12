@@ -2,15 +2,16 @@ package com.illtamer.infinite.bot.minecraft.expansion;
 
 import com.illtamer.infinite.bot.api.util.Assert;
 import com.illtamer.infinite.bot.minecraft.api.IExpansion;
-import com.illtamer.infinite.bot.minecraft.util.ExpansionUtil;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufInputStream;
+import com.illtamer.infinite.bot.minecraft.configuration.config.CommentConfiguration;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.*;
-import java.nio.ByteBuffer;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Set;
 
 public class ExpansionConfig {
@@ -64,7 +65,7 @@ public class ExpansionConfig {
         if (!file.exists()) {
             expansion.saveResource(fileName, false);
         }
-        YamlConfiguration yaml = new YamlConfiguration();
+        CommentConfiguration yaml = new CommentConfiguration();
         try {
             yaml.load(file);
             this.file = file;
@@ -107,21 +108,25 @@ public class ExpansionConfig {
             return;
         }
         final Set<String> oldConfigKeys = config.getKeys(true);
-        YamlConfiguration newConfig = YamlConfiguration.loadConfiguration(file);
-
+        CommentConfiguration newConfig = new CommentConfiguration();
+        try {
+            newConfig.load(file);
+        } catch (IOException | InvalidConfigurationException e) {
+            expansion.getLogger().error("Config " + fileName + " load failed", e);
+        }
         // add/delete -> continue; update -> set
         for (String key : newConfig.getKeys(true)) {
             if (key.length() == 7 && "version".equals(key)) continue;
-            if (!oldConfigKeys.contains(key)) continue;
+            if (!oldConfigKeys.contains(key) || newConfig.get(key) instanceof MemorySection) continue;
             newConfig.set(key, config.get(key));
         }
         config = newConfig;
         try {
-            ExpansionUtil.savePluginResource(fileName, true, expansion.getDataFolder(), new FileInputStream(file));
+            config.save(file);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        expansion.getLogger().info("Config auto-update success! (The previous has been backed up)");
+        expansion.getLogger().info("Config(version: " + depVersion + ") auto-update to version-" + version + " now ! (The previous has been backed up)");
     }
 
 }

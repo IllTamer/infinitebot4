@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CommentConfig extends YamlConfiguration {
+public class CommentConfiguration extends YamlConfiguration {
 
     protected static String newLine = "\n";
     // 新增保留注释字段
@@ -33,7 +33,7 @@ public class CommentConfig extends YamlConfiguration {
             if (matcher.find()) {
                 String originComment = matcher.group(2);
                 String[] splitComments = split(originComment, commentSplitWidth);
-                for (int i = 0; i < splitComments.length; i++) {
+                for (int i = 0; i < splitComments.length; ++ i) {
                     String comment = splitComments[i];
                     if (i == 0) {
                         comment = comment.substring(1);
