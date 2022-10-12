@@ -6,7 +6,7 @@
 
     <groupId>com.illtamer.infinite.bot</groupId>
     <artifactId>minecraft</artifactId>
-    <version>3.1.1</version>
+    <version>3.1.2</version>
     <name>minecraft</name>
     <description>Infinite Bot for Minecraft</description>
 
@@ -42,6 +42,8 @@
             <groupId>com.illtamer.infinite.bot</groupId>
             <artifactId>api</artifactId>
             <version>${ib3.version}</version>
+            <!-- 终止依赖传递 -->
+            <optional>true</optional>
         </dependency>
 
         <dependency>
