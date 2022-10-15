@@ -86,11 +86,12 @@ public class DatabasePlayerDataRepository implements PlayerDataRepository {
                 log.warning(String.format("PlayerData(%s) can not be found!", data));
                 return null;
             }
-            PreparedStatement ps = connection.prepareStatement("UPDATE `infinite_bot_3` SET uuid=?, user_id=?, permission=? WHERE id=?");
+            PreparedStatement ps = connection.prepareStatement("UPDATE `infinite_bot_3` SET uuid=?, valid_uuid=?, user_id=?, permission=? WHERE id=?");
             ps.setString(1, data.getUuid());
-            ps.setLong(2, data.getUserId());
-            ps.setString(3, StringUtil.parseString(data.getPermission()));
-            ps.setInt(4, saved.getId());
+            ps.setString(2, data.getValidUUID());
+            ps.setLong(3, data.getUserId());
+            ps.setString(4, StringUtil.parseString(data.getPermission()));
+            ps.setInt(5, saved.getId());
             if (!(ps.executeUpdate() > 0))
                 log.warning("An exception occurred while updating " + data);
         } catch (SQLException e) {
