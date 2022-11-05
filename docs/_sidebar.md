@@ -11,3 +11,7 @@
 
     - [api](/zh-cn/dev-api.md)
     - [plugin-expansion](/zh-cn/dev-minecraft.md)
+
+- 其它资源
+
+    - [群友提供](/zh-cn/other-course.md)
