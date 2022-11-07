@@ -12,8 +12,11 @@ import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class HttpRequestUtil {
 
@@ -34,8 +37,10 @@ public class HttpRequestUtil {
         StringRequestEntity requestEntity = new StringRequestEntity(payloadJson, "application/json", "UTF-8");
         postMethod.setRequestEntity(requestEntity);
         int status = client.executeMethod(postMethod);
-        if (status == HttpStatus.SC_OK)
-            return postMethod.getResponseBodyAsString();
+        if (status == HttpStatus.SC_OK) {
+            return new BufferedReader(new InputStreamReader(postMethod.getResponseBodyAsStream()))
+                    .lines().collect(Collectors.joining(System.lineSeparator()));
+        }
         throw new RuntimeException("接口连接失败！");
     }
 
@@ -47,7 +52,9 @@ public class HttpRequestUtil {
         client.getParams().setContentCharset("UTF-8");
         GetMethod getMethod = new GetMethod(concatUrl(url, params));
         int status = client.executeMethod(getMethod);
-        return new Pair<>(status, getMethod.getResponseBodyAsString());
+        String result = new BufferedReader(new InputStreamReader(getMethod.getResponseBodyAsStream()))
+                .lines().collect(Collectors.joining(System.lineSeparator()));
+        return new Pair<>(status, result);
     }
 
     @NotNull
