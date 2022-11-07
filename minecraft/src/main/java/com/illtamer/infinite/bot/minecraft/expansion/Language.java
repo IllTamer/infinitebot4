@@ -13,8 +13,8 @@ public class Language {
 
     private final ExpansionConfig lanConfig;
 
-    protected Language(String fileName, IExpansion expansion) {
-        this.lanConfig = new ExpansionConfig(fileName + ".yml", expansion);
+    protected Language(String fileName, int version, IExpansion expansion) {
+        this.lanConfig = new ExpansionConfig(fileName + ".yml", expansion, version);
     }
 
     /**
@@ -48,15 +48,23 @@ public class Language {
      * @param name 语言文件前缀名 language
      * */
     public static Language of(String name, IExpansion expansion) {
-        return of(name, "zh_CN", expansion);
+        return of(name, 0, "zh_CN", expansion);
     }
+
+    /**
+     * @param name 语言文件前缀名 language
+     * */
+    public static Language of(String name, int version, IExpansion expansion) {
+        return of(name, version, "zh_CN", expansion);
+    }
+
 
     /**
      * @param name 语言文件前缀名 language
      * @param type 语言类型后缀 zh_CN
      * */
-    public static Language of(String name, String type, IExpansion expansion) {
-        return new Language(name + '-' + type, expansion);
+    public static Language of(String name, int version, String type, IExpansion expansion) {
+        return new Language(name + '-' + type, version, expansion);
     }
 
 }
