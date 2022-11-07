@@ -6,7 +6,7 @@
 
     <groupId>com.illtamer.infinite.bot</groupId>
     <artifactId>minecraft</artifactId>
-    <version>3.1.2-3</version>
+    <version>3.1.2-2</version>
     <name>minecraft</name>
     <description>Infinite Bot for Minecraft</description>
 
@@ -30,7 +30,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>8</java.version>
-        <ib3.version>1.0.7</ib3.version>
+        <ib3.version>1.0.6</ib3.version>
         <mysql.version>8.0.29</mysql.version>
         <spigot.version>1.16.4-R0.1-SNAPSHOT</spigot.version>
         <slf4j.version>1.7.32</slf4j.version>

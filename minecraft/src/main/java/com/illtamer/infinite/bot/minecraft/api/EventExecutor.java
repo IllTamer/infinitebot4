@@ -3,6 +3,7 @@ package com.illtamer.infinite.bot.minecraft.api;
 import com.illtamer.infinite.bot.api.event.Cancellable;
 import com.illtamer.infinite.bot.api.event.Event;
 import com.illtamer.infinite.bot.api.event.MetaEvent;
+import com.illtamer.infinite.bot.api.util.Assert;
 import com.illtamer.infinite.bot.api.util.ClassUtil;
 import com.illtamer.infinite.bot.minecraft.Bootstrap;
 import com.illtamer.infinite.bot.minecraft.api.event.EventHandler;
