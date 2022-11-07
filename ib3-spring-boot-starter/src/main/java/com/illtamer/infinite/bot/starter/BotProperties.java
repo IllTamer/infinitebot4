@@ -1,9 +1,11 @@
 package com.illtamer.infinite.bot.starter;
 
 import org.jetbrains.annotations.NotNull;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+@EnableAutoConfiguration
 @Component
 @ConfigurationProperties(prefix = "bot")
 public class BotProperties {

@@ -1,12 +1,5 @@
 package com.illtamer.infinite.bot.api;
 
-import com.illtamer.infinite.bot.api.config.CQHttpWebSocketConfiguration;
-import com.illtamer.infinite.bot.api.entity.transfer.Text;
-import com.illtamer.infinite.bot.api.event.message.MessageEvent;
-import com.illtamer.infinite.bot.api.handler.OpenAPIHandling;
-import com.illtamer.infinite.bot.api.message.Message;
-import com.illtamer.infinite.bot.api.message.MessageBuilder;
-
 public class Tests {
 
     public static void main(String[] args) {
