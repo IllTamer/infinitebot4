@@ -52,9 +52,12 @@ public class HttpRequestUtil {
         client.getParams().setContentCharset("UTF-8");
         GetMethod getMethod = new GetMethod(concatUrl(url, params));
         int status = client.executeMethod(getMethod);
-        String result = new BufferedReader(new InputStreamReader(getMethod.getResponseBodyAsStream()))
-                .lines().collect(Collectors.joining(System.lineSeparator()));
-        return new Pair<>(status, result);
+        if (status == HttpStatus.SC_OK) {
+            String result = new BufferedReader(new InputStreamReader(getMethod.getResponseBodyAsStream()))
+                    .lines().collect(Collectors.joining(System.lineSeparator()));
+            return new Pair<>(status, result);
+        }
+        return new Pair<>(status, "");
     }
 
     @NotNull

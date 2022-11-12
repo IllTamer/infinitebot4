@@ -1,5 +1,7 @@
 package com.illtamer.infinite.bot.api;
 
+import com.illtamer.infinite.bot.api.util.HttpRequestUtil;
+
 public class Tests {
 
     public static void main(String[] args) {
