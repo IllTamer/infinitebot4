@@ -1,10 +1,7 @@
 package com.illtamer.infinite.bot.api.handler;
 
 import com.illtamer.infinite.bot.api.Response;
-import com.illtamer.infinite.bot.api.entity.BotStatus;
-import com.illtamer.infinite.bot.api.entity.Group;
-import com.illtamer.infinite.bot.api.entity.GroupMember;
-import com.illtamer.infinite.bot.api.entity.Stranger;
+import com.illtamer.infinite.bot.api.entity.*;
 import com.illtamer.infinite.bot.api.exception.APIInvokeException;
 import com.illtamer.infinite.bot.api.message.Message;
 import com.illtamer.infinite.bot.api.message.MessageBuilder;
@@ -171,6 +168,14 @@ public class OpenAPIHandling {
                 .setFile(file)
                 .request();
         return ImageGetHandler.parse(response);
+    }
+
+    /**
+     * 获取登录账号信息
+     * */
+    public static LoginInfo getLoginInfo() {
+        final Response<Map<String, Object>> response = new GetLoginInfoHandler().request();
+        return GetLoginInfoHandler.parse(response.getData());
     }
 
     /**
