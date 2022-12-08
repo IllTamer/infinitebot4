@@ -30,7 +30,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>8</java.version>
-        <ib3.version>1.0.8</ib3.version>
+        <ib3.version>1.0.9</ib3.version>
         <mysql.version>8.0.29</mysql.version>
         <spigot.version>1.16.4-R0.1-SNAPSHOT</spigot.version>
         <slf4j.version>1.7.32</slf4j.version>
