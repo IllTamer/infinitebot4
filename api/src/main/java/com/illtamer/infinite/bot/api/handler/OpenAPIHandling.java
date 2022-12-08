@@ -124,6 +124,13 @@ public class OpenAPIHandling {
         return "ok".equals(response.getStatus());
     }
 
+    public static com.illtamer.infinite.bot.api.entity.Message getMessage(int messageId) {
+        final Response<Map<String, Object>> response = new GetMessageHandler()
+                .setMessageId(messageId)
+                .request();
+        return GetMessageHandler.parse(response);
+    }
+
     /**
      * 获取机器人所在群组
      * */
