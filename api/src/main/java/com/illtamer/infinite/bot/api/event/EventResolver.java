@@ -15,7 +15,7 @@ public class EventResolver {
 
     private static final LayerEventTree<Event> root = new LayerEventTree<>(Event.class);
 
-    private static final Gson DATE_GSON = new GsonBuilder()
+    public static final Gson DATE_GSON = new GsonBuilder()
             .registerTypeAdapter(Date.class, (JsonDeserializer<Date>) (json, typeOfT, context) ->
                     new Date(json.getAsJsonPrimitive().getAsLong()))
             .registerTypeAdapter(Message.class, new MessageTypeAdapter())
