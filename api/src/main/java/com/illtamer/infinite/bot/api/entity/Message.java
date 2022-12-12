@@ -17,7 +17,7 @@ public class Message {
     private Integer messageId;
 
     @SerializedName("message_id_v2")
-    private Float messageIdV2;
+    private String messageIdV2;
 
     @SerializedName("message_seq")
     private Double messageSeq;
