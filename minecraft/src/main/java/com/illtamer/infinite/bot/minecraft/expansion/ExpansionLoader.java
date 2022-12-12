@@ -5,6 +5,7 @@ import com.illtamer.infinite.bot.minecraft.Bootstrap;
 import com.illtamer.infinite.bot.minecraft.api.IExpansion;
 import com.illtamer.infinite.bot.minecraft.api.IExternalExpansion;
 import com.illtamer.infinite.bot.minecraft.exception.InvalidExpansionException;
+import com.illtamer.infinite.bot.minecraft.expansion.automation.Registration;
 import com.illtamer.infinite.bot.minecraft.expansion.manager.InfinitePluginLoader;
 import com.illtamer.infinite.bot.minecraft.util.ExpansionUtil;
 import org.bukkit.plugin.Plugin;
@@ -119,6 +120,7 @@ public class ExpansionLoader {
         if (expansion instanceof IExternalExpansion)
             return disableExternalExpansion((IExternalExpansion) expansion);
         PLUGIN_LOADER.disableExpansion(expansion);
+        Registration.removeAndStoreAutoConfigs(expansion);
         return true;
     }
 
@@ -133,6 +135,7 @@ public class ExpansionLoader {
         PLUGIN_LOADER.disableExternalExpansion(externalExpansion);
         EXPANSION_MAP.remove(externalExpansion.toString());
         EXTERNAL_EXPANSION_MAP.remove(externalExpansion);
+        Registration.removeAndStoreAutoConfigs(externalExpansion);
         return true;
     }
 
@@ -152,6 +155,7 @@ public class ExpansionLoader {
             else
                 PLUGIN_LOADER.disableExpansion(expansion);
             EXPANSION_MAP.remove(entry.getKey());
+            Registration.removeAndStoreAutoConfigs(expansion);
         }
         System.gc();
     }
