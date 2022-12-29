@@ -88,6 +88,7 @@ public class MessageChain implements Iterable<TransferEntity> {
         map.put(Share.class.getSimpleName().toLowerCase(), Share.class);
         map.put(Text.class.getSimpleName().toLowerCase(), Text.class);
         map.put(Video.class.getSimpleName().toLowerCase(), Video.class);
+        map.put(XML.class.getSimpleName().toLowerCase(), XML.class);
         MAPPER = map;
     }
 
