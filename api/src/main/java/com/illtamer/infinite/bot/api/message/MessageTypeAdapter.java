@@ -58,6 +58,7 @@ public class MessageTypeAdapter implements JsonSerializer<Message>, JsonDeserial
             for (int i = 1; i < params.length; ++ i) {
                 try {
                     final String[] split = params[i].split("=");
+                    if (split.length < 2) continue;
                     args.put(split[0], split[1]);
                 } catch (Exception e) {
                     log.severe("Error occurred in deserializing CQ(" + cqCode +")");
