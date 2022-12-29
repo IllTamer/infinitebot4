@@ -13,6 +13,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Enum 字段在注册前应重写 #toString() 和 #valueOf(), 以便于正确进行序列化和反序列化
+ * */
 public class Registration {
 
     private static final Map<IExpansion, Set<Class<? extends AutoLoadConfiguration>>> autoConfigMap = new HashMap<>();

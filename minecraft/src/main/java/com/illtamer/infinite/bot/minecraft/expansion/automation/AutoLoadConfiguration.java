@@ -3,15 +3,14 @@ package com.illtamer.infinite.bot.minecraft.expansion.automation;
 import com.illtamer.infinite.bot.api.util.Assert;
 import com.illtamer.infinite.bot.minecraft.Bootstrap;
 import com.illtamer.infinite.bot.minecraft.api.IExpansion;
+import com.illtamer.infinite.bot.minecraft.expansion.ExpansionConfig;
 import com.illtamer.infinite.bot.minecraft.expansion.automation.annotation.ConfigClass;
 import com.illtamer.infinite.bot.minecraft.expansion.automation.annotation.ConfigField;
-import com.illtamer.infinite.bot.minecraft.expansion.ExpansionConfig;
 import com.illtamer.infinite.bot.minecraft.util.AutoConfigUtil;
 import lombok.SneakyThrows;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Constructor;
@@ -68,7 +67,11 @@ public abstract class AutoLoadConfiguration implements ConfigurationSerializable
         for (Field field : fieldList) {
             String key = getFieldRef(field);
             try {
-                map.put(key, field.get(this));
+                Object value = field.get(this);
+                if (Enum.class.isAssignableFrom(field.getType())) {
+                    value = value.toString();
+                }
+                map.put(key, value);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
