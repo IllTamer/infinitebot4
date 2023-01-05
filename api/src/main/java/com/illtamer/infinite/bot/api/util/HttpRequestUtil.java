@@ -4,58 +4,68 @@ import com.google.gson.Gson;
 import com.illtamer.infinite.bot.api.Pair;
 import com.illtamer.infinite.bot.api.handler.APIHandler;
 import lombok.SneakyThrows;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class HttpRequestUtil {
 
+    @NotNull
     @SneakyThrows(IOException.class)
     public static String postJson(String url, Object payload, @Nullable Map<String, String> headers) {
         final String payloadJson = parsePayload(payload);
-        HttpClient client = new HttpClient();
-        client.getHttpConnectionManager().getParams().setConnectionTimeout(3000);
-        client.getHttpConnectionManager().getParams().setSoTimeout(3000);
-        client.getParams().setContentCharset("UTF-8");
-        PostMethod postMethod = new PostMethod(url);
-        postMethod.setRequestHeader("Content-Type", "application/json");
-        if (headers != null && headers.size() != 0)
-            headers.entrySet().stream()
-                    .filter(entry -> entry.getValue() != null)
-                    .forEach(entry -> postMethod.setRequestHeader(entry.getKey(), entry.getValue()));
-
-        StringRequestEntity requestEntity = new StringRequestEntity(payloadJson, "application/json", "UTF-8");
-        postMethod.setRequestEntity(requestEntity);
-        int status = client.executeMethod(postMethod);
-        if (status == HttpStatus.SC_OK) {
-            return new BufferedReader(new InputStreamReader(postMethod.getResponseBodyAsStream()))
-                    .lines().collect(Collectors.joining(System.lineSeparator()));
+        try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
+            HttpPost httpPost = new HttpPost(url);
+            httpPost.setConfig(RequestConfig.custom()
+                    .setConnectTimeout(3000)
+                    .setSocketTimeout(3000)
+                    .build());
+            if (headers != null && headers.size() != 0)
+                headers.entrySet().stream()
+                        .filter(entry -> entry.getValue() != null)
+                        .forEach(entry -> httpPost.setHeader(entry.getKey(), entry.getValue()));
+            httpPost.setHeader("Content-Type", "application/json");
+            StringEntity entity = new StringEntity(payloadJson, "application/json", "UTF-8");
+            httpPost.setEntity(entity);
+            try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
+                if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                    HttpEntity responseEntity = response.getEntity();
+                    return EntityUtils.toString(responseEntity);
+                }
+            }
         }
         throw new RuntimeException("接口连接失败！");
     }
 
+    @NotNull
     @SneakyThrows(IOException.class)
     public static Pair<Integer, String> getJson(String url, @Nullable Map<String, String> params) {
-        HttpClient client = new HttpClient();
-        client.getHttpConnectionManager().getParams().setConnectionTimeout(3000);
-        client.getHttpConnectionManager().getParams().setSoTimeout(3000);
-        client.getParams().setContentCharset("UTF-8");
-        GetMethod getMethod = new GetMethod(concatUrl(url, params));
-        int status = client.executeMethod(getMethod);
-        if (status == HttpStatus.SC_OK) {
-            String result = new BufferedReader(new InputStreamReader(getMethod.getResponseBodyAsStream()))
-                    .lines().collect(Collectors.joining(System.lineSeparator()));
-            return new Pair<>(status, result);
+        int status;
+        try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
+            HttpGet httpGet = new HttpGet(concatUrl(url, params));
+            httpGet.setConfig(RequestConfig.custom()
+                    .setConnectTimeout(3000)
+                    .setSocketTimeout(3000)
+                    .build());
+            try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
+                status = response.getStatusLine().getStatusCode();
+                if (status == HttpStatus.SC_OK) {
+                    HttpEntity responseEntity = response.getEntity();
+                    return new Pair<>(status, EntityUtils.toString(responseEntity));
+                }
+            }
         }
         return new Pair<>(status, "");
     }
