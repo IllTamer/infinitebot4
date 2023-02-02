@@ -54,11 +54,7 @@ public class OpenAPIHandling {
      * @return 消息 ID
      * */
     public static Integer sendMessage(String message, long userId) {
-        Response<Map<String, Object>> response = new PrivateMsgSendHandler()
-                .setUserId(userId)
-                .setMessage(MessageBuilder.json().text(message).build())
-                .request();
-        return (int) ((Double) response.getData().get("message_id")).doubleValue();
+        return sendMessage(MessageBuilder.json().text(message).build(), userId);
     }
 
     /**
@@ -74,15 +70,34 @@ public class OpenAPIHandling {
     }
 
     /**
+     * 发送临时会话消息
+     * @param groupId 消息来源群组
+     * @return 消息 ID
+     * */
+    public static Integer sendTempMessage(String message, long userId, long groupId) {
+        return sendTempMessage(MessageBuilder.json().text(message).build(), userId, groupId);
+    }
+
+    /**
+     * 发送临时会话消息
+     * @param groupId 消息来源群组
+     * @return 消息 ID
+     * */
+    public static Integer sendTempMessage(Message message, long userId, long groupId) {
+        Response<Map<String, Object>> response = new PrivateMsgSendHandler()
+                .setUserId(userId)
+                .setGroupId(groupId)
+                .setMessage(message)
+                .request();
+        return (int) ((Double) response.getData().get("message_id")).doubleValue();
+    }
+
+    /**
      * 发送群消息
      * @return 消息 ID
      * */
     public static Integer sendGroupMessage(String message, long groupId) {
-        Response<Map<String, Object>> response = new GroupMsgSendHandler()
-                .setGroupId(groupId)
-                .setMessage(MessageBuilder.json().text(message).build())
-                .request();
-        return (int) ((Double) response.getData().get("message_id")).doubleValue();
+        return sendGroupMessage(MessageBuilder.json().text(message).build(), groupId);
     }
 
     /**
