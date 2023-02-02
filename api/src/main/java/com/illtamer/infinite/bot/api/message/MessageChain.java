@@ -82,6 +82,7 @@ public class MessageChain implements Iterable<TransferEntity> {
         map.put(Face.class.getSimpleName().toLowerCase(), Face.class);
         map.put(Forward.class.getSimpleName().toLowerCase(), Forward.class);
         map.put(Image.class.getSimpleName().toLowerCase(), Image.class);
+        map.put(JSON.class.getSimpleName().toLowerCase(), JSON.class);
         map.put(Record.class.getSimpleName().toLowerCase(), Record.class);
         map.put(Redbag.class.getSimpleName().toLowerCase(), Redbag.class);
         map.put(Reply.class.getSimpleName().toLowerCase(), Reply.class);

@@ -16,6 +16,6 @@ public class XML implements TransferEntity {
     private String data;
 
     @Nullable
-    private Integer resid;
+    private Short resid;
 
 }
