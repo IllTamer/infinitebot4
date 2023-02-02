@@ -75,7 +75,6 @@ public class MessageChain implements Iterable<TransferEntity> {
                 '}';
     }
 
-    // TODO 更多消息类型支持
     static {
         HashMap<String, Class<? extends TransferEntity>> map = new HashMap<>();
         map.put(At.class.getSimpleName().toLowerCase(), At.class);
