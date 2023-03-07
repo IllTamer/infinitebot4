@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.illtamer.infinite.bot.api.Pair;
 import com.illtamer.infinite.bot.api.util.HttpRequestUtil;
-import com.illtamer.infinite.bot.minecraft.Bootstrap;
+import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import lombok.experimental.UtilityClass;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +30,7 @@ public class ValidUtil {
             final Integer status = pair.getKey();
             if (status == 400) return false;
             if (status != 200) {
-                Bootstrap.getInstance().getLogger().warning("验证服务器意思不可用，状态码: " + status);
+                BukkitBootstrap.getInstance().getLogger().warning("正版UUID验证服务器不可用，状态码: " + status);
                 return false;
             }
             final JsonObject object = GSON.fromJson(pair.getValue(), JsonObject.class);
@@ -50,7 +50,7 @@ public class ValidUtil {
             final Pair<Integer, String> pair = HttpRequestUtil.getJson(SESSION_SERVER + uuid, null);
             final Integer status = pair.getKey();
             if (status == 200) return true;
-            Bootstrap.getInstance().getLogger().warning("验证服务器意思不可用，状态码: " + status);
+            BukkitBootstrap.getInstance().getLogger().warning("正版UUID验证服务器不可用，状态码: " + status);
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
