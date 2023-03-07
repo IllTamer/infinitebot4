@@ -1,7 +1,7 @@
 package com.illtamer.infinite.bot.minecraft.expansion.automation;
 
 import com.illtamer.infinite.bot.api.util.Assert;
-import com.illtamer.infinite.bot.minecraft.Bootstrap;
+import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import com.illtamer.infinite.bot.minecraft.api.IExpansion;
 import com.illtamer.infinite.bot.minecraft.expansion.ExpansionConfig;
 import com.illtamer.infinite.bot.minecraft.expansion.automation.annotation.ConfigClass;
@@ -121,7 +121,7 @@ public abstract class AutoLoadConfiguration implements ConfigurationSerializable
                     }
                     field.set(this, value);
                 } catch (Exception e) {
-                    Bootstrap.getInstance().getLogger().warning("字段 " + key + " 赋值出错，请检查！");
+                    BukkitBootstrap.getInstance().getLogger().warning("字段 " + key + " 赋值出错，请检查！");
                     e.printStackTrace();
                 }
                 continue;

@@ -1,6 +1,6 @@
 package com.illtamer.infinite.bot.minecraft.util;
 
-import com.illtamer.infinite.bot.minecraft.Bootstrap;
+import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 @UtilityClass
 public class StringUtil {
 
-    private static final Logger log = Bootstrap.getInstance().getLogger();
+    private static final Logger log = BukkitBootstrap.getInstance().getLogger();
 
     /**
      * @return aaa\nbbb\nccc

@@ -1,6 +1,6 @@
 package com.illtamer.infinite.bot.minecraft.api;
 
-import com.illtamer.infinite.bot.minecraft.Bootstrap;
+import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,8 +44,8 @@ public interface IExternalExpansion extends IExpansion {
     /**
      * 获取插件本体实例
      * */
-    default Bootstrap getPluginInstance() {
-        return Bootstrap.getInstance();
+    default BukkitBootstrap getPluginInstance() {
+        return BukkitBootstrap.getInstance();
     }
 
 }

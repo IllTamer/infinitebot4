@@ -1,7 +1,7 @@
 package com.illtamer.infinite.bot.minecraft.listener;
 
 import com.illtamer.infinite.bot.api.entity.BotStatus;
-import com.illtamer.infinite.bot.minecraft.Bootstrap;
+import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import com.illtamer.infinite.bot.minecraft.api.IExpansion;
 import com.illtamer.infinite.bot.minecraft.api.IExternalExpansion;
 import com.illtamer.infinite.bot.minecraft.configuration.StatusCheckRunner;
@@ -59,14 +59,14 @@ public class CommandListener implements TabExecutor {
             return true;
         }
         if (args.length != 2) return true;
-        final ExpansionLoader loader = Bootstrap.getInstance().getExpansionLoader();
+        final ExpansionLoader loader = BukkitBootstrap.getInstance().getExpansionLoader();
         if ("expansions".equalsIgnoreCase(args[0])) {
             if ("list".equalsIgnoreCase(args[1])) {
                 final Set<String> set = loader.getExpansionKeySet();
                 String[] keyArray = new String[set.size()];
                 sender.sendMessage(set.toArray(keyArray));
             } else if ("reload".equalsIgnoreCase(args[1])) {
-                Bukkit.getScheduler().runTaskAsynchronously(Bootstrap.getInstance(), () -> {
+                Bukkit.getScheduler().runTaskAsynchronously(BukkitBootstrap.getInstance(), () -> {
                     loader.disableExpansions(true);
                     loader.loadExpansions(true);
                 });
@@ -108,12 +108,12 @@ public class CommandListener implements TabExecutor {
                     break;
                 }
                 case "unload": {
-                    final ExpansionLoader loader = Bootstrap.getInstance().getExpansionLoader();
+                    final ExpansionLoader loader = BukkitBootstrap.getInstance().getExpansionLoader();
                     result.addAll(loader.getExpansionKeySet());
                     break;
                 }
                 case "load": {
-                    final ExpansionLoader loader = Bootstrap.getInstance().getExpansionLoader();
+                    final ExpansionLoader loader = BukkitBootstrap.getInstance().getExpansionLoader();
                     File[] files = loader.getPluginFolder().listFiles((dir, name) -> name.endsWith(".jar"));
                     if (files != null) {
                         final List<String> collect = Arrays.stream(files)

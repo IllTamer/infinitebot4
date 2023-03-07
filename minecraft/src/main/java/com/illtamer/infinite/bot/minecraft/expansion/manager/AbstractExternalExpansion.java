@@ -1,7 +1,7 @@
 package com.illtamer.infinite.bot.minecraft.expansion.manager;
 
 import com.illtamer.infinite.bot.api.util.Assert;
-import com.illtamer.infinite.bot.minecraft.Bootstrap;
+import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import com.illtamer.infinite.bot.minecraft.api.IExternalExpansion;
 import com.illtamer.infinite.bot.minecraft.configuration.config.BotConfiguration;
 import com.illtamer.infinite.bot.minecraft.expansion.ExpansionLogger;
@@ -26,19 +26,19 @@ public abstract class AbstractExternalExpansion implements IExternalExpansion {
     public AbstractExternalExpansion() {
         this.classLoader = this.getClass().getClassLoader();
         Assert.notEmpty(getExpansionName(), "Expansion name can not be empty!");
-        this.dataFolder = new File(Bootstrap.getInstance().getDataFolder(), '/' + BotConfiguration.EXPANSION_FOLDER_NAME + '/' + getExpansionName());
+        this.dataFolder = new File(BukkitBootstrap.getInstance().getDataFolder(), '/' + BotConfiguration.EXPANSION_FOLDER_NAME + '/' + getExpansionName());
         this.logger = new ExpansionLogger(this);
     }
 
     @Override
     public void register(@NotNull Plugin plugin) {
-        Bootstrap.getInstance().getExpansionLoader().loadExternalExpansion(this, plugin);
+        BukkitBootstrap.getInstance().getExpansionLoader().loadExternalExpansion(this, plugin);
         register = true;
     }
 
     @Override
     public void unregister() {
-        Bootstrap.getInstance().getExpansionLoader().disableExternalExpansion(this);
+        BukkitBootstrap.getInstance().getExpansionLoader().disableExternalExpansion(this);
         register = false;
     }
 
@@ -73,11 +73,7 @@ public abstract class AbstractExternalExpansion implements IExternalExpansion {
 
     @Override
     public void saveResource(String path, boolean replace) {
-        Assert.isTrue(path != null && !path.isEmpty(), "The resource name can not be null !");
-        path = path.replace("\\", "/");
-        InputStream input = getResource(path);
-        Assert.notNull(input, String.format("Can't find the resource '%s' in %s", path, classLoader));
-        ExpansionUtil.savePluginResource(path, replace, dataFolder, input);
+        ExpansionUtil.savePluginResource(path, replace, dataFolder, this::getResource);
     }
 
     @Override

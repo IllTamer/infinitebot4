@@ -1,6 +1,6 @@
 package com.illtamer.infinite.bot.minecraft.listener;
 
-import com.illtamer.infinite.bot.minecraft.Bootstrap;
+import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import com.illtamer.infinite.bot.minecraft.api.IExternalExpansion;
 import com.illtamer.infinite.bot.minecraft.expansion.ExpansionLoader;
 import org.bukkit.event.EventHandler;
@@ -16,7 +16,7 @@ public class PluginListener implements Listener {
     private final ExpansionLoader expansionLoader;
     private final Logger logger;
 
-    public PluginListener(Bootstrap instance) {
+    public PluginListener(BukkitBootstrap instance) {
         this.expansionLoader = instance.getExpansionLoader();
         this.logger = instance.getLogger();
     }

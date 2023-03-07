@@ -2,6 +2,7 @@ package com.illtamer.infinite.bot.minecraft.configuration;
 
 import com.illtamer.infinite.bot.api.config.CQHttpWebSocketConfiguration;
 import com.illtamer.infinite.bot.minecraft.api.EventExecutor;
+import com.illtamer.infinite.bot.minecraft.api.adapter.Bootstrap;
 import com.illtamer.infinite.bot.minecraft.configuration.config.BotConfiguration;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -29,7 +30,7 @@ public class BotNettyStarter extends JavaPlugin {
     @Override
     public void onLoad() {
         instance = this;
-        BotConfiguration.load(instance);
+        BotConfiguration.load((Bootstrap) instance);
         connect();
     }
 

@@ -1,6 +1,7 @@
 package com.illtamer.infinite.bot.minecraft.util;
 
-import com.illtamer.infinite.bot.minecraft.Bootstrap;
+import com.illtamer.infinite.bot.api.util.Assert;
+import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import com.illtamer.infinite.bot.minecraft.api.IExpansion;
 import com.illtamer.infinite.bot.minecraft.pojo.ExpansionIdentifier;
 import lombok.experimental.UtilityClass;
@@ -10,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,7 +55,12 @@ public class ExpansionUtil {
         }
     }
 
-    public static void savePluginResource(String path, boolean replace, File dataFolder, InputStream input) {
+    public static void savePluginResource(String path, boolean replace, File dataFolder, Function<String, InputStream> inputFunc) {
+        Assert.isTrue(path != null && !path.isEmpty(), "The resource name can not be null !");
+        path = path.replace("\\", "/");
+        InputStream input = inputFunc.apply(path);
+        Assert.notNull(input, String.format("Can't find the resource '%s'", path));
+
         File outFile = new File(dataFolder, path);
         int lastIndex = path.lastIndexOf('/');
         File outDir = new File(dataFolder, path.substring(0, Math.max(lastIndex, 0)));
@@ -71,10 +78,10 @@ public class ExpansionUtil {
                 out.close();
                 input.close();
             } else {
-                Bootstrap.getInstance().getLogger().warning("Could not save " + outFile.getName() + " to " + outFile + " because " + outFile.getName() + " already exists !");
+                BukkitBootstrap.getInstance().getLogger().warning("Could not save " + outFile.getName() + " to " + outFile + " because " + outFile.getName() + " already exists !");
             }
         } catch (IOException ex) {
-            Bootstrap.getInstance().getLogger().severe("Could not save " + outFile.getName() + " to " + outFile);
+            BukkitBootstrap.getInstance().getLogger().severe("Could not save " + outFile.getName() + " to " + outFile);
             ex.printStackTrace();
         }
     }

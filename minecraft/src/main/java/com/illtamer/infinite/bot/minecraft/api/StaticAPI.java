@@ -3,7 +3,8 @@ package com.illtamer.infinite.bot.minecraft.api;
 import com.illtamer.infinite.bot.api.handler.OpenAPIHandling;
 import com.illtamer.infinite.bot.api.message.Message;
 import com.illtamer.infinite.bot.api.util.Assert;
-import com.illtamer.infinite.bot.minecraft.Bootstrap;
+import com.illtamer.infinite.bot.minecraft.api.adapter.Bootstrap;
+import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import com.illtamer.infinite.bot.minecraft.configuration.config.BotConfiguration;
 import com.illtamer.infinite.bot.minecraft.expansion.ExpansionLoader;
 import com.illtamer.infinite.bot.minecraft.pojo.ExpansionIdentifier;
@@ -13,6 +14,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class StaticAPI {
+
+    private static Bootstrap instance;
 
     public static boolean isAdmin(long userId) {
         return BotConfiguration.main.admins.contains(userId);
@@ -25,7 +28,9 @@ public class StaticAPI {
     /**
      * 发送私人消息
      * @return 消息 ID
+     * @deprecated see {@link OpenAPIHandling#sendMessage(String, long)}
      * */
+    @Deprecated
     public static double sendMessage(String message, long userId) {
         return OpenAPIHandling.sendMessage(message, userId);
     }
@@ -33,7 +38,9 @@ public class StaticAPI {
     /**
      * 发送私人消息
      * @return 消息 ID
+     * @deprecated see {@link OpenAPIHandling#sendMessage(Message, long)}
      * */
+    @Deprecated
     public static double sendMessage(Message message, long userId) {
         return OpenAPIHandling.sendMessage(message, userId);
     }
@@ -41,7 +48,9 @@ public class StaticAPI {
     /**
      * 向群组发送消息
      * @return 消息 ID
+     * @deprecated see {@link OpenAPIHandling#sendGroupMessage(String, long)}
      * */
+    @Deprecated
     public static double sendGroupMessage(String message, long groupId) {
         return OpenAPIHandling.sendGroupMessage(message, groupId);
     }
@@ -49,7 +58,9 @@ public class StaticAPI {
     /**
      * 向群组发送消息
      * @return 消息 ID
+     * @deprecated see {@link OpenAPIHandling#sendGroupMessage(Message, long)}
      * */
+    @Deprecated
     public static double sendGroupMessage(Message message, long groupId) {
         return OpenAPIHandling.sendGroupMessage(message, groupId);
     }
@@ -58,7 +69,7 @@ public class StaticAPI {
      * 重连 go-cqhttp WebSocket 服务
      * */
     public static void reconnected() {
-        Bootstrap.getInstance().connect();
+        BukkitBootstrap.getInstance().connect();
     }
 
     /**
@@ -96,7 +107,7 @@ public class StaticAPI {
      */
     @Nullable
     public static IExpansion getExpansion(@NotNull String name, @NotNull String author) {
-        final ExpansionLoader loader = Bootstrap.getInstance().getExpansionLoader();
+        final ExpansionLoader loader = BukkitBootstrap.getInstance().getExpansionLoader();
         for (String identifier : loader.getExpansionKeySet()){
             if (!identifier.startsWith(name)) continue;
             final ExpansionIdentifier ei = ExpansionUtil.parseIdentifier(identifier);
@@ -114,7 +125,7 @@ public class StaticAPI {
      * @param author 作者名称
      * */
     public static IExpansion getExpansion(@NotNull String name, @NotNull String version, @NotNull String author) {
-        return Bootstrap.getInstance().getExpansionLoader().getExpansion(ExpansionUtil.formatIdentifier(name, version, author));
+        return BukkitBootstrap.getInstance().getExpansionLoader().getExpansion(ExpansionUtil.formatIdentifier(name, version, author));
     }
 
     /**
@@ -122,6 +133,21 @@ public class StaticAPI {
      * */
     public static PlayerDataRepository getRepository() {
         return BotConfiguration.getInstance().getRepository();
+    }
+
+    /**
+     * 设置当前启动器实例
+     * @apiNote 启动器启动后自动调用
+     * */
+    public static void setInstance(Bootstrap instance) {
+        StaticAPI.instance = instance;
+    }
+
+    /**
+     * 获取当前启动器实例
+     * */
+    public static Bootstrap getInstance() {
+        return instance;
     }
 
 }

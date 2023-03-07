@@ -1,20 +1,18 @@
 package com.illtamer.infinite.bot.minecraft.configuration.config;
 
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
+import com.illtamer.infinite.bot.minecraft.api.adapter.Bootstrap;
+import com.illtamer.infinite.bot.minecraft.api.adapter.Configuration;
 
 import java.io.File;
 import java.io.IOException;
 
 public class ConfigFile {
     private final String name;
-    private final Plugin instance;
+    private final Bootstrap instance;
     private File file;
-    private volatile FileConfiguration config;
+    private volatile Configuration config;
 
-    public ConfigFile(String name, Plugin instance) {
+    public ConfigFile(String name, Bootstrap instance) {
         this.name = name;
         this.instance = instance;
         this.config = this.load();
@@ -29,29 +27,28 @@ public class ConfigFile {
         this.config = this.load();
     }
 
-    private FileConfiguration load() {
+    private Configuration load() {
         File file = new File(this.instance.getDataFolder(), this.name);
         if (!file.exists()) {
             this.instance.saveResource(this.name, false);
         }
 
-        YamlConfiguration yaml = new YamlConfiguration();
-
+        Configuration configuration = instance.createConfig();
         try {
-            yaml.load(file);
+            configuration.load(file);
             this.file = file;
-        } catch (IOException | InvalidConfigurationException var4) {
+        } catch (IOException var4) {
             var4.printStackTrace();
         }
-
-        return yaml;
+        return configuration;
     }
 
     public void reload() {
         this.config = this.load();
     }
 
-    public FileConfiguration getConfig() {
+    public Configuration getConfig() {
         return this.config;
     }
+
 }

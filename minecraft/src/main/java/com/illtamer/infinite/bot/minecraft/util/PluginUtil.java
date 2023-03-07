@@ -1,6 +1,6 @@
 package com.illtamer.infinite.bot.minecraft.util;
 
-import com.illtamer.infinite.bot.minecraft.Bootstrap;
+import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -39,7 +39,7 @@ public class PluginUtil {
         public static final String VERSION;
 
         static {
-            final String packageName = Bootstrap.getInstance().getServer().getClass().getPackage().getName();
+            final String packageName = BukkitBootstrap.getInstance().getServer().getClass().getPackage().getName();
             VERSION = packageName.substring(packageName.lastIndexOf('.') + 1);
         }
 

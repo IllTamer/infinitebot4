@@ -1,7 +1,7 @@
 package com.illtamer.infinite.bot.minecraft.expansion.manager;
 
 import com.illtamer.infinite.bot.api.util.Assert;
-import com.illtamer.infinite.bot.minecraft.Bootstrap;
+import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import com.illtamer.infinite.bot.minecraft.api.IExpansion;
 import com.illtamer.infinite.bot.minecraft.configuration.config.BotConfiguration;
 import com.illtamer.infinite.bot.minecraft.expansion.ExpansionLogger;
@@ -48,7 +48,7 @@ public abstract class InfiniteExpansion implements IExpansion {
         this.classLoader = classLoader;
         this.logger = new ExpansionLogger(this);
         folderName = getExpansionName() != null && getExpansionName().length() != 0 ? getExpansionName() : folderName;
-        this.dataFolder = new File(Bootstrap.getInstance().getDataFolder(), '/' + BotConfiguration.EXPANSION_FOLDER_NAME + '/' + folderName);
+        this.dataFolder = new File(BukkitBootstrap.getInstance().getDataFolder(), '/' + BotConfiguration.EXPANSION_FOLDER_NAME + '/' + folderName);
     }
 
     /**
@@ -76,11 +76,7 @@ public abstract class InfiniteExpansion implements IExpansion {
 
     @Override
     public void saveResource(String path, boolean replace) {
-        Assert.isTrue(path != null && !path.isEmpty(), "The resource name can not be null !");
-        path = path.replace("\\", "/");
-        InputStream input = getResource(path);
-        Assert.notNull(input, String.format("Can't find the resource '%s' in %s", path, jarFile));
-        ExpansionUtil.savePluginResource(path, replace, dataFolder, input);
+        ExpansionUtil.savePluginResource(path, replace, dataFolder, this::getResource);
     }
 
     @Override

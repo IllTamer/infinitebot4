@@ -1,7 +1,7 @@
 package com.illtamer.infinite.bot.minecraft.expansion;
 
 import com.illtamer.infinite.bot.api.util.Assert;
-import com.illtamer.infinite.bot.minecraft.Bootstrap;
+import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import com.illtamer.infinite.bot.minecraft.api.IExpansion;
 import com.illtamer.infinite.bot.minecraft.api.IExternalExpansion;
 import com.illtamer.infinite.bot.minecraft.exception.InvalidExpansionException;
@@ -27,11 +27,11 @@ public class ExpansionLoader {
     private static final InfinitePluginLoader PLUGIN_LOADER = new InfinitePluginLoader();
     private static final Map<String, IExpansion> EXPANSION_MAP = new ConcurrentHashMap<>();
     private static final Map<IExternalExpansion, Plugin> EXTERNAL_EXPANSION_MAP = new ConcurrentHashMap<>();
-    private final Bootstrap instance;
+    private final BukkitBootstrap instance;
     private final Logger log;
     private final File pluginFolder;
 
-    public ExpansionLoader(Bootstrap instance) {
+    public ExpansionLoader(BukkitBootstrap instance) {
         this.instance = instance;
         this.log = instance.getLogger();
         this.pluginFolder = new File(instance.getDataFolder(), "expansions");

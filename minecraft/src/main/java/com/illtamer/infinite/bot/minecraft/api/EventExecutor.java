@@ -4,7 +4,7 @@ import com.illtamer.infinite.bot.api.event.Cancellable;
 import com.illtamer.infinite.bot.api.event.Event;
 import com.illtamer.infinite.bot.api.event.MetaEvent;
 import com.illtamer.infinite.bot.api.util.ClassUtil;
-import com.illtamer.infinite.bot.minecraft.Bootstrap;
+import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import com.illtamer.infinite.bot.minecraft.api.event.EventHandler;
 import com.illtamer.infinite.bot.minecraft.api.event.EventPriority;
 import com.illtamer.infinite.bot.minecraft.api.event.Listener;
@@ -53,9 +53,9 @@ public class EventExecutor {
      * */
     public static void registerBukkitEvent(org.bukkit.event.Listener bukkitListener, IExpansion expansion) {
         if (EXPANSION_BUKKIT_LISTENERS.computeIfAbsent(expansion, k -> new HashSet<>()).add(bukkitListener)) {
-            Bukkit.getPluginManager().registerEvents(bukkitListener, Bootstrap.getInstance());
+            Bukkit.getPluginManager().registerEvents(bukkitListener, BukkitBootstrap.getInstance());
         } else {
-            Bootstrap.getInstance().getLogger().warning(String.format("The listener(%s) is repeatedly registered by the expansion(%s)", bukkitListener, expansion));
+            BukkitBootstrap.getInstance().getLogger().warning(String.format("The listener(%s) is repeatedly registered by the expansion(%s)", bukkitListener, expansion));
         }
     }
 
@@ -87,7 +87,7 @@ public class EventExecutor {
      * */
     public static void dispatchListener(Event event) {
         if (METHODS.size() == 0) return;
-        Bukkit.getScheduler().runTaskAsynchronously(Bootstrap.getInstance(), new Dispatcher(event));
+        Bukkit.getScheduler().runTaskAsynchronously(BukkitBootstrap.getInstance(), new Dispatcher(event));
     }
 
     /**
@@ -107,7 +107,7 @@ public class EventExecutor {
                 MetaEvent meta = (MetaEvent) event;
                 if (meta.isHeartbeat()) return;
             }
-            final Logger logger = Bootstrap.getInstance().getLogger();
+            final Logger logger = BukkitBootstrap.getInstance().getLogger();
             for (Map.Entry<Listener, HashMap<Method, Annotation>> map : METHODS.entrySet()) { // class
                 Object instance = map.getKey();
                 for (int i = EventPriority.values().length-1; i >= 0; i --) {

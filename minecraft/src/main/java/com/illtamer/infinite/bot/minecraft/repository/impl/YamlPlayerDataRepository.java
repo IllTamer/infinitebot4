@@ -1,13 +1,13 @@
 package com.illtamer.infinite.bot.minecraft.repository.impl;
 
 import com.illtamer.infinite.bot.api.util.Assert;
-import com.illtamer.infinite.bot.minecraft.Bootstrap;
+import com.illtamer.infinite.bot.minecraft.api.adapter.ConfigSection;
+import com.illtamer.infinite.bot.minecraft.api.adapter.Configuration;
 import com.illtamer.infinite.bot.minecraft.configuration.config.ConfigFile;
 import com.illtamer.infinite.bot.minecraft.pojo.PlayerData;
 import com.illtamer.infinite.bot.minecraft.repository.PlayerDataRepository;
+import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import com.illtamer.infinite.bot.minecraft.util.Lambda;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,21 +20,21 @@ import java.util.stream.Collectors;
 
 public class YamlPlayerDataRepository implements PlayerDataRepository {
 
-    private final Logger log = Bootstrap.getInstance().getLogger();
+    private final Logger log = BukkitBootstrap.getInstance().getLogger();
     private final ConfigFile dataFile;
     private final Map<String, PlayerData> playerDataMap;
 
     public YamlPlayerDataRepository(ConfigFile dataFile) {
         this.dataFile = dataFile;
-        final FileConfiguration config = dataFile.getConfig();
+        final Configuration config = dataFile.getConfig();
         Set<String> idSet = config.getKeys(false);
         this.playerDataMap = idSet.stream().collect(Collectors.toMap(id -> id, id -> {
             PlayerData playerData = new PlayerData();
-            final ConfigurationSection section = config.getConfigurationSection(id);
+            final ConfigSection section = config.getSection(id);
             if (section == null) return playerData;
             playerData.setUuid(section.getString("uuid", null));
             playerData.setValidUUID(section.getString("valid_uuid", null));
-            playerData.setUserId(section.getLong("user_id") != 0 ? section.getLong("user_id") : null);
+            playerData.setUserId(section.getLong("user_id", null));
             playerData.setPermission(section.getStringList("permission"));
             return playerData;
         }));
@@ -101,9 +101,9 @@ public class YamlPlayerDataRepository implements PlayerDataRepository {
 
     @Override
     public void saveCacheData() {
-        final FileConfiguration config = dataFile.getConfig();
+        final Configuration config = dataFile.getConfig();
         playerDataMap.forEach((key, value) -> {
-            ConfigurationSection section = config.getConfigurationSection(key);
+            ConfigSection section = config.getSection(key);
             if (section == null)
                 section = config.createSection(key, value.toMap());
             else {

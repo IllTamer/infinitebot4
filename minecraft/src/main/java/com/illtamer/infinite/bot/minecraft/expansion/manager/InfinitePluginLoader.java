@@ -2,7 +2,7 @@ package com.illtamer.infinite.bot.minecraft.expansion.manager;
 
 
 import com.illtamer.infinite.bot.api.util.Assert;
-import com.illtamer.infinite.bot.minecraft.Bootstrap;
+import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import com.illtamer.infinite.bot.minecraft.api.EventExecutor;
 import com.illtamer.infinite.bot.minecraft.api.IExpansion;
 import com.illtamer.infinite.bot.minecraft.api.IExternalExpansion;
@@ -46,7 +46,7 @@ public class InfinitePluginLoader {
     public void enableExpansion(IExpansion expansion) {
         Assert.isTrue(expansion instanceof InfiniteExpansion, "Expansion is not associated with this PluginLoader");
         if (!expansion.isEnabled()) {
-            final Logger logger = Bootstrap.getInstance().getLogger();
+            final Logger logger = BukkitBootstrap.getInstance().getLogger();
             logger.info(String.format("Enabling %s", ExpansionUtil.formatIdentifier(expansion)));
             InfiniteExpansion infiniteExpansion = (InfiniteExpansion) expansion;
             PluginClassLoader pluginLoader = (PluginClassLoader)infiniteExpansion.getClassLoader();
@@ -71,7 +71,7 @@ public class InfinitePluginLoader {
     public void enableExternalExpansion(IExternalExpansion expansion) {
         Assert.isTrue(expansion instanceof AbstractExternalExpansion, "ExternalExpansion is not associated with this PluginLoader");
         if (!expansion.isEnabled()) {
-            final Logger logger = Bootstrap.getInstance().getLogger();
+            final Logger logger = BukkitBootstrap.getInstance().getLogger();
             logger.info(String.format("Enabling external-expansion %s", ExpansionUtil.formatIdentifier(expansion)));
             AbstractExternalExpansion externalExpansion = (AbstractExternalExpansion) expansion;
 
@@ -91,7 +91,7 @@ public class InfinitePluginLoader {
         Assert.isTrue(expansion instanceof InfiniteExpansion, "Expansion is not associated with this PluginLoader");
 
         if (expansion.isEnabled()) {
-            final Logger logger = Bootstrap.getInstance().getLogger();
+            final Logger logger = BukkitBootstrap.getInstance().getLogger();
             logger.info(String.format("Disabling expansion %s", ExpansionUtil.formatIdentifier(expansion)));
             // 注销监听
             EventExecutor.unregisterListeners(expansion);
@@ -130,7 +130,7 @@ public class InfinitePluginLoader {
         Assert.isTrue(expansion instanceof AbstractExternalExpansion, "ExternalExpansion is not associated with this PluginLoader");
 
         if (expansion.isEnabled()) {
-            final Logger logger = Bootstrap.getInstance().getLogger();
+            final Logger logger = BukkitBootstrap.getInstance().getLogger();
             logger.info(String.format("Disabling external-expansion %s", ExpansionUtil.formatIdentifier(expansion)));
             // 注销监听
             EventExecutor.unregisterListeners(expansion);
