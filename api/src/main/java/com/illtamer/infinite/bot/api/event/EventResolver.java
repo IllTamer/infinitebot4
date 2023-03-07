@@ -3,6 +3,7 @@ package com.illtamer.infinite.bot.api.event;
 import com.google.gson.*;
 import com.illtamer.infinite.bot.api.annotation.Coordinates;
 import com.illtamer.infinite.bot.api.config.CQHttpWebSocketConfiguration;
+import com.illtamer.infinite.bot.api.message.DateTypeAdapter;
 import com.illtamer.infinite.bot.api.message.Message;
 import com.illtamer.infinite.bot.api.message.MessageTypeAdapter;
 import com.illtamer.infinite.bot.api.util.ClassUtil;
@@ -16,8 +17,7 @@ public class EventResolver {
     private static final LayerEventTree<Event> root = new LayerEventTree<>(Event.class);
 
     public static final Gson DATE_GSON = new GsonBuilder()
-            .registerTypeAdapter(Date.class, (JsonDeserializer<Date>) (json, typeOfT, context) ->
-                    new Date(json.getAsJsonPrimitive().getAsLong()))
+            .registerTypeAdapter(Date.class, new DateTypeAdapter())
             .registerTypeAdapter(Message.class, new MessageTypeAdapter())
             .create();
 
