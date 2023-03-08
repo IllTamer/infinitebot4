@@ -29,7 +29,7 @@ public class GetMessageHandler extends AbstractAPIHandler<Map<String, Object>> {
     }
 
     public static Message parse(@NotNull Response<Map<String, Object>> response) {
-        return EventResolver.DATE_GSON.fromJson(new Gson().toJson(response.getData()), Message.class);
+        return EventResolver.GSON.fromJson(new Gson().toJson(response.getData()), Message.class);
     }
 
 }

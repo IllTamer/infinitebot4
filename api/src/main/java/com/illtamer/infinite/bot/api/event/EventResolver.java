@@ -16,7 +16,7 @@ public class EventResolver {
 
     private static final LayerEventTree<Event> root = new LayerEventTree<>(Event.class);
 
-    public static final Gson DATE_GSON = new GsonBuilder()
+    public static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(Date.class, new DateTypeAdapter())
             .registerTypeAdapter(Message.class, new MessageTypeAdapter())
             .create();
@@ -34,7 +34,7 @@ public class EventResolver {
         String subType = Optional.ofNullable(json.get(Coordinates.SUB_TYPE)).orElse(new JsonPrimitive("")).getAsString();
         String index = constructIndex(postType, secType, subType);
         final Class<? extends Event> clazz = root.get(index);
-        return DATE_GSON.fromJson(json, clazz);
+        return GSON.fromJson(json, clazz);
     }
 
     @SuppressWarnings("unchecked")
