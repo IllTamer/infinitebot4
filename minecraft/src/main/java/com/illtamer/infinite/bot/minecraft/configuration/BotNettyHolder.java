@@ -1,11 +1,10 @@
 package com.illtamer.infinite.bot.minecraft.configuration;
 
 import com.illtamer.infinite.bot.api.config.CQHttpWebSocketConfiguration;
-import com.illtamer.infinite.bot.minecraft.api.EventExecutor;
+import com.illtamer.infinite.bot.api.event.Event;
 import com.illtamer.infinite.bot.minecraft.api.adapter.Bootstrap;
 import com.illtamer.infinite.bot.minecraft.configuration.config.BotConfiguration;
 import lombok.Getter;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -15,23 +14,21 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.logging.Logger;
 
-public class BotNettyStarter extends JavaPlugin {
-
-    @Getter
-    protected static BotNettyStarter instance;
+public class BotNettyHolder {
 
     protected ThreadPoolExecutor websocketExecutor = new ThreadPoolExecutor(1, 1,
             0L, TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<>());
 
     private final Consumer<ThreadPoolExecutor> interruptConsumer;
+    private final Logger logger;
+    private final Consumer<Event> eventConsumer;
 
-    @Override
-    public void onLoad() {
-        instance = this;
-        BotConfiguration.load((Bootstrap) instance);
-        connect();
+    public BotNettyHolder(Logger logger, Consumer<Event> eventConsumer) {
+        this.logger = logger;
+        this.eventConsumer = eventConsumer;
     }
 
     /**
@@ -43,18 +40,18 @@ public class BotNettyStarter extends JavaPlugin {
         websocketExecutor.execute(new WebSocketRunner(connection));
     }
 
-    protected void checkConnection() {
+    public void checkConnection() {
         if (CQHttpWebSocketConfiguration.isRunning()) {
-            getLogger().info("账号连接成功");
+            logger.info("账号连接成功");
         } else {
-            getLogger().warning("账号连接失败，请检查控制台输出处理，或等待自动重连");
+            logger.warning("账号连接失败，请检查控制台输出处理，或等待自动重连");
         }
     }
 
-    protected void close() {
+    public void close() {
         try {
             websocketExecutor.shutdown();
-            getLogger().info("WebSocket 连接关闭 " + (websocketExecutor.isShutdown() ? "成功" : "失败"));
+            logger.info("WebSocket 连接关闭 " + (websocketExecutor.isShutdown() ? "成功" : "失败"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -97,14 +94,14 @@ public class BotNettyStarter extends JavaPlugin {
                         String.format("http://%s:%d", connection.host, connection.httpPort),
                         String.format("ws://%s:%d", connection.host, connection.websocketPort),
                         connection.authorization,
-                        EventExecutor::dispatchListener
+                        eventConsumer
                 );
             } catch (InterruptedException ignore) {
                 // do nothing
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            getLogger().info("WebSocket 连接已关闭");
+            logger.info("WebSocket 连接已关闭");
         }
 
     }

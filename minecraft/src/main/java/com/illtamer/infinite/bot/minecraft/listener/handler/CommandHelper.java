@@ -1,18 +1,14 @@
-package com.illtamer.infinite.bot.minecraft.listener;
+package com.illtamer.infinite.bot.minecraft.listener.handler;
 
 import com.illtamer.infinite.bot.api.entity.BotStatus;
-import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import com.illtamer.infinite.bot.minecraft.api.IExpansion;
 import com.illtamer.infinite.bot.minecraft.api.IExternalExpansion;
+import com.illtamer.infinite.bot.minecraft.api.adapter.CommandSender;
 import com.illtamer.infinite.bot.minecraft.configuration.StatusCheckRunner;
 import com.illtamer.infinite.bot.minecraft.configuration.config.BotConfiguration;
 import com.illtamer.infinite.bot.minecraft.expansion.ExpansionLoader;
+import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabExecutor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -22,12 +18,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class CommandListener implements TabExecutor {
+public class CommandHelper {
 
     private static final SimpleDateFormat FORMAT = new SimpleDateFormat("HH:mm:ss");
 
-    @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public static boolean onCommand(CommandSender sender, String[] args) {
         if (!sender.isOp()) return true;
         if (args.length == 1) {
             if ("help".equalsIgnoreCase(args[0])) {
@@ -93,9 +88,7 @@ public class CommandListener implements TabExecutor {
         return true;
     }
 
-    @Nullable
-    @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public static List<String> onTabComplete(CommandSender sender, String[] args) {
         if (!sender.isOp()) return null;
         List<String> result = new ArrayList<>();
         if (args.length == 1)
