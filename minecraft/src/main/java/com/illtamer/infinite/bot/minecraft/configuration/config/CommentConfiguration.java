@@ -30,7 +30,7 @@ public class CommentConfiguration extends YamlConfiguration {
         StringBuilder builder = new StringBuilder();
         for (String part : parts) {
             Matcher matcher = fromPattern.matcher(part);
-            if (matcher.find()) {
+            if (matcher.find() && part.trim().startsWith("#")) {
                 String originComment = matcher.group(2);
                 String[] splitComments = split(originComment, commentSplitWidth);
                 for (int i = 0; i < splitComments.length; ++ i) {
