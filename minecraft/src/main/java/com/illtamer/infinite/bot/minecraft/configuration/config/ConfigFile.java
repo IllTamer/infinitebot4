@@ -27,6 +27,14 @@ public class ConfigFile {
         this.config = this.load();
     }
 
+    /**
+     * 更新并保存配置文件
+     * */
+    public void update(String yaml) {
+        config.load(yaml);
+        save();
+    }
+
     private Configuration load() {
         File file = new File(this.instance.getDataFolder(), this.name);
         if (!file.exists()) {

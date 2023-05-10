@@ -5,7 +5,6 @@ import com.illtamer.infinite.bot.api.entity.BotStatus;
 import com.illtamer.infinite.bot.api.handler.OpenAPIHandling;
 import com.illtamer.infinite.bot.minecraft.api.StaticAPI;
 import lombok.Getter;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.logging.Logger;
@@ -23,8 +22,8 @@ public class StatusCheckRunner implements Runnable {
 
     private final Logger log;
 
-    public StatusCheckRunner(Plugin plugin) {
-        this.log = plugin.getLogger();
+    public StatusCheckRunner(Logger logger) {
+        this.log = logger;
     }
 
     @Override

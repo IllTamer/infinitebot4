@@ -9,11 +9,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+// TODO bug fix need: bc端无法从根节点直接递归读取数据，需指定顶级节点后方可使用 特性 / bug ?
 class BungeeConfigSection implements ConfigSection {
 
     protected final net.md_5.bungee.config.Configuration config;
@@ -116,6 +118,13 @@ class BungeeConfigSection implements ConfigSection {
         }
 
         @Override
+        public String saveToString() {
+            StringWriter writer = new StringWriter();
+            PROVIDER.save(config, writer);
+            return writer.toString();
+        }
+
+        @Override
         public void save(File file) throws IOException {
             PROVIDER.save(config, file);
         }
@@ -123,6 +132,11 @@ class BungeeConfigSection implements ConfigSection {
         @Override
         public void load(File file) throws IOException {
             this.config = PROVIDER.load(file);
+        }
+
+        @Override
+        public void load(String yaml) {
+            this.config = PROVIDER.load(yaml);
         }
 
     }

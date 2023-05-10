@@ -4,6 +4,7 @@ import com.illtamer.infinite.bot.api.handler.OpenAPIHandling;
 import com.illtamer.infinite.bot.api.message.Message;
 import com.illtamer.infinite.bot.api.util.Assert;
 import com.illtamer.infinite.bot.minecraft.api.adapter.Bootstrap;
+import com.illtamer.infinite.bot.minecraft.configuration.BotNettyHolder;
 import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import com.illtamer.infinite.bot.minecraft.configuration.config.BotConfiguration;
 import com.illtamer.infinite.bot.minecraft.expansion.ExpansionLoader;
@@ -69,7 +70,9 @@ public class StaticAPI {
      * 重连 go-cqhttp WebSocket 服务
      * */
     public static void reconnected() {
-        BukkitBootstrap.getInstance().connect();
+        BukkitBootstrap inst = BukkitBootstrap.getInstance();
+        Assert.notNull(inst, "Bukkit plugin instance is null, is there a bukkit mode ?");
+        inst.getNettyHolder().ifPresent(BotNettyHolder::connect);
     }
 
     /**

@@ -12,18 +12,25 @@
 # 插件配置部分
 #   该配置可重载
 main:
+  # 是否开启 BungeeCord 兼容模式 (此配置项仅在bukkit核心上生效，bc核心会自动检测)
+  # 'true'  - 开启bc模式，读取 / 监听 核心插件的配置、事件
+  # 'false' - 不使用bc模式
+  bungee: false
   # 尝试避免风险控制(暂未实现)
   #   若机器人私聊正常、群消息被屏蔽，可尝试开启
-  try-avoid-risk-control: false
+  # try-avoid-risk-control: false
   # 管理员账号列表
+  #   bungee: true 时此配置项无效
   admins:
     - 765743073
   # 监听的群列表
+  #   bungee: true 时此配置项无效
   groups:
     - 863522624
 
 # 数据储存方式
 #   该配置仅在加载插件时读取
+#   bungee: true 时此配置项无效
 database:
   # 可选择的储存方式
   #   'yaml'  - 本地yaml储存，数据仅插件加载服可用
@@ -39,9 +46,10 @@ database:
 
 # 连接配置项
 #   该配置可重载
+#   bungee: true 时此配置项无效
 connection:
   # go-cqhttp 进程所在域名
-  host: ''
+  host: '127.0.0.1'
   # 服务开放端口
   port:
     http: 5700
@@ -49,3 +57,12 @@ connection:
   # 通信验证 token
   #   若您在 go-cqhttp 中配置了此项，请填写，否则请留空
   authorization: ''
+
+# Redis 配置项
+# 当插件位于 bc 核心下时自动读取
+redis:
+  # 是否启用内置 redis
+  #   bungee: true 时此配置项无效
+  embed: true
+  host: '127.0.0.1'
+  port: 6380

@@ -108,6 +108,11 @@ class BukkitConfigSection implements ConfigSection {
         }
 
         @Override
+        public String saveToString() {
+            return yaml.saveToString();
+        }
+
+        @Override
         public void save(File file) throws IOException {
             yaml.save(file);
         }
@@ -117,6 +122,15 @@ class BukkitConfigSection implements ConfigSection {
             try {
                 yaml.load(file);
             } catch (InvalidConfigurationException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public void load(String yaml) {
+            try {
+                this.yaml.load(yaml);
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }

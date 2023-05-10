@@ -1,5 +1,6 @@
 package com.illtamer.infinite.bot.minecraft.listener;
 
+import com.illtamer.infinite.bot.minecraft.api.adapter.Bootstrap;
 import com.illtamer.infinite.bot.minecraft.listener.handler.CommandHelper;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -37,7 +38,7 @@ public class BungeeCommandListener extends Command {
                 }).toArray(TextComponent[]::new);
                 sender.sendMessage(components);
             }
-        }, args);
+        }, args, Bootstrap.Type.BUNGEE);
     }
 
 }

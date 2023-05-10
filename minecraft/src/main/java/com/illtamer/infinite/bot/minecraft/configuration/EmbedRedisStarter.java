@@ -1,9 +1,9 @@
 package com.illtamer.infinite.bot.minecraft.configuration;
 
 import com.illtamer.infinite.bot.api.util.Assert;
+import com.illtamer.infinite.bot.minecraft.api.BotScheduler;
 import com.illtamer.infinite.bot.minecraft.api.adapter.Bootstrap;
 import com.illtamer.infinite.bot.minecraft.configuration.config.BotConfiguration;
-import com.illtamer.infinite.bot.minecraft.configuration.redis.JedisSubscriber;
 import com.illtamer.infinite.bot.minecraft.util.JedisUtil;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -26,7 +26,7 @@ public abstract class EmbedRedisStarter extends Plugin {
     protected static EmbedRedisStarter instance;
 
     @Nullable
-    private RedisServer server;
+    protected RedisServer server;
 
     @Override
     public void onLoad() {
@@ -34,11 +34,8 @@ public abstract class EmbedRedisStarter extends Plugin {
         BotConfiguration.load((Bootstrap) instance);
         BotConfiguration.RedisConfig redisConfig = BotConfiguration.redis;
         if (redisConfig.embed) // start embedded redis server
-            // TODO bot-scheduler
-            createAndStartRedisServer(redisConfig.host, redisConfig.port, instance.getDataFolder());
+            BotScheduler.runTask(() -> createAndStartRedisServer(redisConfig.host, redisConfig.port, instance.getDataFolder()));
         JedisUtil.init(redisConfig.host, redisConfig.port);
-        // TODO bot-scheduler
-        JedisUtil.option(jedis -> jedis.subscribe(new JedisSubscriber(), JedisUtil.CHANNEL));
     }
 
     @Override

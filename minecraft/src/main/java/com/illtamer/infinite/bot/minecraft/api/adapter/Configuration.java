@@ -14,6 +14,11 @@ public interface Configuration extends ConfigSection {
     ConfigSection createSection(String path, Map<String, Object> data);
 
     /**
+     * 序列化
+     * */
+    String saveToString();
+
+    /**
      * 将缓存数据保存到磁盘
      * */
     void save(File file) throws IOException;
@@ -22,5 +27,10 @@ public interface Configuration extends ConfigSection {
      * 将磁盘文件加载到缓存
      * */
     void load(File file) throws IOException;
+
+    /**
+     * 从字符串加载
+     * */
+    void load(String yaml);
 
 }

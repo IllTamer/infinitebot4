@@ -1,14 +1,15 @@
 package com.illtamer.infinite.bot.minecraft.listener.handler;
 
 import com.illtamer.infinite.bot.api.entity.BotStatus;
+import com.illtamer.infinite.bot.minecraft.api.BotScheduler;
 import com.illtamer.infinite.bot.minecraft.api.IExpansion;
 import com.illtamer.infinite.bot.minecraft.api.IExternalExpansion;
+import com.illtamer.infinite.bot.minecraft.api.adapter.Bootstrap;
 import com.illtamer.infinite.bot.minecraft.api.adapter.CommandSender;
 import com.illtamer.infinite.bot.minecraft.configuration.StatusCheckRunner;
 import com.illtamer.infinite.bot.minecraft.configuration.config.BotConfiguration;
 import com.illtamer.infinite.bot.minecraft.expansion.ExpansionLoader;
 import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
-import org.bukkit.Bukkit;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -22,7 +23,7 @@ public class CommandHelper {
 
     private static final SimpleDateFormat FORMAT = new SimpleDateFormat("HH:mm:ss");
 
-    public static boolean onCommand(CommandSender sender, String[] args) {
+    public static boolean onCommand(CommandSender sender, String[] args, Bootstrap.Type type) {
         if (!sender.isOp()) return true;
         if (args.length == 1) {
             if ("help".equalsIgnoreCase(args[0])) {
@@ -54,6 +55,10 @@ public class CommandHelper {
             return true;
         }
         if (args.length != 2) return true;
+        if (type != Bootstrap.Type.BUKKIT) {
+            sender.sendMessage("当前非 BUKKIT 环境，部分指令已禁用");
+            return true;
+        }
         final ExpansionLoader loader = BukkitBootstrap.getInstance().getExpansionLoader();
         if ("expansions".equalsIgnoreCase(args[0])) {
             if ("list".equalsIgnoreCase(args[1])) {
@@ -61,7 +66,7 @@ public class CommandHelper {
                 String[] keyArray = new String[set.size()];
                 sender.sendMessage(set.toArray(keyArray));
             } else if ("reload".equalsIgnoreCase(args[1])) {
-                Bukkit.getScheduler().runTaskAsynchronously(BukkitBootstrap.getInstance(), () -> {
+                BotScheduler.runTask(() -> {
                     loader.disableExpansions(true);
                     loader.loadExpansions(true);
                 });

@@ -1,10 +1,11 @@
 package com.illtamer.infinite.bot.minecraft.start.bungee;
 
-import com.illtamer.infinite.bot.api.event.EventResolver;
+import com.illtamer.infinite.bot.minecraft.api.BotScheduler;
 import com.illtamer.infinite.bot.minecraft.api.adapter.Bootstrap;
 import com.illtamer.infinite.bot.minecraft.api.adapter.Configuration;
 import com.illtamer.infinite.bot.minecraft.configuration.BotNettyHolder;
 import com.illtamer.infinite.bot.minecraft.configuration.EmbedRedisStarter;
+import com.illtamer.infinite.bot.minecraft.configuration.StatusCheckRunner;
 import com.illtamer.infinite.bot.minecraft.listener.BungeeCommandListener;
 import com.illtamer.infinite.bot.minecraft.util.ExpansionUtil;
 import com.illtamer.infinite.bot.minecraft.util.JedisUtil;
@@ -17,8 +18,7 @@ public class BungeeBootstrap extends EmbedRedisStarter implements Bootstrap {
 
     @Override
     public void onLoad() {
-        nettyHolder = new BotNettyHolder(getLogger(), event ->
-                JedisUtil.publish(EventResolver.GSON.toJson(event)));
+        nettyHolder = new BotNettyHolder(getLogger(), JedisUtil::publish);
         super.onLoad();
         nettyHolder.connect();
     }
@@ -26,14 +26,14 @@ public class BungeeBootstrap extends EmbedRedisStarter implements Bootstrap {
     @Override
     public void onEnable() {
         nettyHolder.checkConnection();
-        // TODO Status check scheduler
-//        Bukkit.getScheduler().runTaskTimerAsynchronously(instance,
-//                new StatusCheckRunner(instance), 15 * 20, 30 * 20);
+        BotScheduler.runTaskTimer(new StatusCheckRunner(getLogger()), 15, 30);
         getProxy().getPluginManager().registerCommand(this, new BungeeCommandListener());
+        getLogger().info("Bungee 模式已启动，暂不支持加载附属");
     }
 
     @Override
     public void onDisable() {
+        BotScheduler.close();
         super.onDisable();
         nettyHolder.close();
     }

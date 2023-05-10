@@ -1,12 +1,13 @@
 package com.illtamer.infinite.bot.minecraft.repository.impl;
 
 import com.illtamer.infinite.bot.api.util.Assert;
+import com.illtamer.infinite.bot.minecraft.api.StaticAPI;
+import com.illtamer.infinite.bot.minecraft.api.adapter.Bootstrap;
 import com.illtamer.infinite.bot.minecraft.api.adapter.ConfigSection;
 import com.illtamer.infinite.bot.minecraft.api.adapter.Configuration;
 import com.illtamer.infinite.bot.minecraft.configuration.config.ConfigFile;
 import com.illtamer.infinite.bot.minecraft.pojo.PlayerData;
 import com.illtamer.infinite.bot.minecraft.repository.PlayerDataRepository;
-import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import com.illtamer.infinite.bot.minecraft.util.Lambda;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,11 +21,12 @@ import java.util.stream.Collectors;
 
 public class YamlPlayerDataRepository implements PlayerDataRepository {
 
-    private final Logger log = BukkitBootstrap.getInstance().getLogger();
+    private final Logger log;
     private final ConfigFile dataFile;
     private final Map<String, PlayerData> playerDataMap;
 
-    public YamlPlayerDataRepository(ConfigFile dataFile) {
+    public YamlPlayerDataRepository(ConfigFile dataFile, Bootstrap instance) {
+        this.log = instance.getLogger();
         this.dataFile = dataFile;
         final Configuration config = dataFile.getConfig();
         Set<String> idSet = config.getKeys(false);

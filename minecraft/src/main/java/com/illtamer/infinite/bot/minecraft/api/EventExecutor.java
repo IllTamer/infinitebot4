@@ -87,7 +87,7 @@ public class EventExecutor {
      * */
     public static void dispatchListener(Event event) {
         if (METHODS.size() == 0) return;
-        Bukkit.getScheduler().runTaskAsynchronously(BukkitBootstrap.getInstance(), new Dispatcher(event));
+        BotScheduler.runTask(new Dispatcher(event));
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.illtamer.infinite.bot.minecraft.listener;
 
+import com.illtamer.infinite.bot.minecraft.api.adapter.Bootstrap;
 import com.illtamer.infinite.bot.minecraft.listener.handler.CommandHelper;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -13,7 +14,7 @@ public class BukkitCommandListener implements TabExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        return CommandHelper.onCommand(new BukkitCommandSender(sender), args);
+        return CommandHelper.onCommand(new BukkitCommandSender(sender), args, Bootstrap.Type.BUKKIT);
     }
 
     @Nullable

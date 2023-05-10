@@ -1,5 +1,8 @@
 package com.illtamer.infinite.bot.minecraft.util;
 
+import com.illtamer.infinite.bot.api.event.Event;
+import com.illtamer.infinite.bot.api.event.EventResolver;
+import com.illtamer.infinite.bot.minecraft.configuration.redis.JedisSubscriber;
 import lombok.experimental.UtilityClass;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -17,8 +20,12 @@ public class JedisUtil {
         pool = new JedisPool(host, port);
     }
 
-    public static void publish(String message) {
-        option(jedis -> jedis.publish(CHANNEL, message));
+    public static void publish(Event event) {
+        option(jedis -> jedis.publish(CHANNEL, EventResolver.GSON.toJson(event)));
+    }
+
+    public static void subscribe(Consumer<Event> consumer) {
+        option(jedis -> jedis.subscribe(new JedisSubscriber(consumer), CHANNEL));
     }
 
     public static void option(Consumer<Jedis> consumer) {

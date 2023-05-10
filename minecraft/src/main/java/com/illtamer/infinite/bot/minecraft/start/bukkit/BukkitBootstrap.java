@@ -1,5 +1,7 @@
 package com.illtamer.infinite.bot.minecraft.start.bukkit;
 
+import com.illtamer.infinite.bot.api.Optional;
+import com.illtamer.infinite.bot.minecraft.api.BotScheduler;
 import com.illtamer.infinite.bot.minecraft.api.EventExecutor;
 import com.illtamer.infinite.bot.minecraft.api.adapter.Bootstrap;
 import com.illtamer.infinite.bot.minecraft.api.adapter.Configuration;
@@ -9,12 +11,10 @@ import com.illtamer.infinite.bot.minecraft.configuration.config.BotConfiguration
 import com.illtamer.infinite.bot.minecraft.expansion.ExpansionLoader;
 import com.illtamer.infinite.bot.minecraft.listener.BukkitCommandListener;
 import com.illtamer.infinite.bot.minecraft.listener.PluginListener;
+import com.illtamer.infinite.bot.minecraft.util.JedisUtil;
 import lombok.Getter;
-import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.Optional;
 
 // TODO 集中help管理、command支持
 //      libs folder
@@ -25,22 +25,26 @@ public class BukkitBootstrap extends JavaPlugin implements Bootstrap {
 
     @Getter
     private final ExpansionLoader expansionLoader = new ExpansionLoader(this);
-
-    private BotNettyHolder nettyHolder;
+    @Getter
+    private final Optional<BotNettyHolder> nettyHolder = Optional.empty();
 
     @Override
     public void onLoad() {
-        // TODO check bungee mode and change handler method
-        this.nettyHolder = new BotNettyHolder(getLogger(), EventExecutor::dispatchListener);
         BotConfiguration.load(instance = this);
-        nettyHolder.connect();
+        if (!BotConfiguration.main.bungee) {
+            this.nettyHolder.set(new BotNettyHolder(getLogger(), EventExecutor::dispatchListener));
+            nettyHolder.get().connect();
+            return;
+        }
+        BotConfiguration.RedisConfig redisConfig = BotConfiguration.redis;
+        JedisUtil.init(redisConfig.host, redisConfig.port);
+        JedisUtil.subscribe(EventExecutor::dispatchListener);
     }
 
     @Override
     public void onEnable() {
-        nettyHolder.checkConnection();
-        Bukkit.getScheduler().runTaskTimerAsynchronously(instance,
-                new StatusCheckRunner(instance), 15 * 20, 30 * 20);
+        nettyHolder.ifPresent(BotNettyHolder::checkConnection);
+        BotScheduler.runTaskTimer(new StatusCheckRunner(getLogger()), 15, 30);
         expansionLoader.loadExpansions(false);
         BukkitCommandListener bukkitCommandListener = new BukkitCommandListener();
         final PluginCommand command = Optional.ofNullable(getServer().getPluginCommand("InfiniteBot3"))
@@ -52,9 +56,10 @@ public class BukkitBootstrap extends JavaPlugin implements Bootstrap {
 
     @Override
     public void onDisable() {
+        BotScheduler.close();
         expansionLoader.disableExpansions(false);
         BotConfiguration.saveAndClose();
-        nettyHolder.close();
+        nettyHolder.ifPresent(BotNettyHolder::close);
     }
 
     @Override

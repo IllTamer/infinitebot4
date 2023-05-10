@@ -1,6 +1,7 @@
 package com.illtamer.infinite.bot.minecraft.repository.impl;
 
 import com.illtamer.infinite.bot.api.util.Assert;
+import com.illtamer.infinite.bot.minecraft.api.adapter.Bootstrap;
 import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import com.illtamer.infinite.bot.minecraft.pojo.PlayerData;
 import com.illtamer.infinite.bot.minecraft.repository.PlayerDataRepository;
@@ -17,10 +18,11 @@ import java.util.logging.Logger;
 
 public class DatabasePlayerDataRepository implements PlayerDataRepository {
 
-    private final Logger log = BukkitBootstrap.getInstance().getLogger();
+    private final Logger log;
     protected final DataSource dataSource;
 
-    public DatabasePlayerDataRepository(@NotNull DataSource dataSource) {
+    public DatabasePlayerDataRepository(@NotNull DataSource dataSource, Bootstrap instance) {
+        this.log = instance.getLogger();
         this.dataSource = dataSource;
         createTableIfNotExists();
     }

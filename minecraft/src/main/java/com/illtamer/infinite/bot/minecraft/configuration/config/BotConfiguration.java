@@ -1,12 +1,18 @@
 package com.illtamer.infinite.bot.minecraft.configuration.config;
 
 import com.illtamer.infinite.bot.api.util.Assert;
+import com.illtamer.infinite.bot.minecraft.api.StaticAPI;
 import com.illtamer.infinite.bot.minecraft.api.adapter.Bootstrap;
-import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
+import com.illtamer.infinite.bot.minecraft.api.adapter.ConfigSection;
+import com.illtamer.infinite.bot.minecraft.api.event.LocalEvent;
+import com.illtamer.infinite.bot.minecraft.configuration.redis.ConfigurationCenter;
 import com.illtamer.infinite.bot.minecraft.repository.PlayerDataRepository;
 import com.illtamer.infinite.bot.minecraft.repository.impl.DatabasePlayerDataRepository;
 import com.illtamer.infinite.bot.minecraft.repository.impl.YamlPlayerDataRepository;
+import com.illtamer.infinite.bot.minecraft.start.bungee.BungeeBootstrap;
+import com.illtamer.infinite.bot.minecraft.util.JedisUtil;
 import lombok.Getter;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,7 +44,7 @@ public class BotConfiguration {
     private BotConfiguration(Bootstrap instance) {
         this.configFile = new ConfigFile("config.yml", instance);
         loadConfigurations();
-        new File(BukkitBootstrap.getInstance().getDataFolder(), EXPANSION_FOLDER_NAME).mkdirs();
+        new File(instance.getDataFolder(), EXPANSION_FOLDER_NAME).mkdirs();
         boolean localData = "yaml".equalsIgnoreCase(database.type);
         DataSource dataSource = null;
         if (!localData) {
@@ -47,12 +53,20 @@ public class BotConfiguration {
                 ; // do nothing
             } catch (SQLException ignore) {
                 localData = true;
-                BukkitBootstrap.getInstance().getLogger().warning("数据库连接异常，自动启用本地数据，如需使用数据库请修改后重新载入插件");
+                instance.getLogger().warning("数据库连接异常，自动启用本地数据，如需使用数据库请修改后重新载入插件");
             }
         }
         repository = localData ?
-                new YamlPlayerDataRepository(new ConfigFile("player_data.yml", BukkitBootstrap.getInstance())) :
-                new DatabasePlayerDataRepository(dataSource);
+                new YamlPlayerDataRepository(new ConfigFile("player_data.yml", instance), instance) :
+                new DatabasePlayerDataRepository(dataSource, instance);
+    }
+
+    /**
+     * 从字符串加载配置文件
+     * */
+    public void loadConfigurations(String yaml) {
+        this.configFile.update(yaml);
+        loadConfigurations();
     }
 
     /**
@@ -63,6 +77,13 @@ public class BotConfiguration {
         database = new DatabaseConfig();
         connection = new ConnectionConfig();
         redis = new RedisConfig();
+        if (StaticAPI.getInstance() instanceof BungeeBootstrap) {
+            StaticAPI.getInstance().getLogger().info("检测到主配置重载，同步配置中");
+            JedisUtil.publish(LocalEvent.builder()
+                    .identify(ConfigurationCenter.IDENTIFY)
+                    .data(configFile.getConfig().saveToString())
+                    .build());
+        }
     }
 
     /**
@@ -96,62 +117,66 @@ public class BotConfiguration {
 
     public class MainConfig {
 
-        private static final String PATH = "main.";
+        private ConfigSection section = configFile.getConfig().getSection("main");
 
+        @NotNull
+        public final Boolean bungee =section.getBoolean("bungee", false);
+
+        @NotNull
         // TODO 发送合并节点消息？
-        public final boolean tryAvoidRiskControl = configFile.getConfig().getBoolean(PATH + "try-avoid-risk-control", false);
+        public final Boolean tryAvoidRiskControl = section.getBoolean("try-avoid-risk-control", false);
 
         @NotNull
-        public final List<Long> admins = configFile.getConfig().getLongList(PATH + "admins");
+        public final List<Long> admins = section.getLongList("admins");
 
         @NotNull
-        public final List<Long> groups = configFile.getConfig().getLongList(PATH + "groups");
+        public final List<Long> groups = section.getLongList("groups");
 
     }
 
     @SuppressWarnings("all")
     public class DatabaseConfig {
 
-        private static final String PATH = "database.";
+        private ConfigSection section = configFile.getConfig().getSection("database");
 
         @NotNull
-        public final String type = configFile.getConfig().getString(PATH + "type", "yml");
+        public final String type = section.getString("type", "yml");
 
         @NotNull
-        public final Map<String, Object> mysqlConfig = Optional.ofNullable(configFile.getConfig().getSection(PATH + "config.mysql")).orElseThrow(() -> new NullPointerException("Nonexistent path: " + PATH + "config.mysql")).getValues(false);
+        public final Map<String, Object> mysqlConfig = Optional.ofNullable(configFile.getConfig().getSection("database.config.mysql")).orElseThrow(() -> new NullPointerException("Nonexistent path: database.config.mysql")).getValues(false);
 
     }
 
     @SuppressWarnings("all")
     public class ConnectionConfig {
 
-        private static final String PATH = "connection.";
+        private ConfigSection section = configFile.getConfig().getSection("connection");
 
         @NotNull
-        public final String host = configFile.getConfig().getString(PATH + "host", "unknown");
+        public final String host = section.getString("host", "unknown");
 
-        public final int httpPort = configFile.getConfig().getInt(PATH + "port.http", -1);
+        public final int httpPort = section.getInt("port.http", -1);
 
-        public final int websocketPort = configFile.getConfig().getInt(PATH + "port.websocket", -1);
+        public final int websocketPort = section.getInt("port.websocket", -1);
 
         @Nullable
-        public final String authorization = configFile.getConfig().getString(PATH + "authorization", null);
+        public final String authorization = section.getString("authorization", null);
 
     }
 
     @SuppressWarnings("all")
     public class RedisConfig {
 
-        private static final String PATH = "redis.";
+        private ConfigSection section = configFile.getConfig().getSection("redis");
 
         @NotNull
-        public final Boolean embed = configFile.getConfig().getBoolean(PATH + "embed", true);
+        public final Boolean embed = section.getBoolean("embed", true);
 
         @NotNull
-        public final String host = configFile.getConfig().getString(PATH + "host", "127.0.0.1");
+        public final String host = section.getString("host", "127.0.0.1");
 
         @NotNull
-        public final Integer port = configFile.getConfig().getInt(PATH + "port", 2380);
+        public final Integer port = section.getInt("port", 2380);
 
     }
 
