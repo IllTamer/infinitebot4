@@ -11,4 +11,9 @@ public class At implements TransferEntity {
      * */
     private String qq;
 
+    /**
+     * @ 的 QQ 昵称, 默认为 QQ 号
+     * */
+    private String name;
+
 }

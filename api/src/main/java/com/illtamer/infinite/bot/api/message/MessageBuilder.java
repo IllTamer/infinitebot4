@@ -1,5 +1,6 @@
 package com.illtamer.infinite.bot.api.message;
 
+import com.illtamer.infinite.bot.api.Pair;
 import com.illtamer.infinite.bot.api.annotation.SendOnly;
 import com.illtamer.infinite.bot.api.entity.TransferEntity;
 import com.illtamer.infinite.bot.api.entity.enumerate.MusicType;
@@ -387,7 +388,16 @@ public class MessageBuilder {
     }
 
     /**
-     * @since 3.0.4
+     * @since 1.0.14
+     * */
+    public MessageBuilder add(TransferEntity entity) {
+        Pair<String, Map<String, @Nullable Object>> pair = MessageChain.entityToProperty(entity);
+        property(pair.getKey(), pair.getValue());
+        return this;
+    }
+
+    /**
+     * @since 1.0.2
      * */
     public MessageBuilder addAll(Message message) {
         message.entryList().forEach(pair -> property(pair.getKey(), pair.getValue()));
@@ -407,6 +417,10 @@ public class MessageBuilder {
     MessageBuilder property(String type, Map<String, @Nullable Object> args) {
         message.add(type, args);
         return this;
+    }
+
+    public boolean empty() {
+        return message.getSize() == 0;
     }
 
     public Message build() {

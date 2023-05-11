@@ -1,10 +1,14 @@
 package com.illtamer.infinite.bot.api.message;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.illtamer.infinite.bot.api.Pair;
 import com.illtamer.infinite.bot.api.entity.TransferEntity;
 import com.illtamer.infinite.bot.api.entity.transfer.*;
+import com.illtamer.infinite.bot.api.event.EventResolver;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -17,13 +21,12 @@ import java.util.stream.Collectors;
 public class MessageChain implements Iterable<TransferEntity> {
 
     private static final Map<String, Class<? extends TransferEntity>> MAPPER;
+
     @Getter
     private final List<TransferEntity> entities;
-    private final Gson gson;
 
     protected MessageChain() {
         this.entities = new ArrayList<>();
-        this.gson = new Gson();
     }
 
     protected void boltOn(String type, List<Map.Entry<String, Object>> data) {
@@ -31,6 +34,7 @@ public class MessageChain implements Iterable<TransferEntity> {
         if (clazz == null)
             clazz = Unknown.class;
         try {
+            Gson gson = EventResolver.GSON;
             final Map<String, Object> objectMap = data.stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
             entities.add(gson.fromJson(gson.toJson(objectMap), clazz));
         } catch (Exception e) {
@@ -50,6 +54,14 @@ public class MessageChain implements Iterable<TransferEntity> {
             }
             ++ index;
         }
+    }
+
+    protected static Pair<String, Map<String, @Nullable Object>> entityToProperty(TransferEntity entity) {
+        String key = entity.getClass().getSimpleName().toLowerCase();
+        Gson gson = EventResolver.GSON;
+        // special handle for num parse
+        Map<String, @Nullable Object> value = gson.fromJson(gson.toJson(entity), new TypeToken<Map<String, Object>>(){}.getType());
+        return new Pair<>(key, value);
     }
 
     @NotNull
