@@ -1,15 +1,18 @@
 package com.illtamer.infinite.bot.api.event;
 
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 import com.illtamer.infinite.bot.api.annotation.Coordinates;
 import com.illtamer.infinite.bot.api.config.CQHttpWebSocketConfiguration;
 import com.illtamer.infinite.bot.api.message.DateTypeAdapter;
 import com.illtamer.infinite.bot.api.message.Message;
 import com.illtamer.infinite.bot.api.message.MessageTypeAdapter;
+import com.illtamer.infinite.bot.api.message.ObjectTypeAdapter;
 import com.illtamer.infinite.bot.api.util.ClassUtil;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class EventResolver {
@@ -19,6 +22,7 @@ public class EventResolver {
     public static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(Date.class, new DateTypeAdapter())
             .registerTypeAdapter(Message.class, new MessageTypeAdapter())
+            .registerTypeAdapter(new TypeToken<Map<String, Object>>(){}.getType(),new ObjectTypeAdapter())
             .create();
 
     static {
