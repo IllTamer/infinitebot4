@@ -1,6 +1,8 @@
 package com.illtamer.infinite.bot.api.config;
 
+import com.illtamer.infinite.bot.api.entity.LoginInfo;
 import com.illtamer.infinite.bot.api.event.Event;
+import com.illtamer.infinite.bot.api.handler.OpenAPIHandling;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -39,6 +41,8 @@ public class CQHttpWebSocketConfiguration {
     @Setter
     @Getter
     private static String authorization;
+    @Getter
+    private static LoginInfo loginInfo;
     @Getter
     private static boolean running = false;
     @Getter
@@ -83,6 +87,7 @@ public class CQHttpWebSocketConfiguration {
             handshake.handshake(channel);
             // 阻塞等待是否握手成功
             eventHandler.getHandshakeFuture().sync();
+            loginInfo = OpenAPIHandling.getLoginInfo();
             running = true;
             log.info("go-cqhttp websocket 握手成功");
             channel.closeFuture().sync();
