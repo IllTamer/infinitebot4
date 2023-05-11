@@ -1,7 +1,9 @@
 package com.illtamer.infinite.bot.api.handler;
 
 import com.illtamer.infinite.bot.api.Response;
+import com.illtamer.infinite.bot.api.config.CQHttpWebSocketConfiguration;
 import com.illtamer.infinite.bot.api.entity.*;
+import com.illtamer.infinite.bot.api.entity.transfer.Text;
 import com.illtamer.infinite.bot.api.exception.APIInvokeException;
 import com.illtamer.infinite.bot.api.message.Message;
 import com.illtamer.infinite.bot.api.message.MessageBuilder;
@@ -50,7 +52,7 @@ public class OpenAPIHandling {
     }
 
     /**
-     * 发送消息
+     * 发送私人消息
      * @return 消息 ID
      * */
     public static Integer sendMessage(String message, long userId) {
@@ -58,10 +60,21 @@ public class OpenAPIHandling {
     }
 
     /**
-     * 发送消息
+     * 发送私人消息
      * @return 消息 ID
      * */
     public static Integer sendMessage(Message message, long userId) {
+        return sendMessage(message, userId, 2000);
+    }
+
+    /**
+     * 发送私人消息
+     * @param limit 最大字符数限制
+     * @return 消息 ID
+     * */
+    public static Integer sendMessage(Message message, long userId, int limit) {
+        Message limited;
+        if ((limited = buildLimitMessage(message, limit)) != null) return sendPrivateForwardMessage(limited, userId);
         Response<Map<String, Object>> response = new PrivateMsgSendHandler()
                 .setUserId(userId)
                 .setMessage(message)
@@ -84,6 +97,18 @@ public class OpenAPIHandling {
      * @return 消息 ID
      * */
     public static Integer sendTempMessage(Message message, long userId, long groupId) {
+        return sendTempMessage(message, userId, groupId, 2000);
+    }
+
+    /**
+     * 发送临时会话消息
+     * @param groupId 消息来源群组
+     * @param limit 最大字符数限制
+     * @return 消息 ID
+     * */
+    public static Integer sendTempMessage(Message message, long userId, long groupId, int limit) {
+        Message limited;
+        if ((limited = buildLimitMessage(message, limit)) != null) return sendPrivateForwardMessage(limited, userId);
         Response<Map<String, Object>> response = new PrivateMsgSendHandler()
                 .setUserId(userId)
                 .setGroupId(groupId)
@@ -105,9 +130,31 @@ public class OpenAPIHandling {
      * @return 消息 ID
      * */
     public static Integer sendGroupMessage(Message message, long groupId) {
+        return sendGroupMessage(message, groupId, 2000);
+    }
+
+    /**
+     * 发送群消息
+     * @return 消息 ID
+     * */
+    public static Integer sendGroupMessage(Message message, long groupId, int limit) {
+        Message limited;
+        if ((limited = buildLimitMessage(message, limit)) != null) return sendGroupForwardMessage(limited, groupId);
         Response<Map<String, Object>> response = new GroupMsgSendHandler()
                 .setGroupId(groupId)
                 .setMessage(message)
+                .request();
+        return (int) ((Double) response.getData().get("message_id")).doubleValue();
+    }
+
+    /**
+     * 发送自定义合并消息到群
+     * @param messageNode 构造的节点消息
+     * */
+    public static Integer sendPrivateForwardMessage(Message messageNode, long userId) {
+        Response<Map<String, Object>> response = new PrivateForwardSendHandler()
+                .setUserId(userId)
+                .setMessages(messageNode)
                 .request();
         return (int) ((Double) response.getData().get("message_id")).doubleValue();
     }
@@ -213,12 +260,60 @@ public class OpenAPIHandling {
                 .request();
         return StrangerGetHandler.parse(response);
     }
+
     /**
      * 获取机器人状态信息
      * */
     public static BotStatus getStatus() {
         final Response<Map<String, Object>> response = new StatusGetHandler().request();
         return StatusGetHandler.parse(response);
+    }
+
+    public static Message buildLimitMessage(Message message, int limit) {
+        List<TransferEntity> entities = message.getMessageChain().getEntities();
+        int length = entities.stream().filter(e -> e instanceof Text).mapToInt(e -> ((Text) e).getText().length()).sum();
+        if (length < limit) return null;
+
+        LoginInfo info = CQHttpWebSocketConfiguration.getLoginInfo();
+        MessageBuilder mergeNodes = MessageBuilder.json();
+        MessageBuilder nodeBuilder = MessageBuilder.json();
+        int nodeLen = 0;
+        for (TransferEntity entity : entities) {
+            // TODO 改进内容长度算法，TransferEntity 加 #length 接口
+            int entityLen = entity instanceof Text ? ((Text) entity).getText().length() : 20;
+            nodeLen += entityLen;
+            if (nodeLen <= limit) {
+                nodeBuilder.add(entity);
+                continue;
+            }
+            // 非 text 类型不可拆分，直接并入消息
+            if (!(entity instanceof Text)) {
+                mergeNodes.customMessageNode(info.getNickname(), info.getUserId(), nodeBuilder.build(), null);
+                mergeNodes.customMessageNode(info.getNickname(), info.getUserId(), MessageBuilder.json().add(entity).build(), null);
+            } else {
+                String text = ((Text) entity).getText();
+                int split = limit - (nodeLen - entityLen);
+                nodeBuilder.text(text.substring(0, split));
+                mergeNodes.customMessageNode(info.getNickname(), info.getUserId(), nodeBuilder.build(), null);
+                recursionSplitText(text.substring(split), mergeNodes, info, limit);
+            }
+            nodeLen = 0;
+            nodeBuilder = MessageBuilder.json();
+        }
+        if (!nodeBuilder.empty()) {
+            mergeNodes.customMessageNode(info.getNickname(), info.getUserId(), nodeBuilder.build(), null);
+        }
+        return mergeNodes.build();
+    }
+
+    private static void recursionSplitText(String text, MessageBuilder parent, LoginInfo info, int limit) {
+        if (text.length() == 0) return;
+        if (text.length() <= limit) {
+            parent.customMessageNode(info.getNickname(), info.getUserId(), MessageBuilder.json().text(text).build(), null);
+            return;
+        }
+        parent.customMessageNode(info.getNickname(), info.getUserId(), MessageBuilder.json().text(text.substring(0, limit)).build(), null);
+        recursionSplitText(text.substring(limit), parent, info, limit);
     }
 
 }
