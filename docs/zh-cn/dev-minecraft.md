@@ -190,4 +190,4 @@ ExpansionConfig 已封装常用方法保存/重载/获取yml文件，详见 [[Ex
 
    作者所能确保的不会删减的 API 在 `com.illtamer.infinite.bot.minecraft.api` 包内，其中 [[StaticAPI]](../src/main/java/com/illtamer/infinite/bot/minecraft/api/StaticAPI.java) 提供部分 API 的便捷静态方法调用。
 
-   插件的启动类为 `com.illtamer.infinite.bot.minecraft.Bootstrap`，如有需要，您可获取启动类实例以获取附属加载类 [[ExpansionLoader]](../src/main/java/com/illtamer/infinite/bot/minecraft/expansion/ExpansionLoader.java) 的实例，对插件的附属进行修改操作。
+   插件的启动类为 `com.illtamer.infinite.bot.minecraft.start.Bootstrap`，如有需要，您可获取启动类实例以获取附属加载类 [[ExpansionLoader]](../src/main/java/com/illtamer/infinite/bot/minecraft/expansion/ExpansionLoader.java) 的实例，对插件的附属进行修改操作。
