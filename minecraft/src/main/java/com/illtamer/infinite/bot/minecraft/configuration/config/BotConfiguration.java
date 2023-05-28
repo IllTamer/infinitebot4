@@ -96,6 +96,7 @@ public class BotConfiguration {
             Assert.isNull(instance, "Repeated initialization");
             instance = new BotConfiguration(plugin);
         }
+        StaticAPI.setInstance(plugin);
         return instance;
     }
 
