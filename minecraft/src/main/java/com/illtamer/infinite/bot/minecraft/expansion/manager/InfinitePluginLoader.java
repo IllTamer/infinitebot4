@@ -2,11 +2,11 @@ package com.illtamer.infinite.bot.minecraft.expansion.manager;
 
 
 import com.illtamer.infinite.bot.api.util.Assert;
-import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import com.illtamer.infinite.bot.minecraft.api.EventExecutor;
 import com.illtamer.infinite.bot.minecraft.api.IExpansion;
 import com.illtamer.infinite.bot.minecraft.api.IExternalExpansion;
 import com.illtamer.infinite.bot.minecraft.exception.InvalidExpansionException;
+import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import com.illtamer.infinite.bot.minecraft.util.ExpansionUtil;
 
 import java.io.File;

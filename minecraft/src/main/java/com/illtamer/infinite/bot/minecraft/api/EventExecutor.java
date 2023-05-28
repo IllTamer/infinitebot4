@@ -4,10 +4,10 @@ import com.illtamer.infinite.bot.api.event.Cancellable;
 import com.illtamer.infinite.bot.api.event.Event;
 import com.illtamer.infinite.bot.api.event.MetaEvent;
 import com.illtamer.infinite.bot.api.util.ClassUtil;
-import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import com.illtamer.infinite.bot.minecraft.api.event.EventHandler;
 import com.illtamer.infinite.bot.minecraft.api.event.EventPriority;
 import com.illtamer.infinite.bot.minecraft.api.event.Listener;
+import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 

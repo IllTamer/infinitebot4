@@ -2,7 +2,6 @@ package com.illtamer.infinite.bot.minecraft.repository.impl;
 
 import com.illtamer.infinite.bot.api.util.Assert;
 import com.illtamer.infinite.bot.minecraft.api.adapter.Bootstrap;
-import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import com.illtamer.infinite.bot.minecraft.pojo.PlayerData;
 import com.illtamer.infinite.bot.minecraft.repository.PlayerDataRepository;
 import com.illtamer.infinite.bot.minecraft.util.StringUtil;

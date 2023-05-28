@@ -1,9 +1,9 @@
 package com.illtamer.infinite.bot.minecraft.util;
 
 import com.illtamer.infinite.bot.api.util.Assert;
-import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import com.illtamer.infinite.bot.minecraft.api.IExpansion;
 import com.illtamer.infinite.bot.minecraft.pojo.ExpansionIdentifier;
+import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

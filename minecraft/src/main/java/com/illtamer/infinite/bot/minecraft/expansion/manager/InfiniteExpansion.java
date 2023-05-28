@@ -1,10 +1,9 @@
 package com.illtamer.infinite.bot.minecraft.expansion.manager;
 
-import com.illtamer.infinite.bot.api.util.Assert;
-import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import com.illtamer.infinite.bot.minecraft.api.IExpansion;
 import com.illtamer.infinite.bot.minecraft.configuration.config.BotConfiguration;
 import com.illtamer.infinite.bot.minecraft.expansion.ExpansionLogger;
+import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import com.illtamer.infinite.bot.minecraft.util.ExpansionUtil;
 import org.jetbrains.annotations.NotNull;
 

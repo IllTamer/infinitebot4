@@ -2,9 +2,7 @@ package com.illtamer.infinite.bot.minecraft.configuration;
 
 import com.illtamer.infinite.bot.api.config.CQHttpWebSocketConfiguration;
 import com.illtamer.infinite.bot.api.event.Event;
-import com.illtamer.infinite.bot.minecraft.api.adapter.Bootstrap;
 import com.illtamer.infinite.bot.minecraft.configuration.config.BotConfiguration;
-import lombok.Getter;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;

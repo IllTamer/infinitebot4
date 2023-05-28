@@ -1,8 +1,8 @@
 package com.illtamer.infinite.bot.minecraft.listener;
 
-import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import com.illtamer.infinite.bot.minecraft.api.IExternalExpansion;
 import com.illtamer.infinite.bot.minecraft.expansion.ExpansionLoader;
+import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;

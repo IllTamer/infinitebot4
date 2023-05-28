@@ -18,7 +18,6 @@ import redis.embedded.util.OsArchitecture;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public abstract class EmbedRedisStarter extends Plugin {

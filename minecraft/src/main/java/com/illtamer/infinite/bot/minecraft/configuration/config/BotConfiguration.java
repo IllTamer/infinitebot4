@@ -12,7 +12,6 @@ import com.illtamer.infinite.bot.minecraft.repository.impl.YamlPlayerDataReposit
 import com.illtamer.infinite.bot.minecraft.start.bungee.BungeeBootstrap;
 import com.illtamer.infinite.bot.minecraft.util.JedisUtil;
 import lombok.Getter;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

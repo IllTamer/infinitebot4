@@ -8,8 +8,6 @@ import com.illtamer.infinite.bot.minecraft.api.StaticAPI;
 import com.illtamer.infinite.bot.minecraft.api.event.LocalEvent;
 import redis.clients.jedis.JedisPubSub;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
