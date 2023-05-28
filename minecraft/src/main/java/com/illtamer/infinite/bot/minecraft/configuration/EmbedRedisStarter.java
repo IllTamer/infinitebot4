@@ -13,10 +13,13 @@ import redis.embedded.RedisExecProvider;
 import redis.embedded.RedisServer;
 import redis.embedded.util.Architecture;
 import redis.embedded.util.OS;
+import redis.embedded.util.OsArchitecture;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public abstract class EmbedRedisStarter extends Plugin {
 
@@ -34,7 +37,7 @@ public abstract class EmbedRedisStarter extends Plugin {
         BotConfiguration.load((Bootstrap) instance);
         BotConfiguration.RedisConfig redisConfig = BotConfiguration.redis;
         if (redisConfig.embed) // start embedded redis server
-            BotScheduler.runTask(() -> createAndStartRedisServer(redisConfig.host, redisConfig.port, instance.getDataFolder()));
+            BotScheduler.runTask(() -> createAndStartRedisServer(redisConfig.port, instance.getDataFolder()));
         JedisUtil.init(redisConfig.host, redisConfig.port);
     }
 
@@ -44,7 +47,7 @@ public abstract class EmbedRedisStarter extends Plugin {
         instance = null;
     }
 
-    private void createAndStartRedisServer(String host, int port, File root) {
+    private void createAndStartRedisServer(int port, File root) {
         File folder = new File(root, "redis");
         String path = folder.getAbsolutePath() + "/" + EXEC_NAME;
         String exePath = folder.getAbsolutePath() + "/" + EXEC_NAME + ".exe";
@@ -65,10 +68,14 @@ public abstract class EmbedRedisStarter extends Plugin {
                 .override(OS.MAC_OS_X, Architecture.x86, appPath)
                 .override(OS.MAC_OS_X, Architecture.x86_64, appPath);
         try {
+            String args = "--logfile ./" + new Date().getTime() + ".log";
+            if (OsArchitecture.detect().os() == OS.WINDOWS) {
+                args += " --heapdir ./";
+            }
             this.server = RedisServer.builder()
                     .redisExecProvider(customProvider)
-                    .slaveOf(host, port)
                     .port(port)
+                    .configFile(args)
                     .build();
             server.start();
         } catch (Exception e) {
