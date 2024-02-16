@@ -1,6 +1,5 @@
 package com.illtamer.infinite.bot.minecraft.start.bukkit;
 
-import com.illtamer.infinite.bot.api.Optional;
 import com.illtamer.infinite.bot.minecraft.api.BotScheduler;
 import com.illtamer.infinite.bot.minecraft.api.EventExecutor;
 import com.illtamer.infinite.bot.minecraft.api.adapter.Bootstrap;
@@ -11,7 +10,7 @@ import com.illtamer.infinite.bot.minecraft.configuration.config.BotConfiguration
 import com.illtamer.infinite.bot.minecraft.expansion.ExpansionLoader;
 import com.illtamer.infinite.bot.minecraft.listener.BukkitCommandListener;
 import com.illtamer.infinite.bot.minecraft.listener.PluginListener;
-import com.illtamer.infinite.bot.minecraft.util.JedisUtil;
+import com.illtamer.perpetua.sdk.util.Optional;
 import lombok.Getter;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -31,14 +30,8 @@ public class BukkitBootstrap extends JavaPlugin implements Bootstrap {
     @Override
     public void onLoad() {
         BotConfiguration.load(instance = this);
-        if (!BotConfiguration.main.bungee) {
-            this.nettyHolder.set(new BotNettyHolder(getLogger(), EventExecutor::dispatchListener));
-            nettyHolder.get().connect();
-            return;
-        }
-        BotConfiguration.RedisConfig redisConfig = BotConfiguration.redis;
-        JedisUtil.init(redisConfig.host, redisConfig.port);
-        JedisUtil.subscribe(EventExecutor::dispatchListener);
+        this.nettyHolder.set(new BotNettyHolder(getLogger(), EventExecutor::dispatchListener));
+        nettyHolder.get().connect();
     }
 
     @Override

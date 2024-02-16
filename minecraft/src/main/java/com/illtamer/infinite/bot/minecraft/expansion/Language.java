@@ -1,7 +1,7 @@
 package com.illtamer.infinite.bot.minecraft.expansion;
 
-import com.illtamer.infinite.bot.api.util.Assert;
 import com.illtamer.infinite.bot.minecraft.api.IExpansion;
+import com.illtamer.perpetua.sdk.util.Assert;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;

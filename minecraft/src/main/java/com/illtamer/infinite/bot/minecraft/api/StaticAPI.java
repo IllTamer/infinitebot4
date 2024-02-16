@@ -1,8 +1,5 @@
 package com.illtamer.infinite.bot.minecraft.api;
 
-import com.illtamer.infinite.bot.api.handler.OpenAPIHandling;
-import com.illtamer.infinite.bot.api.message.Message;
-import com.illtamer.infinite.bot.api.util.Assert;
 import com.illtamer.infinite.bot.minecraft.api.adapter.Bootstrap;
 import com.illtamer.infinite.bot.minecraft.configuration.BotNettyHolder;
 import com.illtamer.infinite.bot.minecraft.configuration.config.BotConfiguration;
@@ -11,6 +8,7 @@ import com.illtamer.infinite.bot.minecraft.pojo.ExpansionIdentifier;
 import com.illtamer.infinite.bot.minecraft.repository.PlayerDataRepository;
 import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import com.illtamer.infinite.bot.minecraft.util.ExpansionUtil;
+import com.illtamer.perpetua.sdk.util.Assert;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,46 +22,6 @@ public class StaticAPI {
 
     public static boolean inGroups(long groupId) {
         return BotConfiguration.main.groups.contains(groupId);
-    }
-
-    /**
-     * 发送私人消息
-     * @return 消息 ID
-     * @deprecated see {@link OpenAPIHandling#sendMessage(String, long)}
-     * */
-    @Deprecated
-    public static double sendMessage(String message, long userId) {
-        return OpenAPIHandling.sendMessage(message, userId);
-    }
-
-    /**
-     * 发送私人消息
-     * @return 消息 ID
-     * @deprecated see {@link OpenAPIHandling#sendMessage(Message, long)}
-     * */
-    @Deprecated
-    public static double sendMessage(Message message, long userId) {
-        return OpenAPIHandling.sendMessage(message, userId);
-    }
-
-    /**
-     * 向群组发送消息
-     * @return 消息 ID
-     * @deprecated see {@link OpenAPIHandling#sendGroupMessage(String, long)}
-     * */
-    @Deprecated
-    public static double sendGroupMessage(String message, long groupId) {
-        return OpenAPIHandling.sendGroupMessage(message, groupId);
-    }
-
-    /**
-     * 向群组发送消息
-     * @return 消息 ID
-     * @deprecated see {@link OpenAPIHandling#sendGroupMessage(Message, long)}
-     * */
-    @Deprecated
-    public static double sendGroupMessage(Message message, long groupId) {
-        return OpenAPIHandling.sendGroupMessage(message, groupId);
     }
 
     /**

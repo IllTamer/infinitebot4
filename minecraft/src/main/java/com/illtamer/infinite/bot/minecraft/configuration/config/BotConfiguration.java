@@ -1,17 +1,14 @@
 package com.illtamer.infinite.bot.minecraft.configuration.config;
 
-import com.illtamer.infinite.bot.api.util.Assert;
 import com.illtamer.infinite.bot.minecraft.api.StaticAPI;
 import com.illtamer.infinite.bot.minecraft.api.adapter.Bootstrap;
 import com.illtamer.infinite.bot.minecraft.api.adapter.ConfigSection;
-import com.illtamer.infinite.bot.minecraft.api.event.LocalEvent;
-import com.illtamer.infinite.bot.minecraft.configuration.redis.ConfigurationCenter;
 import com.illtamer.infinite.bot.minecraft.repository.PlayerDataRepository;
 import com.illtamer.infinite.bot.minecraft.repository.impl.DatabasePlayerDataRepository;
 import com.illtamer.infinite.bot.minecraft.repository.impl.YamlPlayerDataRepository;
-import com.illtamer.infinite.bot.minecraft.start.bungee.BungeeBootstrap;
-import com.illtamer.infinite.bot.minecraft.util.JedisUtil;
+import com.illtamer.perpetua.sdk.util.Assert;
 import lombok.Getter;
+import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,7 +30,6 @@ public class BotConfiguration {
     public static MainConfig main;
     public static DatabaseConfig database;
     public static ConnectionConfig connection;
-    public static RedisConfig redis;
 
     @Getter
     private final ConfigFile configFile;
@@ -75,14 +71,6 @@ public class BotConfiguration {
         main = new MainConfig();
         database = new DatabaseConfig();
         connection = new ConnectionConfig();
-        redis = new RedisConfig();
-        if (StaticAPI.getInstance() instanceof BungeeBootstrap) {
-            StaticAPI.getInstance().getLogger().info("检测到主配置重载，同步配置中");
-            JedisUtil.publish(LocalEvent.builder()
-                    .identify(ConfigurationCenter.IDENTIFY)
-                    .data(configFile.getConfig().saveToString())
-                    .build());
-        }
     }
 
     /**
@@ -115,16 +103,11 @@ public class BotConfiguration {
         instance.repository.saveCacheData();
     }
 
+    @ToString
+    @SuppressWarnings("all")
     public class MainConfig {
 
         private ConfigSection section = configFile.getConfig().getSection("main");
-
-        @NotNull
-        public final Boolean bungee =section.getBoolean("bungee", false);
-
-        @NotNull
-        // TODO 发送合并节点消息？
-        public final Boolean tryAvoidRiskControl = section.getBoolean("try-avoid-risk-control", false);
 
         @NotNull
         public final List<Long> admins = section.getLongList("admins");
@@ -134,6 +117,7 @@ public class BotConfiguration {
 
     }
 
+    @ToString
     @SuppressWarnings("all")
     public class DatabaseConfig {
 
@@ -147,36 +131,19 @@ public class BotConfiguration {
 
     }
 
+    @ToString
     @SuppressWarnings("all")
     public class ConnectionConfig {
 
         private ConfigSection section = configFile.getConfig().getSection("connection");
 
         @NotNull
-        public final String host = section.getString("host", "unknown");
+        public final String host = section.getString("webapi.host", "unknown");
 
-        public final int httpPort = section.getInt("port.http", -1);
-
-        public final int websocketPort = section.getInt("port.websocket", -1);
+        public final int port = section.getInt("webapi.host", -1);
 
         @Nullable
         public final String authorization = section.getString("authorization", null);
-
-    }
-
-    @SuppressWarnings("all")
-    public class RedisConfig {
-
-        private ConfigSection section = configFile.getConfig().getSection("redis");
-
-        @NotNull
-        public final Boolean embed = section.getBoolean("embed", true);
-
-        @NotNull
-        public final String host = section.getString("host", "127.0.0.1");
-
-        @NotNull
-        public final Integer port = section.getInt("port", 2380);
 
     }
 

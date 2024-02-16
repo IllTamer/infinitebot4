@@ -1,7 +1,0 @@
-server:
-  port: 12345
-
-bot:
-  http-uri: ''
-  ws-uri: ''
-  authorization: ''

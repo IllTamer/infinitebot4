@@ -1,8 +1,8 @@
 package com.illtamer.infinite.bot.minecraft.expansion;
 
-import com.illtamer.infinite.bot.api.util.Assert;
 import com.illtamer.infinite.bot.minecraft.api.IExpansion;
 import com.illtamer.infinite.bot.minecraft.configuration.config.CommentConfiguration;
+import com.illtamer.perpetua.sdk.util.Assert;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.FileConfiguration;

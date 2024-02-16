@@ -1,9 +1,9 @@
 package com.illtamer.infinite.bot.minecraft.configuration;
 
-import com.illtamer.infinite.bot.api.config.CQHttpWebSocketConfiguration;
-import com.illtamer.infinite.bot.api.entity.BotStatus;
-import com.illtamer.infinite.bot.api.handler.OpenAPIHandling;
 import com.illtamer.infinite.bot.minecraft.api.StaticAPI;
+import com.illtamer.perpetua.sdk.entity.transfer.entity.Status;
+import com.illtamer.perpetua.sdk.handler.OpenAPIHandling;
+import com.illtamer.perpetua.sdk.websocket.OneBotConnection;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,7 +18,7 @@ public class StatusCheckRunner implements Runnable {
     private static long lastRefreshTime;
     @Getter
     @Nullable
-    private static BotStatus status;
+    private static Status status;
 
     private final Logger log;
 
@@ -28,7 +28,7 @@ public class StatusCheckRunner implements Runnable {
 
     @Override
     public void run() {
-        if (!CQHttpWebSocketConfiguration.isRunning()) {
+        if (!OneBotConnection.isRunning()) {
             log.warning("检测到 WebSocket 连接断开，尝试重连 go-cqhttp 中");
             status = null;
         } else  {

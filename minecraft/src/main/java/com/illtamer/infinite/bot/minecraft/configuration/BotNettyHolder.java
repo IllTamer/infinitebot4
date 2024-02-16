@@ -1,8 +1,8 @@
 package com.illtamer.infinite.bot.minecraft.configuration;
 
-import com.illtamer.infinite.bot.api.config.CQHttpWebSocketConfiguration;
-import com.illtamer.infinite.bot.api.event.Event;
 import com.illtamer.infinite.bot.minecraft.configuration.config.BotConfiguration;
+import com.illtamer.perpetua.sdk.event.Event;
+import com.illtamer.perpetua.sdk.websocket.OneBotConnection;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -39,7 +39,7 @@ public class BotNettyHolder {
     }
 
     public void checkConnection() {
-        if (CQHttpWebSocketConfiguration.isRunning()) {
+        if (OneBotConnection.isRunning()) {
             logger.info("账号连接成功");
         } else {
             logger.warning("账号连接失败，请检查控制台输出处理，或等待自动重连");
@@ -88,9 +88,9 @@ public class BotNettyHolder {
         @Override
         public void run() {
             try {
-                CQHttpWebSocketConfiguration.start(
-                        String.format("http://%s:%d", connection.host, connection.httpPort),
-                        String.format("ws://%s:%d", connection.host, connection.websocketPort),
+                OneBotConnection.start(
+                        connection.host,
+                        connection.port,
                         connection.authorization,
                         eventConsumer
                 );

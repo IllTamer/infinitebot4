@@ -1,13 +1,13 @@
 package com.illtamer.infinite.bot.minecraft.api;
 
-import com.illtamer.infinite.bot.api.event.Cancellable;
-import com.illtamer.infinite.bot.api.event.Event;
-import com.illtamer.infinite.bot.api.event.MetaEvent;
-import com.illtamer.infinite.bot.api.util.ClassUtil;
 import com.illtamer.infinite.bot.minecraft.api.event.EventHandler;
 import com.illtamer.infinite.bot.minecraft.api.event.EventPriority;
 import com.illtamer.infinite.bot.minecraft.api.event.Listener;
 import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
+import com.illtamer.perpetua.sdk.event.Cancellable;
+import com.illtamer.perpetua.sdk.event.Event;
+import com.illtamer.perpetua.sdk.event.meta.HeartbeatEvent;
+import com.illtamer.perpetua.sdk.util.ClassUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 
@@ -103,10 +103,7 @@ public class EventExecutor {
 
         @Override
         public void run() {
-            if (event instanceof MetaEvent) {
-                MetaEvent meta = (MetaEvent) event;
-                if (meta.isHeartbeat()) return;
-            }
+            if (event instanceof HeartbeatEvent) return;
             final Logger logger = BukkitBootstrap.getInstance().getLogger();
             for (Map.Entry<Listener, HashMap<Method, Annotation>> map : METHODS.entrySet()) { // class
                 Object instance = map.getKey();

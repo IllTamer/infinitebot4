@@ -1,7 +1,6 @@
 package com.illtamer.infinite.bot.minecraft;
 
-import com.illtamer.infinite.bot.minecraft.api.IExpansion;
-import com.illtamer.infinite.bot.minecraft.expansion.automation.AutoLoadConfiguration;
+import com.illtamer.infinite.bot.minecraft.configuration.config.CommentConfiguration;
 
 public class BootstrapTests {
 
@@ -13,14 +12,31 @@ public class BootstrapTests {
 //
 //    }
 
-    static ENUM aaa;
-
     public static void main(String[] args) throws Exception {
-        System.out.println(Enum.class.isAssignableFrom(BootstrapTests.class.getDeclaredField("aaa").getType()));
+//        DependencyManager manager = new DependencyManager(new File("cache").toPath());
+//        manager.addDependency(new StandardDependency(
+//                "com.illtamer.infinite.bot",
+//                "api",
+//                "1.0.13",
+//                null,
+//                "081904f730f0a03d5959bc764b8d196b4d96a041cd66d026b40ed3ae41d5721e",
+//                "SHA-256"
+//        ));
+//        Executor executor = Executors.newCachedThreadPool();
+
+        // All of these return CompletableFuture it is important to let the previous step finishing before starting the next
+//        manager.downloadAll(executor, Collections.singletonList(new StandardRepository("https://repo.maven.apache.org/maven2"))).join();
+//        manager.loadAll(executor, new IsolatedClassLoader()).join();
     }
 
-    enum ENUM {
-
+    private static void testCommentConfig() throws Exception {
+        CommentConfiguration config = new CommentConfiguration();
+        config.loadFromString("point1: '123456'\n" +
+                "part:\n" +
+                "    #666666\n" +
+                "    point2: '#123456'");
+        System.out.println(config.saveToString());
     }
+
 
 }

@@ -1,7 +1,6 @@
 package com.illtamer.infinite.bot.minecraft.expansion.manager;
 
-
-import com.illtamer.infinite.bot.api.util.Assert;
+import com.illtamer.perpetua.sdk.util.Assert;
 import org.bukkit.plugin.InvalidPluginException;
 
 import java.io.ByteArrayOutputStream;

@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.illtamer.infinite.bot</groupId>
-    <artifactId>infinitebot3</artifactId>
-    <version>1.0.15</version>
+    <artifactId>infinitebot4</artifactId>
+    <version>4.0.0</version>
     <packaging>pom</packaging>
-    <name>infinite-bot-v3</name>
-    <description>A go-cqhttp sdk for java</description>
+    <name>infinite-bot-v4</name>
+    <description>The fourth-generation Infintie QQ robot, with independent API, provides all-round development support</description>
 
-    <url>https://github.com/IllTamer/infinitebot3</url>
+    <url>https://github.com/IllTamer/infinitebot4</url>
 
     <developers>
         <developer>
@@ -29,13 +29,81 @@
     </licenses>
 
     <modules>
-        <module>api</module>
-        <module>ib3-spring-boot-starter</module>
+        <module>minecraft</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>8</java.version>
+        <perpetua.sdk.version>0.1.0</perpetua.sdk.version>
+        <dependencydownload.version>1.3.0</dependencydownload.version>
+        <mysql.version>8.0.29</mysql.version>
+        <redis.embed.version>0.6</redis.embed.version>
+        <spigot.version>1.16.4-R0.1-SNAPSHOT</spigot.version>
+        <bungee.version>1.19-R0.1-SNAPSHOT</bungee.version>
+        <jedis.version>4.3.0</jedis.version>
+        <slf4j.version>1.7.32</slf4j.version>
+        <lombok.version>1.18.26</lombok.version>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+        <repository>
+            <id>bungeecord-repo</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
+    </repositories>
+
+    <build>
+        <finalName>InfiniteBot-minecraft-all-${project.version}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <descriptorRefs>
+                        <ref>jar-with-dependencies</ref>
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
+                        <phase>package</phase> <!-- 指定在打包节点执行jar包合并操作 -->
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.*</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
 
     <scm>
         <connection>https://github.com/IllTamer/infinitebot3.git</connection>

@@ -2,9 +2,9 @@ package com.illtamer.infinite.bot.minecraft.util;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.illtamer.infinite.bot.api.Pair;
-import com.illtamer.infinite.bot.api.util.HttpRequestUtil;
 import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
+import com.illtamer.perpetua.sdk.Pair;
+import com.illtamer.perpetua.sdk.util.HttpRequestUtil;
 import lombok.experimental.UtilityClass;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

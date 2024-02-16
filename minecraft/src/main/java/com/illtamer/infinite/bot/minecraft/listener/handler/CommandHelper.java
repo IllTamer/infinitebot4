@@ -1,6 +1,5 @@
 package com.illtamer.infinite.bot.minecraft.listener.handler;
 
-import com.illtamer.infinite.bot.api.entity.BotStatus;
 import com.illtamer.infinite.bot.minecraft.api.BotScheduler;
 import com.illtamer.infinite.bot.minecraft.api.IExpansion;
 import com.illtamer.infinite.bot.minecraft.api.IExternalExpansion;
@@ -10,6 +9,7 @@ import com.illtamer.infinite.bot.minecraft.configuration.StatusCheckRunner;
 import com.illtamer.infinite.bot.minecraft.configuration.config.BotConfiguration;
 import com.illtamer.infinite.bot.minecraft.expansion.ExpansionLoader;
 import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
+import com.illtamer.perpetua.sdk.entity.transfer.entity.Status;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -26,6 +26,10 @@ public class CommandHelper {
     public static boolean onCommand(CommandSender sender, String[] args, Bootstrap.Type type) {
         if (!sender.isOp()) return true;
         if (args.length == 1) {
+            if ("debug".equals(args[0])) {
+                System.out.println(BotConfiguration.connection);
+                return true;
+            }
             if ("help".equalsIgnoreCase(args[0])) {
                 sender.sendMessage(new String[] {
                         "ib3:",
@@ -42,7 +46,7 @@ public class CommandHelper {
                 });
             } else if ("check".equalsIgnoreCase(args[0])) {
                 final long lastRefreshTime = StatusCheckRunner.getLastRefreshTime();
-                final BotStatus status = StatusCheckRunner.getStatus();
+                final Status status = StatusCheckRunner.getStatus();
                 sender.sendMessage(String.format(
                         "在线状态: %s\n上次更新: %s",
                         status == null ? "失去连接" : status.getOnline(),
