@@ -30,13 +30,13 @@ public class StatusCheckRunner implements Runnable {
     @Override
     public void run() {
         if (!OneBotConnection.isRunning()) {
-            log.warning("检测到 WebSocket 连接断开，尝试重连 go-cqhttp 中");
+            log.warning("检测到 WebSocket 连接断开，尝试重连 perpetua 中");
             loginInfo = null;
         } else  {
             try {
                 loginInfo = OpenAPIHandling.getLoginInfo();
             } catch (Exception ignore) {
-                log.warning("获取账号信息失败，尝试重连 go-cqhttp 中");
+                log.warning("获取账号信息失败，尝试重连 perpetua 中");
                 loginInfo = null;
             }
         }
