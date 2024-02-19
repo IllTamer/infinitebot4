@@ -70,7 +70,7 @@ shadowJar {
 }
 
 [
-//        'io.netty',
+        'io.netty',
 //        'org.apache.httpcomponents',
 //        'commons-logging',
 //        'commons-codec',
