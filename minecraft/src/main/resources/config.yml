@@ -39,6 +39,10 @@ database:
 # 连接配置项
 #   该配置可重载
 connection:
+  # 当前客户端连接名称
+  #   可为空，为空时当前连接不配置名称
+  #   当附属使用分布式 API 时，建议配置，配置时应确保该名称全局唯一
+  name: 'ib-1'
   # perpetua webapi 配置
   webapi:
     # 进程所在域名

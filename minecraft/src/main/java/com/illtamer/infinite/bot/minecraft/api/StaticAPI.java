@@ -25,7 +25,7 @@ public class StaticAPI {
     }
 
     /**
-     * 重连 go-cqhttp WebSocket 服务
+     * 重连 perpetua WebSocket 服务
      * */
     public static void reconnected() {
         BukkitBootstrap inst = BukkitBootstrap.getInstance();

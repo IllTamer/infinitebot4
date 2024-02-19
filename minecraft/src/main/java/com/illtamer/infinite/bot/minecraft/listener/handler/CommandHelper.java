@@ -9,6 +9,7 @@ import com.illtamer.infinite.bot.minecraft.configuration.StatusCheckRunner;
 import com.illtamer.infinite.bot.minecraft.configuration.config.BotConfiguration;
 import com.illtamer.infinite.bot.minecraft.expansion.ExpansionLoader;
 import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
+import com.illtamer.perpetua.sdk.entity.transfer.entity.LoginInfo;
 import com.illtamer.perpetua.sdk.entity.transfer.entity.Status;
 
 import java.io.File;
@@ -46,10 +47,10 @@ public class CommandHelper {
                 });
             } else if ("check".equalsIgnoreCase(args[0])) {
                 final long lastRefreshTime = StatusCheckRunner.getLastRefreshTime();
-                final Status status = StatusCheckRunner.getStatus();
+                final LoginInfo loginInfo = StatusCheckRunner.getLoginInfo();
                 sender.sendMessage(String.format(
-                        "在线状态: %s\n上次更新: %s",
-                        status == null ? "失去连接" : status.getOnline(),
+                        "当前登陆账号: %d(%s)\n上次更新: %s",
+                        loginInfo.getUserId(), loginInfo.getNickname(),
                         FORMAT.format(lastRefreshTime)
                 ));
             } else if ("reload".equalsIgnoreCase(args[0])) {

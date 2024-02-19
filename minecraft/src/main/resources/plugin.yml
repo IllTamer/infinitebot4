@@ -1,6 +1,6 @@
-name: InfiniteBot3
+name: InfiniteBot4
 main: com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap
-version: 3.2.0
+version: 4.0.0
 
 author: IllTamer
 
@@ -12,6 +12,6 @@ softdepend:
   - Vault
 
 commands:
-  InfiniteBot3:
+  InfiniteBot4:
     aliases:
-      - ib3
+      - ib4

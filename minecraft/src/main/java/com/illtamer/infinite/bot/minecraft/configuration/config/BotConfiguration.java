@@ -83,7 +83,6 @@ public class BotConfiguration {
             Assert.isNull(instance, "Repeated initialization");
             instance = new BotConfiguration(plugin);
         }
-        StaticAPI.setInstance(plugin);
         return instance;
     }
 
@@ -138,9 +137,12 @@ public class BotConfiguration {
         private ConfigSection section = configFile.getConfig().getSection("connection");
 
         @NotNull
+        public final String name = section.getString("name", "");
+
+        @NotNull
         public final String host = section.getString("webapi.host", "unknown");
 
-        public final int port = section.getInt("webapi.host", -1);
+        public final int port = section.getInt("webapi.port", -1);
 
         @Nullable
         public final String authorization = section.getString("authorization", null);

@@ -42,8 +42,8 @@ public class BotScheduler {
                         .setUncaughtExceptionHandler((t, e) -> e.printStackTrace())
                         .build());
         IO_INTENSIVE = new ThreadPoolExecutor(
-                0,
-                ThreadPoolUtil.poolSize(0.75),
+                3,
+                ThreadPoolUtil.poolSize(0.90),
                 60L, TimeUnit.SECONDS,
                 new SynchronousQueue<>(),
                 new ThreadFactoryBuilder()

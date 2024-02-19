@@ -36,6 +36,11 @@ public class OriginBootstrap implements Bootstrap {
     }
 
     @Override
+    public ClassLoader getInstClassLoader() {
+        return null;
+    }
+
+    @Override
     public Type getType() {
         return Type.ORIGIN;
     }

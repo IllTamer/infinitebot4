@@ -1,7 +1,9 @@
 package com.illtamer.infinite.bot.minecraft.configuration;
 
+import com.illtamer.infinite.bot.minecraft.api.BotScheduler;
 import com.illtamer.infinite.bot.minecraft.configuration.config.BotConfiguration;
 import com.illtamer.perpetua.sdk.event.Event;
+import com.illtamer.perpetua.sdk.handler.OpenAPIHandling;
 import com.illtamer.perpetua.sdk.websocket.OneBotConnection;
 
 import java.lang.invoke.MethodHandle;
@@ -36,6 +38,8 @@ public class BotNettyHolder {
         interruptConsumer.accept(websocketExecutor);
         final BotConfiguration.ConnectionConfig connection = BotConfiguration.connection;
         websocketExecutor.execute(new WebSocketRunner(connection));
+        // TODO perpetua-sdk add connect callback support
+        BotScheduler.runTaskLater(() -> OpenAPIHandling.setClientName(connection.name), 1L);
     }
 
     public void checkConnection() {

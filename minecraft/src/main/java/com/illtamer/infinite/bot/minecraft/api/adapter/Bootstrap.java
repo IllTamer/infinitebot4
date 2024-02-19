@@ -33,6 +33,11 @@ public interface Bootstrap {
      * */
     InputStream getResource(String fileName);
 
+    /**
+     * 获取当前启动器类加载器
+     * */
+    ClassLoader getInstClassLoader();
+
     Type getType();
 
     enum Type {
