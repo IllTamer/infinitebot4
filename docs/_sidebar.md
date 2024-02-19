@@ -4,7 +4,7 @@
 
 - 安装
 
-    - [go-cqhttp](/zh-cn/use-go-cqhttp.md)
+    - [perpetua](https://iunlimit.github.io/perpetua/#/zh-cn/user/quick-start)
     - [minecraft](/zh-cn/use-minecraft.md)
 
 - 开发
