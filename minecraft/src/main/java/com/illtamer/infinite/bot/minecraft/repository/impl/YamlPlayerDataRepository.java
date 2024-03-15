@@ -35,7 +35,7 @@ public class YamlPlayerDataRepository implements PlayerDataRepository {
             if (section == null) return playerData;
             playerData.setUuid(section.getString("uuid", null));
             playerData.setValidUUID(section.getString("valid_uuid", null));
-            playerData.setUserId(section.getLong("user_id", null));
+            playerData.setUserId(section.getLong("user_id", 0L));
             playerData.setPermission(section.getStringList("permission"));
             return playerData;
         }));
