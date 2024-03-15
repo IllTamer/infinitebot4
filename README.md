@@ -14,13 +14,14 @@
 <p>
 
 <p align="center">
-   <a alt="License" href="https://www.gnu.org/licenses/agpl-3.0.en.html"><image src="https://img.shields.io/badge/license-AGPLv3-4EB1BA.svg"></image></a>
+    <a alt="License" href="https://www.gnu.org/licenses/agpl-3.0.en.html"><image src="https://img.shields.io/badge/license-AGPLv3-4EB1BA.svg"></image></a>
     <a alt="Perpetua" href="https://github.com/IUnlimit/perpetua-sdk-for-java"><image src="https://img.shields.io/badge/Perpetua-SDK-blue"></image></a>   
     <a alt="Release" href="https://github.com/IllTamer/infinitebot4/releases"><image src="https://img.shields.io/github/release/IllTamer/infinitebot4.svg"></image></a>
 </p>
 
 <p align="center">
-   <a href="https://illtamer.github.io/infinitebot4/">Document (维护中)</a>
+    <a href="https://github.com/IllTamer/infinitebot4-expansion">[Expansions]</a>
+    <a href="https://illtamer.github.io/infinitebot4/">[Document (维护中)]</a>
 </p>
 
 ## 声明

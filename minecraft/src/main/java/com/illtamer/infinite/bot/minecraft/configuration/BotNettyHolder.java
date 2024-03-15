@@ -20,7 +20,7 @@ public class BotNettyHolder {
 
     protected ThreadPoolExecutor websocketExecutor = new ThreadPoolExecutor(1, 1,
             0L, TimeUnit.MILLISECONDS,
-            new LinkedBlockingQueue<>());
+            new LinkedBlockingQueue<>(1));
 
     private final Consumer<ThreadPoolExecutor> interruptConsumer;
     private final Logger logger;
@@ -38,7 +38,6 @@ public class BotNettyHolder {
         interruptConsumer.accept(websocketExecutor);
         final BotConfiguration.ConnectionConfig connection = BotConfiguration.connection;
         websocketExecutor.execute(new WebSocketRunner(connection));
-        // TODO perpetua-sdk add connect callback support
         BotScheduler.runTaskLater(() -> OpenAPIHandling.setClientName(connection.name), 1L);
     }
 
