@@ -53,7 +53,7 @@ maven {
 ```
 
 ```groovy
-implementation 'com.illtamer.infinite.bot:minecraft:4.0.1'
+implementation 'com.illtamer.infinite.bot:minecraft:{version}'
 ```
 
 ## 声明
