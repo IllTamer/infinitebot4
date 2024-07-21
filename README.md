@@ -40,7 +40,7 @@
 <dependency>
     <groupId>com.illtamer.infinite.bot</groupId>
     <artifactId>minecraft</artifactId>
-    <version>4.0.1</version>
+    <version>{version}</version>
 </dependency>
 ```
 
