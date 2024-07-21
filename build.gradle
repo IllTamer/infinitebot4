@@ -7,14 +7,15 @@ version '4.0.1'
 
 subprojects {
     apply plugin: 'java'
-    apply plugin: 'maven-publish'
     apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
 
     group 'com.illtamer.infinite.bot'
     version = rootProject.version
 
     repositories {
         mavenLocal()
+        maven { url "https://maven.illtamer.com/releases" }
         maven {url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'}
         maven {url 'https://oss.sonatype.org/content/repositories/snapshots'}
         mavenCentral()

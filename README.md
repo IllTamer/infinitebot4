@@ -24,6 +24,38 @@
     <a href="https://illtamer.github.io/infinitebot4/">[Document (维护中)]</a>
 </p>
 
+## Import
+
+### Maven
+
+```xml
+<repository>
+  <id>iunlimit-releases</id>
+  <name>IllTamer's Repository</name>
+  <url>https://maven.illtamer.com/releases</url>
+</repository>
+```
+
+```xml
+<dependency>
+    <groupId>com.illtamer.infinite.bot</groupId>
+    <artifactId>minecraft</artifactId>
+    <version>4.0.1</version>
+</dependency>
+```
+
+### Gradle
+
+```groovy
+maven {
+    url "https://maven.illtamer.com/releases"
+}
+```
+
+```groovy
+implementation 'com.illtamer.infinite.bot:minecraft:4.0.1'
+```
+
 ## 声明
 
 - 若您在使用时有任何疑问，欢迎入群讨论咨询 `QQ: 863522624`
