@@ -121,6 +121,11 @@ public class ExpansionConfig {
         }
         config = newConfig;
         try {
+            if (config.getInt("version") != version) {
+                // 更新了代码版本，忘记更新配置版本号
+                config.set("version", version);
+                expansion.getLogger().warn("An deprecated version of embedded config was detected, the generate file was manually updated");
+            }
             config.save(file);
         } catch (IOException e) {
             e.printStackTrace();
