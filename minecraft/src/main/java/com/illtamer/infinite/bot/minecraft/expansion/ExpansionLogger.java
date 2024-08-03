@@ -13,7 +13,7 @@ public class ExpansionLogger implements Logger {
     public ExpansionLogger(IExpansion expansion) {
         String name = expansion.getExpansionName();
         this.expansionName = (name != null && !name.isEmpty()) ? name : expansion.getClass().getSimpleName();
-        this.logger = LoggerFactory.getLogger("InfiniteBot3 - " + expansionName);
+        this.logger = LoggerFactory.getLogger("[InfiniteBot4] [" + expansionName + "]");
     }
 
     @Override
