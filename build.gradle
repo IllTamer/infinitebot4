@@ -3,7 +3,7 @@ plugins {
     id 'maven-publish'
 }
 
-version '4.0.3'
+version '4.0.4-SNAPSHOT'
 
 subprojects {
     apply plugin: 'java'
@@ -15,9 +15,14 @@ subprojects {
 
     repositories {
         mavenLocal()
-        maven { url "https://maven.illtamer.com/releases" }
+        maven { 
+        	url "http://ipv6.illtamer.com:7070/releases"
+        	allowInsecureProtocol = true 
+       	}
         maven {url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'}
         maven {url 'https://oss.sonatype.org/content/repositories/snapshots'}
+        maven {url 'https://repo.glaremasters.me/repository/public/'}
+        maven {url 'https://repo1.maven.org/maven2'}
         mavenCentral()
     }
 

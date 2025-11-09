@@ -1,6 +1,6 @@
 name: InfiniteBot4
 main: com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap
-version: 4.0.1
+version: 4.0.4-SNAPSHOT
 
 author: IllTamer
 

@@ -48,6 +48,10 @@ public class CommandHelper {
             } else if ("check".equalsIgnoreCase(args[0])) {
                 final long lastRefreshTime = StatusCheckRunner.getLastRefreshTime();
                 final LoginInfo loginInfo = StatusCheckRunner.getLoginInfo();
+                if (loginInfo == null) {
+                    sender.sendMessage("登陆数据刷新中，请稍后再试");
+                    return true;
+                }
                 sender.sendMessage(String.format(
                         "当前登陆账号: %d(%s)\n上次更新: %s",
                         loginInfo.getUserId(), loginInfo.getNickname(),
