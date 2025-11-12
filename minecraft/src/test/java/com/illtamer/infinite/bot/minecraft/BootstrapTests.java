@@ -2,6 +2,7 @@ package com.illtamer.infinite.bot.minecraft;
 
 import com.illtamer.infinite.bot.minecraft.api.BotScheduler;
 import com.illtamer.infinite.bot.minecraft.configuration.config.CommentConfiguration;
+import com.illtamer.infinite.bot.minecraft.pojo.TimedBlockingCache;
 import com.illtamer.infinite.bot.minecraft.util.ProcessBar;
 import dev.vankka.dependencydownload.DependencyManager;
 import dev.vankka.dependencydownload.classloader.IsolatedClassLoader;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class BootstrapTests {
@@ -32,9 +34,9 @@ public class BootstrapTests {
 //    }
 
     public static void main(String[] args) throws Exception {
-        processBar();
+//        processBar();
 //        testLibsLoader();
-        System.out.println("hhh");
+        testTimedBlockingCache();
 //        DependencyManager manager = new DependencyManager(new File("cache").toPath());
 //        manager.addDependency(new StandardDependency(
 //                "com.illtamer.infinite.bot",
@@ -58,6 +60,24 @@ public class BootstrapTests {
 //                "    #666666\n" +
 //                "    point2: '#123456'");
 //        System.out.println(config.saveToString());
+    }
+
+    private static void testTimedBlockingCache() {
+        try {
+            TimedBlockingCache<String, Object> cache = new TimedBlockingCache<>(20);
+            new Thread(() -> {
+                try {
+                    Thread.sleep(3000);
+                    cache.put("key", "value");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }).start();
+            Object value = cache.get("key", 10, TimeUnit.SECONDS);
+            System.out.println("get data after 3s: " + value);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private static void testLibsLoader() throws Exception {
