@@ -65,4 +65,33 @@ public class StringUtil {
         return result;
     }
 
+    /**
+     * 判断字符串是否为 null、空或仅由空白字符组成。
+     *
+     * @param str 要判断的字符串
+     * @return 如果字符串为 null、空或仅包含空白字符，则返回 true；否则返回 false。
+     */
+    public static boolean isBlank(String str) {
+        if (str == null || str.isEmpty()) {
+            return true;
+        }
+        // 检查是否全部是空白字符
+        for (int i = 0; i < str.length(); i++) {
+            if (!Character.isWhitespace(str.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 判断字符串是否不为 null、不为空且至少包含一个非空白字符。
+     *
+     * @param str 要判断的字符串
+     * @return 如果字符串不为 null、不为空且包含非空白字符，则返回 true；否则返回 false。
+     */
+    public static boolean isNotBlank(String str) {
+        return !isBlank(str);
+    }
+
 }

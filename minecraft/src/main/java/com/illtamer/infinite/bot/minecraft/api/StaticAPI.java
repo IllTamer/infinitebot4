@@ -8,13 +8,27 @@ import com.illtamer.infinite.bot.minecraft.pojo.ExpansionIdentifier;
 import com.illtamer.infinite.bot.minecraft.repository.PlayerDataRepository;
 import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import com.illtamer.infinite.bot.minecraft.util.ExpansionUtil;
+import com.illtamer.perpetua.sdk.entity.transfer.entity.Client;
 import com.illtamer.perpetua.sdk.util.Assert;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class StaticAPI {
 
+    /**
+     * -- GETTER --
+     *  获取当前启动器实例
+     *
+     */
+    @Setter
+    @Getter
     private static Bootstrap instance;
+
+    @Setter
+    @Getter
+    private static Client client;
 
     public static boolean isAdmin(long userId) {
         return BotConfiguration.main.admins.contains(userId);
@@ -94,21 +108,6 @@ public class StaticAPI {
      * */
     public static PlayerDataRepository getRepository() {
         return BotConfiguration.getInstance().getRepository();
-    }
-
-    /**
-     * 设置当前启动器实例
-     * @apiNote 启动器启动后自动调用
-     * */
-    public static void setInstance(Bootstrap instance) {
-        StaticAPI.instance = instance;
-    }
-
-    /**
-     * 获取当前启动器实例
-     * */
-    public static Bootstrap getInstance() {
-        return instance;
     }
 
 }

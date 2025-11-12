@@ -1,6 +1,7 @@
 package com.illtamer.infinite.bot.minecraft.configuration;
 
 import com.illtamer.infinite.bot.minecraft.api.BotScheduler;
+import com.illtamer.infinite.bot.minecraft.api.StaticAPI;
 import com.illtamer.infinite.bot.minecraft.configuration.config.BotConfiguration;
 import com.illtamer.perpetua.sdk.event.Event;
 import com.illtamer.perpetua.sdk.handler.OpenAPIHandling;
@@ -38,7 +39,10 @@ public class BotNettyHolder {
         interruptConsumer.accept(websocketExecutor);
         final BotConfiguration.ConnectionConfig connection = BotConfiguration.connection;
         websocketExecutor.execute(new WebSocketRunner(connection));
-        BotScheduler.runTaskLater(() -> OpenAPIHandling.setClientName(connection.name), 1L);
+        BotScheduler.runTaskLater(() -> {
+            OpenAPIHandling.setClientName(connection.name);
+            StaticAPI.getClient().setClientName(connection.name);
+        }, 3L);
     }
 
     public void checkConnection() {

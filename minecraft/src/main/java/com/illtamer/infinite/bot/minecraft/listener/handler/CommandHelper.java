@@ -3,12 +3,15 @@ package com.illtamer.infinite.bot.minecraft.listener.handler;
 import com.illtamer.infinite.bot.minecraft.api.BotScheduler;
 import com.illtamer.infinite.bot.minecraft.api.IExpansion;
 import com.illtamer.infinite.bot.minecraft.api.IExternalExpansion;
+import com.illtamer.infinite.bot.minecraft.api.StaticAPI;
 import com.illtamer.infinite.bot.minecraft.api.adapter.Bootstrap;
 import com.illtamer.infinite.bot.minecraft.api.adapter.CommandSender;
 import com.illtamer.infinite.bot.minecraft.configuration.StatusCheckRunner;
 import com.illtamer.infinite.bot.minecraft.configuration.config.BotConfiguration;
 import com.illtamer.infinite.bot.minecraft.expansion.ExpansionLoader;
 import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
+import com.illtamer.infinite.bot.minecraft.util.StringUtil;
+import com.illtamer.perpetua.sdk.entity.transfer.entity.Client;
 import com.illtamer.perpetua.sdk.entity.transfer.entity.LoginInfo;
 import com.illtamer.perpetua.sdk.entity.transfer.entity.Status;
 
@@ -52,9 +55,11 @@ public class CommandHelper {
                     sender.sendMessage("登陆数据刷新中，请稍后再试");
                     return true;
                 }
+                Client client = StaticAPI.getClient();
                 sender.sendMessage(String.format(
-                        "当前登陆账号: %d(%s)\n上次更新: %s",
+                        "当前登陆账号: %d(%s)\nClient: %s(id: %s)\n上次更新: %s",
                         loginInfo.getUserId(), loginInfo.getNickname(),
+                        StringUtil.isBlank(client.getClientName()) ? "[未设置别名]" : client.getClientName(), client.getAppId(),
                         FORMAT.format(lastRefreshTime)
                 ));
             } else if ("reload".equalsIgnoreCase(args[0])) {
