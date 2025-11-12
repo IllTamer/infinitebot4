@@ -43,6 +43,13 @@ publishing {
     }
 }
 
+processResources {
+    filteringCharset = 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand('version': project.version)
+    }
+}
+
 // generate runtimeDownloadOnly.txt
 //shadowJar.dependsOn generateRuntimeDownloadResourceForRuntimeDownloadOnly, generateRuntimeDownloadResourceForRuntimeDownload
 
