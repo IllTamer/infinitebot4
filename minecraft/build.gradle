@@ -9,6 +9,7 @@ dependencies {
     api 'com.illtamer.perpetua.sdk:perpetua-sdk:0.2.2-SNAPSHOT'
     api 'org.slf4j:slf4j-api:1.7.32'
     implementation 'mysql:mysql-connector-java:8.0.29'
+    implementation 'com.zaxxer:HikariCP:5.1.0'
     implementation 'org.slf4j:slf4j-api:1.7.32'
     implementation 'org.slf4j:slf4j-simple:1.7.32'
 
@@ -24,12 +25,23 @@ tasks.withType(Javadoc).configureEach {
 
 publishing {
     repositories {
-        maven {
-            name = "iunlimitReleases"
-            url = "https://maven.illtamer.com/releases"
-            credentials(PasswordCredentials)
-            authentication {
-                basic(BasicAuthentication)
+        if (version.toString().endsWith("-SNAPSHOT")) {
+            maven {
+                name "iunlimitSnapshots"
+                url "https://maven.illtamer.com/snapshots"
+                credentials(PasswordCredentials)
+                authentication {
+                    basic(BasicAuthentication)
+                }
+            }
+        } else {
+            maven {
+                name = "iunlimitReleases"
+                url = "https://maven.illtamer.com/releases"
+                credentials(PasswordCredentials)
+                authentication {
+                    basic(BasicAuthentication)
+                }
             }
         }
     }
