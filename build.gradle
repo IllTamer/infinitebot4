@@ -15,10 +15,7 @@ subprojects {
 
     repositories {
         mavenLocal()
-        maven { 
-        	url "http://ipv6.illtamer.com:7070/releases"
-        	allowInsecureProtocol = true 
-       	}
+        maven {url "https://maven.illtamer.com/releases"}
         maven {url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'}
         maven {url 'https://oss.sonatype.org/content/repositories/snapshots'}
         maven {url 'https://repo.glaremasters.me/repository/public/'}

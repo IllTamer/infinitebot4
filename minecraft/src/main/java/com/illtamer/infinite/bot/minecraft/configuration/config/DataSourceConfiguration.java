@@ -2,17 +2,14 @@ package com.illtamer.infinite.bot.minecraft.configuration.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import lombok.SneakyThrows;
 
 import javax.sql.DataSource;
-import java.sql.SQLException;
 import java.util.Map;
 
 public class DataSourceConfiguration {
 
     private final HikariDataSource dataSource;
 
-    @SneakyThrows(SQLException.class)
     public DataSourceConfiguration() {
         final Map<String, Object> mysqlConfig = BotConfiguration.database.mysqlConfig;
 
