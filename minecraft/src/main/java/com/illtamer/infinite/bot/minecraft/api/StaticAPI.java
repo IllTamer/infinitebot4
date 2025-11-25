@@ -26,9 +26,8 @@ public class StaticAPI {
     @Getter
     private static Bootstrap instance;
 
-    @Setter
     @Getter
-    private static Client client;
+    private static final Client client = new Client();
 
     public static boolean isAdmin(long userId) {
         return BotConfiguration.main.admins.contains(userId);

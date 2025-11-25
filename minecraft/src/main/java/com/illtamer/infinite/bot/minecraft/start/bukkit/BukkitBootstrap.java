@@ -40,8 +40,8 @@ public class BukkitBootstrap extends JavaPlugin implements Bootstrap {
     @Override
     public void onEnable() {
         nettyHolder.ifPresent(BotNettyHolder::checkConnection);
-        BotScheduler.runTaskTimer(new StatusCheckRunner(getLogger()), 15, 30);
-        expansionLoader.loadExpansions(false);
+        BotScheduler.runTaskTimer(new StatusCheckRunner(getLogger()), 2L, 30);
+        BotScheduler.runTaskLater(() -> expansionLoader.loadExpansions(false), 3L);
         BukkitCommandListener bukkitCommandListener = new BukkitCommandListener();
         final PluginCommand command = Optional.ofNullable(getServer().getPluginCommand("InfiniteBot4"))
                 .orElseThrow(NullPointerException::new);

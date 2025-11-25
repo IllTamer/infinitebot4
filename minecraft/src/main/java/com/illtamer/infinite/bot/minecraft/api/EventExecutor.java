@@ -91,9 +91,6 @@ public class EventExecutor {
      * 轮询执行事件 调度异步线程
      * */
     public static void dispatchListener(Event event) {
-        if (METHODS.isEmpty()) {
-            return;
-        }
         BotScheduler.runTask(new Dispatcher(event));
     }
 
@@ -116,9 +113,9 @@ public class EventExecutor {
             final Logger logger = BukkitBootstrap.getInstance().getLogger();
             if (event instanceof ClientStatusChangeEvent) {
                 ClientStatusChangeEvent e = (ClientStatusChangeEvent) event;
-                if (e.getOnline()) {
+                if (e.getSelfClient()) {
                     Client client = e.getClient();
-                    StaticAPI.setClient(client);
+                    StaticAPI.getClient().setAppId(client.getAppId());
                     logger.info(String.format("Perpetua connected with clientId: %s", client.getAppId()));
                 }
                 return;

@@ -1,6 +1,5 @@
 package com.illtamer.infinite.bot.minecraft.configuration.config;
 
-import com.illtamer.infinite.bot.minecraft.api.StaticAPI;
 import com.illtamer.infinite.bot.minecraft.api.adapter.Bootstrap;
 import com.illtamer.infinite.bot.minecraft.api.adapter.ConfigSection;
 import com.illtamer.infinite.bot.minecraft.repository.PlayerDataRepository;
