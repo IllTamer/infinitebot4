@@ -29,21 +29,34 @@ public class StatusCheckRunner implements Runnable {
 
     @Override
     public void run() {
-        if (!OneBotConnection.isRunning()) {
-            log.warning("检测到 WebSocket 连接断开，尝试重连 perpetua 中");
-            loginInfo = null;
-        } else  {
-            try {
-                loginInfo = OpenAPIHandling.getLoginInfo();
-            } catch (Exception ignore) {
-                log.warning("获取账号信息失败，尝试重连 perpetua 中");
-                loginInfo = null;
-            }
-        }
-        if (loginInfo == null) {
-            StaticAPI.reconnected();
-        }
         lastRefreshTime = System.currentTimeMillis();
+
+        if (!OneBotConnection.isRunning()) {
+            doReconnect("检测到 WebSocket 连接断开，尝试重连 perpetua 中");
+            return;
+        }
+
+        Status status = null;
+        try {
+            status = OpenAPIHandling.getStatus();
+        } catch (Exception ignored) {}
+        if (status == null || !status.getOnline() || !status.getGood()) {
+            doReconnect("账号状态异常，尝试重连 perpetua 中");
+            return;
+        }
+
+        try {
+            loginInfo = OpenAPIHandling.getLoginInfo();
+        } catch (Exception ignore) {
+            doReconnect("获取账号信息失败，尝试重连 perpetua 中");
+            return;
+        }
+    }
+
+    private void doReconnect(String reason) {
+        log.warning(reason);
+        loginInfo = null;
+        StaticAPI.reconnected();
     }
 
 }
