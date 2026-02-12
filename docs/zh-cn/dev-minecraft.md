@@ -2,7 +2,7 @@
 
 ## 导入
 
-在开发 `InfiniteBot3-minecraft` 之前，您需要向您的项目中引入插件的坐标（或直接 [[下载插件]](https://github.com/IllTamer/infinitebot3/releases) 并导入，不推荐）。
+在开发 `InfiniteBot4-minecraft` 之前，您需要向您的项目中引入插件的坐标（或直接 [[下载插件]](https://github.com/IllTamer/infinitebot3/releases) 并导入，不推荐）。
 
 > 在 `minecraft` 模块中已完整包含 `api` 模块，所有在上文介绍过的 API 均被允许使用。
 
@@ -22,7 +22,7 @@
 
 ### 前言
 
-InfiniteBot-v3.+较一代完善了附属开发方面的不足，较二代补足了多服间数据互通的分布式需求。插件的附属拓展系统借鉴了Buukit-Plugin模式，由插件主体提供可热加载、具有完善监听、独特API的附属开发模式。
+InfiniteBot-v4.+较一代完善了附属开发方面的不足，较二代补足了多服间数据互通的分布式需求。插件的附属拓展系统借鉴了Buukit-Plugin模式，由插件主体提供可热加载、具有完善监听、独特API的附属开发模式。
 
 > 即：附属除无需配置 plugin.yml 外生命周期相关 API 向 bukkit-plugin 规范靠齐。
 

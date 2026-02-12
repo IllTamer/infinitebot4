@@ -38,6 +38,15 @@ public class StaticAPI {
     }
 
     /**
+     * 当前客户端是否为主节点
+     * @apiNote 部分支持分布式插件需要调用此配置以防止发送额外的分布式消息，
+     * 如果在群组服中使用插件，请确保有且仅有一个插件开启了此设置
+     * */
+    public static boolean isMaster() {
+        return BotConfiguration.connection.master;
+    }
+
+    /**
      * 重连 perpetua WebSocket 服务
      * */
     public static void reconnected() {

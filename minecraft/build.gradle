@@ -28,7 +28,8 @@ publishing {
         if (version.toString().endsWith("-SNAPSHOT")) {
             maven {
                 name "iunlimitSnapshots"
-                url "https://maven.illtamer.com/snapshots"
+                url "http://192.168.3.7:7070/snapshots"
+                setAllowInsecureProtocol true
                 credentials(PasswordCredentials)
                 authentication {
                     basic(BasicAuthentication)
@@ -37,7 +38,8 @@ publishing {
         } else {
             maven {
                 name = "iunlimitReleases"
-                url = "https://maven.illtamer.com/releases"
+                url = "http://192.168.3.7:7070/releases"
+                setAllowInsecureProtocol true
                 credentials(PasswordCredentials)
                 authentication {
                     basic(BasicAuthentication)

@@ -43,7 +43,8 @@ public class BotNettyHolder {
         BotScheduler.runTaskLater(() -> {
             OpenAPIHandling.setClientName(connection.name);
             StaticAPI.getClient().setClientName(connection.name);
-        }, 3L);
+            logger.info("客户端昵称已设置为: " + connection.name);
+        }, 5L);
     }
 
     public void checkConnection() {

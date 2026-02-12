@@ -139,6 +139,9 @@ public class BotConfiguration {
         public final String name = section.getString("name", "");
 
         @NotNull
+        public final boolean master = section.getBoolean("master", false);
+
+        @NotNull
         public final String host = section.getString("webapi.host", "unknown");
 
         public final int port = section.getInt("webapi.port", -1);

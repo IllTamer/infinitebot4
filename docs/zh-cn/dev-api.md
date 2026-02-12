@@ -4,7 +4,7 @@
 
 ### Maven
 
-InfiniteBot-v3 为支持 go-cqhttp 实现了一系列包括事件监听、消息回调、end-point 快速操作等 API
+InfiniteBot-v4 为支持 go-cqhttp 实现了一系列包括事件监听、消息回调、end-point 快速操作等 API
 。您可将 [[api]](/api) 模块作为调用 go-cqhttp 的前置依赖库导入项目，进行开发。
 
 ```xml
@@ -28,7 +28,7 @@ CQHttpWebSocketConfiguration.start(httpUri, wsUri, authorization, eventConsumer)
 
 ### SpringBoot
 
-InfiniteBot-v3 额外优化了在 SpringBoot 框架下的开发体验。您只需要进行相应配置即可使用
+InfiniteBot-v4 额外优化了在 SpringBoot 框架下的开发体验。您只需要进行相应配置即可使用
 
 1. 导入 ib3-spring-boot-starter
 
@@ -51,7 +51,7 @@ InfiniteBot-v3 额外优化了在 SpringBoot 框架下的开发体验。您只�
 
 ## 示例
 
-!> InfiniteBot3 暂未计划支持任何频道 API
+!> InfiniteBot4 暂未计划支持任何频道 API
 
 ### Message
 
@@ -72,10 +72,6 @@ Message message = MessageBuilder.json()
 #### Message Chain
 
 在 `Message` 被构造的过程中，其内部还会维护一个 `MessageChain` 对象来描述消息中各组成的类型 `TransferEntity`。[点击查看]((https://github.com/IllTamer/infinitebot3/blob/main/api/src/main/java/com/illtamer/infinite/bot/api/entity/transfer/))支持的类型
-
-### Event Channel
-
-?> _TODO_ 事件管道相关 API 正在开发中 ~
 
 ### Web API
 
@@ -131,6 +127,14 @@ public class StrangerGetHandler extends AbstractAPIHandler<Map<String, Object>> 
     }
 }
 ```
+
+### 自动载入配置类
+
+[AutoLoadConfiguration](https://github.com/IllTamer/infinitebot4/blob/main/minecraft/src/main/java/com/illtamer/infinite/bot/minecraft/expansion/automation/Registration.java)
+
+### 语言配置类
+
+注意：语言配置类目前仅支持单条 KV 结构数据读取
 
 ### Util
 
