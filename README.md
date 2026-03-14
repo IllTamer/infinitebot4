@@ -21,7 +21,7 @@
 
 <p align="center">
     <a href="https://github.com/IllTamer/infinitebot4-expansion">[Expansions]</a>
-    <a href="https://illtamer.github.io/infinitebot4/">[Document (维护中)]</a>
+    <a href="https://illtamer.github.io/infinitebot4/">[Document]</a>
 </p>
 
 ## Import
