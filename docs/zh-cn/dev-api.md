@@ -1,159 +1,96 @@
-# API
+# Perpetua SDK / API 速查
 
-## 导入
+本页用于帮助"插件开发者/附属开发者"快速定位 **Perpetua SDK** 与 InfiniteBot4-minecraft 的 API 入口。
 
-### Maven
+> 重要说明：
+>
+> - InfiniteBot4-minecraft 仓库当前以 `:minecraft` 子模块为主（并通过依赖引入 Perpetua SDK）。
+> - OneBot（原 go-cqhttp 生态）相关的连接、事件、Web API、广播等能力均由 **Perpetua SDK** 提供。
+>
+> 因此，本页不再维护旧版 `IB3 API`、`CQHttpWebSocketConfiguration`、`ib3-spring-boot-starter` 等历史内容。
 
-InfiniteBot-v4 为支持 go-cqhttp 实现了一系列包括事件监听、消息回调、end-point 快速操作等 API
-。您可将 [[api]](/api) 模块作为调用 go-cqhttp 的前置依赖库导入项目，进行开发。
+---
 
-```xml
-<dependency>
-   <groupId>com.illtamer.infinite.bot</groupId>
-   <artifactId>api</artifactId>
-   <version>1.0.5</version>
-</dependency>
-```
+## 1. 依赖引入（附属开发）
 
-毫无疑问，IB3 需要您提供您开启的 go-cqhttp 服务的详细参数以便于与机器人建立连接。请在程序中调用以下函数以便于初始化连接。 
+开发 Expansion 时，直接依赖 `minecraft` 模块即可（其中已包含 Perpetua SDK 依赖）。
 
-```java
-CQHttpWebSocketConfiguration.start(httpUri, wsUri, authorization, eventConsumer);
-```
+依赖坐标与引入方式详见《附属（Expansion）开发指南》的"依赖引入"章节。
 
-该方法最后一个参数为事件基类 [Event](/api/src/main/java/com/illtamer/infinite/bot/api/event/Event.java) 的 `Consumer<? exteds Event>` 对象，即事件的处理函数。
+---
 
-> 在 Spring 框架中，您可以调用 `ApplicationEventPublisher#publish(Object)` 将事件托管。
+## 2. 事件模型
 
+- Perpetua 事件基类：`com.illtamer.perpetua.sdk.event.Event`
+- Bukkit 插件侧事件分发器：`com.illtamer.infinite.bot.minecraft.api.EventExecutor`
 
-### SpringBoot
-
-InfiniteBot-v4 额外优化了在 SpringBoot 框架下的开发体验。您只需要进行相应配置即可使用
-
-1. 导入 ib3-spring-boot-starter
-
-   ```xml
-   <dependency>
-      <groupId>com.illtamer.infinite.bot</groupId>
-      <artifactId>ib3-spring-boot-starter</artifactId>
-      <version>1.0.5</version>
-   </dependency>
-   ```
-
-2. 在`application.yml`填写以下配置节点
-
-   ```yaml
-   bot:
-     http-uri: ''
-     ws-uri: ''
-     authorization: ''
-   ```
-
-## 示例
-
-!> InfiniteBot4 暂未计划支持任何频道 API
-
-### Message
-
-go-cqhttp 同时支持使用两类消息 —— CQ码与Json，故 InfiniteBot3 也分别支持两种消息的构建。两类消息分别对应实体类 `CQMessage` 与 `JsonMessage`，他们都有一个共同的抽象父类 `Message` 作为类型声明。
-
-> 在与 go-cqhttp 的 WebSocket 长连接中，事件中的消息以CQ码的形式被传递与解析。一般的，我们使用Json这种层次分明的数据结构来构建需要发送的消息对象。
-
-#### 生成
-
-您可以使用 `MessageBuilder` 建造者工具类来生成一个 `Message` 实例：
+在 Expansion 中监听 Perpetua 事件：
 
 ```java
-Message message = MessageBuilder.json()
-         .text("Hello World")
-         .build();
-```
+public class MyListener implements com.illtamer.infinite.bot.minecraft.api.event.Listener {
 
-#### Message Chain
-
-在 `Message` 被构造的过程中，其内部还会维护一个 `MessageChain` 对象来描述消息中各组成的类型 `TransferEntity`。[点击查看]((https://github.com/IllTamer/infinitebot3/blob/main/api/src/main/java/com/illtamer/infinite/bot/api/entity/transfer/))支持的类型
-
-### Web API
-
-api 模块已内置部分较为常用的 go-cqhttp Web API，您可通过 [[OpenAPIHandling]](https://github.com/IllTamer/infinitebot3/blob/main/api/src/main/java/com/illtamer/infinite/bot/api/handler/OpenAPIHandling.java) 便捷调用所有已支持的 API，或查看其内部实现。
-
-#### 自定义 APIHandler
-
-1. 继承 [[AbstractAPIHandler<T>]](https://github.com/IllTamer/infinitebot3/blob/main/api/src/main/java/com/illtamer/infinite/bot/api/handler/AbstractAPIHandler.java)
-
-2. 赋予泛型正确的类型（go-cqhttp Http 接口的返回数据类型）
-
-3. 向父类构造器中传入正确的 `endpoint` （相关信息请见 [请求说明](https://docs.go-cqhttp.org/api/#%E8%AF%B7%E6%B1%82%E8%AF%B4%E6%98%8E)）
-
-4. 将 API 所需参数作为成员变量声明并赋值
-
-最终您实现的 APIHandler 应类似以下格式，使用 `APIHandler#request` 方法调用相关 Web API
-
-```java
-/**
- * 获取陌生人信息
- * */
-@Getter
-public class StrangerGetHandler extends AbstractAPIHandler<Map<String, Object>> {
-    /**
-     * QQ 号
-     * */
-    @SerializedName("user_id")
-    private Long userId;
-    /**
-     * 是否不使用缓存（使用缓存可能更新不及时, 但响应更快）
-     * */
-    @SerializedName("no_cache")
-    private Boolean noCache;
-
-    public StrangerGetHandler() {
-        super("/get_stranger_info");
-    }
-
-    public StrangerGetHandler setUserId(Long userId) {
-        this.userId = userId;
-        return this;
-    }
-
-    public StrangerGetHandler setNoCache(Boolean noCache) {
-        this.noCache = noCache;
-        return this;
-    }
-
-    @NotNull
-    public static Stranger parse(@NotNull Response<Map<String, Object>> response) {
-        final Gson gson = new Gson();
-        return gson.fromJson(gson.toJson(response.getData()), Stranger.class);
-    }
+  @com.illtamer.infinite.bot.minecraft.api.event.EventHandler
+  public void onEvent(com.illtamer.perpetua.sdk.event.Event event) {
+    // ...
+  }
 }
+
+// onEnable
+EventExecutor.registerEvents(new MyListener(), this);
 ```
 
-### 自动载入配置类
+> 监听方法必须只有 1 个参数，且为 `Event`（或其子类）。
 
-[AutoLoadConfiguration](https://github.com/IllTamer/infinitebot4/blob/main/minecraft/src/main/java/com/illtamer/infinite/bot/minecraft/expansion/automation/Registration.java)
+---
 
-### 语言配置类
+## 3. Web API / 广播 / 客户端列表
 
-注意：语言配置类目前仅支持单条 KV 结构数据读取
+InfiniteBot4-minecraft 在连接建立后会设置：
 
-### Util
+- `OpenAPIHandling.setClientName(connection.name)`（在成功连接 Perpetua WebAPI 后设置客户端别名）
 
-- AdapterUtil 
-   
-   go-cqhttp 兼容性工具类
+常用入口（均来自 Perpetua SDK）：
 
-- Assert
+- `com.illtamer.perpetua.sdk.handler.OpenAPIHandling`
+  - `getStatus()` / `getLoginInfo()`
+  - `getClientList()`
+  - `sendBroadcastData(...)` / `sendBroadcastDataCallback(...)`
 
-   断言工具类
+插件侧的连接状态巡检：
 
-- ClassUtil
+- `StatusCheckRunner` 会周期性调用 `OpenAPIHandling.getStatus()` / `getLoginInfo()`，异常时触发 `StaticAPI.reconnected()`。
 
-   反射工具类
+---
 
-- HttpRequestUtil
+## 4. 分布式能力（多服/多端）
 
-   http 工具类
+如果你希望在多客户端环境收集数据：
 
-- Maps
+- 使用 `com.illtamer.infinite.bot.minecraft.api.distribute.DistributedEventProcessor<T>`
 
-   低版本 `Map#of` 实现
+它基于 Perpetua 的 broadcast + callback 事件实现结果收集。
+
+详见文档：
+
+- 《附属能力与可用 API》 -> 分布式能力章节
+
+---
+
+## 5. 配置系统
+
+插件侧提供两套：
+
+1. `ExpansionConfig`：传统 yml 文件封装 + 版本迁移
+2. `AutoLoadConfiguration`：注解驱动的字段映射 + 自动保存
+
+详见：
+
+- 《附属能力与可用 API》
+- 《附属开发指南》
+
+---
+
+## 6. 额外提示
+
+- InfiniteBot4 暂未计划支持任何"频道"类 API（以仓库 README/作者声明为准）。
+- 若你要做更偏业务层的"命令解析/消息构建"，建议直接参考 Perpetua SDK 的实体类与 handler。

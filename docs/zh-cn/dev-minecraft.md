@@ -1,10 +1,12 @@
-# Plugin - Expansion
+# 附属（Expansion）开发指南
 
-## 导入
+本页面向"插件开发者/附属作者"，介绍 InfiniteBot4-minecraft 的 Expansion 体系：内部附属（jar 热加载）与外部附属（hook 注册）。
 
-在开发 `InfiniteBot4-minecraft` 之前，您需要向您的项目中引入插件的坐标（或直接 [[下载插件]](https://github.com/IllTamer/infinitebot3/releases) 并导入，不推荐）。
+---
 
-> 在 `minecraft` 模块中已完整包含 `api` 模块，所有在上文介绍过的 API 均被允许使用。
+## 1. 依赖引入
+
+开发 Expansion 时，依赖 `minecraft` 模块即可（其已引入 Perpetua SDK）：
 
 ### Maven
 
@@ -12,182 +14,214 @@
 <dependency>
   <groupId>com.illtamer.infinite.bot</groupId>
   <artifactId>minecraft</artifactId>
-  <version>3.1.0</version>
+  <version>{version}</version>
+  <scope>provided</scope>
 </dependency>
 ```
 
-## 编写附属
+### Gradle
 
-!> 出于可用性、简洁性、不重复造轮子等方面考虑，本人强烈建议您以下方的附属开发规范为参考编写插件拓展，以快速开发代替传统附属插件编写方式——再写一个Bukkit插件<del>（如果你喜欢的话）</del>。
+```groovy
+dependencies {
+  compileOnly 'com.illtamer.infinite.bot:minecraft:{version}'
+}
+```
 
-### 前言
+> 版本号以你实际使用的发布版本为准。
 
-InfiniteBot-v4.+较一代完善了附属开发方面的不足，较二代补足了多服间数据互通的分布式需求。插件的附属拓展系统借鉴了Buukit-Plugin模式，由插件主体提供可热加载、具有完善监听、独特API的附属开发模式。
+## 2. 编写附属（内部附属 / 外部附属）
 
-> 即：附属除无需配置 plugin.yml 外生命周期相关 API 向 bukkit-plugin 规范靠齐。
+建议优先使用 Expansion 体系来扩展业务，而不是再写一个"完整 Bukkit 插件"。
 
-### 附属主类注册
+InfiniteBot4 的 Expansion 借鉴 Bukkit Plugin 生命周期：
 
-#### Standard
+- 有 `onEnable/onDisable`
+- 有独立的配置目录
+- 有统一的事件分发与注销逻辑
+- 内部附属支持热加载/卸载（独立类加载器）
 
-附属主类需继承抽象类 `InfiniteExpansion` 并重写方法
+---
 
--   `onEnable` 附属加载时调用
--   `onDisable` 附属卸载时调用
--   `getExpansionName` 用于注册附属，不为空！
--   `getVersion` 用于注册附属，不为空！
--   `getAuthor` 用于注册附属，不为空！
+### 2.1 内部附属（Embedded Expansion）
 
-其他父类自带方法详见 [[IExpansion]](../src/main/java/com/illtamer/infinite/bot/minecraft/api/IExpansion.java)
+内部附属以 jar 形式放入：
 
-> `expansionName`, `version` 与 `author` 共同组成了附属唯一性标识 `expansionName-version::author`。\
-> 一个唯一性标识最多允许注册一个
+- `plugins/InfiniteBot4/expansions/*.jar`
 
-示例代码
+主类要求：
+
+- `extends com.illtamer.infinite.bot.minecraft.expansion.manager.InfiniteExpansion`
+- 实现并返回非空：`getExpansionName/getVersion/getAuthor`
+
+示例：
 
 ```java
+import com.illtamer.infinite.bot.minecraft.expansion.manager.InfiniteExpansion;
+import org.jetbrains.annotations.NotNull;
+
 public class ExampleExpansion extends InfiniteExpansion {
-    @Override
-    public void onEnable() {
-        //TODO
-    }
-    @Override
-    public void onDisable() {
-        //TODO
-    }
-    @Override
-    @NotNull
-    public String getExpansionName() {
-        return "ExampleExpansion";
-    }
-    @Override
-    @NotNull
-    public String getVersion() {
-        return "1.0";
-    }
-    @Override
-    @NotNull
-    public String getAuthor() {
-        return "IllTamer";
-    }
- }
+
+  @Override
+  public void onEnable() {
+    getLogger().info("enabled");
+  }
+
+  @Override
+  public void onDisable() {
+    getLogger().info("disabled");
+  }
+
+  @Override @NotNull
+  public String getExpansionName() { return "ExampleExpansion"; }
+
+  @Override @NotNull
+  public String getVersion() { return "1.0.0"; }
+
+  @Override @NotNull
+  public String getAuthor() { return "You"; }
+}
 ```
 
-#### With a Plugin
+标识符：
 
-若您希望您的插件能与 `InfiniteBot3-minecraft` 挂钩(hook)，可以按以下形式在您的插件中新建一个附属类并将其注册为外部附属(External Expansion)
+- `name-version::author`
 
-编写附属类
+> 规范建议：name 不要包含 `-`。
+
+---
+
+### 2.2 外部附属（External Expansion / Hook）
+
+当你已有 Bukkit 插件，希望与 InfiniteBot4 挂钩：
+
+1. 编写外部附属类：继承 `AbstractExternalExpansion`
+2. 在你的插件 `onEnable()` 中 `register(this)`
+3. 在你的插件 `onDisable()` 中（推荐）主动 `unregister()`
+
+示例：
 
 ```java
+import com.illtamer.infinite.bot.minecraft.expansion.manager.AbstractExternalExpansion;
+
 public class ExternalExpansion extends AbstractExternalExpansion {
-    @Override
-    public void onEnable() {
-        // TODO
-    }
-    @Override
-    public void onDisable() {
-        // TODO
-    }
-    @Override
-    public String getExpansionName() {
-        return "ExternalExpansion";
-    }
-    @Override
-    public String getVersion() {
-        return "1.0-SNAPSHOT";
-    }
-    @Override
-    public String getAuthor() {
-        return "IllTamer";
-    }
+  @Override public void onEnable() {}
+  @Override public void onDisable() {}
+
+  @Override public String getExpansionName() { return "ExternalExpansion"; }
+  @Override public String getVersion() { return "1.0.0"; }
+  @Override public String getAuthor() { return "You"; }
 }
 ```
 
-注册外部附属
-
 ```java
-public class TestPlugin extends JavaPlugin {
-    @Override
-    public void onEnable() {
-        new ExternalExpansion().register(this);
+public class YourPlugin extends JavaPlugin {
+
+  private ExternalExpansion expansion;
+
+  @Override
+  public void onEnable() {
+    expansion = new ExternalExpansion();
+    expansion.register(this);
+  }
+
+  @Override
+  public void onDisable() {
+    if (expansion != null && expansion.isRegister()) {
+      expansion.unregister();
     }
+  }
 }
 ```
 
-### 附属配置文件注册
+> 如果你忘记注销，InfiniteBot4 会在 `PluginDisableEvent` 中被动注销，但会输出警告日志。
 
-IB3已预先为您封装好了配置文件实体类 `ExpansionConfig`，您的配置文件应在附属初始化时被注册。当插件加载附属配置文件时，会从附属jar中寻找对应URL，若找到加载到缓存并自动生成到 `plugins/InfiniteBot3/expansions/附属名称` 下 示例代码
+---
+
+## 3. 配置文件
+
+### 3.1 ExpansionConfig（手动 yml）
 
 ```java
- public class ExampleExpansion extends InfiniteExpansion {
-     private IExpansion instance;
-     private ExpansionConfig configFile;
-     @Override
-     public void onEnable() {
-         instance = this;
-         configFile = new ExpansionConfig("config.yml", instance);
-         // ...
-     }
- }
+import com.illtamer.infinite.bot.minecraft.expansion.ExpansionConfig;
+
+public class ExampleExpansion extends InfiniteExpansion {
+
+  private ExpansionConfig config;
+
+  @Override
+  public void onEnable() {
+    config = new ExpansionConfig("config.yml", this, 1); // 第三个参数为配置版本号，用于自动迁移
+    String foo = config.getConfig().getString("foo", "bar");
+  }
+}
 ```
 
-ExpansionConfig 已封装常用方法保存/重载/获取yml文件，详见 [[ExpansionConfig]](../src/main/java/com/illtamer/infinite/bot/minecraft/expansion/ExpansionConfig.java)
+- 若磁盘不存在，会从 jar 资源释放
+- 支持配置版本迁移（生成 `.bak`）
 
-### 语言文件
+### 3.2 AutoLoadConfiguration（自动配置类）
 
-语言文件基于 ExpansionConfig 二次封装实现，其固定格式为 `{name}-{type}.yml` (如 `language-zh_CN.yml`)。
-语言文件相关 API 详见类 [[Language]](../src/main/java/com/illtamer/infinite/bot/minecraft/expansion/Language.java)，且在不断完善中。
+- 适合字段多、希望减少样板代码的场景
+- 附属卸载时会自动写回并反注册
 
-### QQ事件监听+注册
+详见：
 
-> 注：该示例中所用到的类全位于 `com.illtamer.infinite.bot.api.event` 包下(包括Bukkit的同名类)
-您的监听类应实现`Listener`接口，监听的方法应标有`@EventHandler`注解，方法中事件参数选择`InfiniteBot3`事件
+- 《附属能力与可用 API》
 
--   监听部分示例代码
+---
 
-   ```java
-   public class ExampleListener implements Listener {
-      // 可选优先级设置项 property 优先级高的方法将被优先调用
-      @EventHandler
-      public void onEvent(MessageEvent event) {
-            // 引用发送者的消息发送一条内容为“收到”的消息
-            event.reply("收到");
-            // 为保证注入消息转发类的插件能够正常工作，当您在执行例如监听关键字的特定回复操作后，请务必取消时间避免消息被转发
-            event.setCancelled(true);
-      }
-   }
-   ```
+## 4. 事件监听与注册
 
--   注册监听部分示例代码
+### 4.1 监听 Perpetua 事件
 
-   > 附属注册的所有事件均会在附属卸载后自动被注销
+```java
+import com.illtamer.infinite.bot.minecraft.api.EventExecutor;
+import com.illtamer.infinite.bot.minecraft.api.event.EventHandler;
+import com.illtamer.infinite.bot.minecraft.api.event.Listener;
+import com.illtamer.perpetua.sdk.event.Event;
 
-   ```java
-   public class ExampleExpansion extends InfiniteExpansion {
-      private IExpansion instance;
-      @Override
-      public void onEnable() {
-            instance = this;
-            // 注册 IB3 事件
-            EventExecutor.registerListener(new ExampleListener(), instance);
-            // 注册 Bukkit 事件
-            EventExecutor.registerBukkitListener(new BukkitListener());
-            // ...
-      }
-   }
-   ```
+public class ExampleListener implements Listener {
+  @EventHandler
+  public void onEvent(Event event) {
+    // ...
+  }
+}
 
-## API
+// onEnable
+EventExecutor.registerEvents(new ExampleListener(), this);
+```
 
-插件本体中内含两种 API
+### 4.2 注册 Bukkit 事件
 
-1. 模块 API
+```java
+EventExecutor.registerBukkitEvent(new org.bukkit.event.Listener() {
+  // ...
+}, this);
+```
 
-   见 [开发相关 - API](dev-api.md)
+框架会在卸载时自动注销。
 
-2. 插件 API
+---
 
-   作者所能确保的不会删减的 API 在 `com.illtamer.infinite.bot.minecraft.api` 包内，其中 [[StaticAPI]](../src/main/java/com/illtamer/infinite/bot/minecraft/api/StaticAPI.java) 提供部分 API 的便捷静态方法调用。
+## 5. 分布式能力（可选）
 
-   插件的启动类为 `com.illtamer.infinite.bot.minecraft.start.Bootstrap`，如有需要，您可获取启动类实例以获取附属加载类 [[ExpansionLoader]](../src/main/java/com/illtamer/infinite/bot/minecraft/expansion/ExpansionLoader.java) 的实例，对插件的附属进行修改操作。
+- 使用 `DistributedEventProcessor<T>`
+- 适用于多服/多端的数据收集与协作
+
+详见：
+
+- 《附属能力与可用 API》 -> 分布式能力章节
+
+## 6. API 入口
+
+- Perpetua SDK：OneBot 连接、事件、Web API、广播等能力
+- InfiniteBot4-minecraft API（尽量稳定）：`com.illtamer.infinite.bot.minecraft.api`
+  - `StaticAPI`：常用静态入口（管理员/群过滤、repository、client、master 等）
+  - `EventExecutor`：事件注册/注销、Bukkit 事件注册
+  - `BotScheduler`：线程池与定时任务
+
+如果你需要对附属进行加载/卸载操作：
+
+- `BukkitBootstrap.getInstance().getExpansionLoader()`
+
+> 注意：`ExpansionLoader` 属于较底层能力，业务附属一般不建议直接操作其它附属。

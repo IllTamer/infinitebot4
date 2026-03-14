@@ -11,13 +11,13 @@
 
 ## 简介
 
-第四代 Infinite QQ 机器人。基于 perpetua-sdk-for-java，为 JavaSE 与 Bukkit 环境下 QQ 机器人的开发提供附属注册、配置管理、事件分发、等功能支持。
+第四代 Infinite QQ 机器人。基于 perpetua-sdk-for-java，为 Bukkit 环境下 QQ 机器人的开发提供附属注册、配置管理、事件分发、分布式协作等功能支持。
 
 ## 声明
 
 - 若您在使用时有任何疑问，欢迎入群讨论咨询 `QQ: 863522624`
 
-- 若您为 Minecraft 公益服主且服务器资源难以承受 perpetua 的运行，欢迎 [[联系我]](https://api.vvhan.com/api/qqCard?qq=765743073) 。我与我的云服务很乐意为您提供一份力所能及的援助。
+- 若您为 Minecraft 公益服主且服务器资源难以承受 perpetua 的运行，欢迎 [联系我](https://api.vvhan.com/api/qqCard?qq=765743073) 。我与我的云服务很乐意为您提供一份力所能及的援助。
 
 ## 致谢
 

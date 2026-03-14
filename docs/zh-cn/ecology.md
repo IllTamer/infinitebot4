@@ -1,17 +1,53 @@
 # 生态
 
-## API
+InfiniteBot4 的整体生态由三部分组成：
 
-[InfiniteBot3-API](https://github.com/IllTamer/infinitebot3/tree/main/api) 是本 sdk 的核心实现，其根据 go-cqhttp 文档标准实现了一套详尽的 <u>消息构建</u> & <u>时间调度</u> 系统。是其余 Java 下拓展生态的基础。
+1. **Perpetua（OneBot 连接层）**：负责与 OneBot 实现建立连接、提供事件与 Web API。
+2. **InfiniteBot4-minecraft（Bukkit 插件侧）**：在 Minecraft 服务器内提供连接托管、事件分发、扩展（Expansion）体系、数据与分布式封装。
+3. **业务附属（Expansions）**：承载具体功能（如消息互通、验证、管理、经济联动等），通过扩展体系热加载。
 
-## for MineCraft
+---
 
-[InfiniteBot3-MineCraft](https://github.com/IllTamer/infinitebot3/tree/main/minecraft) 是 InfiniteBot3 专为 Bukkit 服务器开发的一款高可用分布式可拓展机器人插件。其个性化的附属管理系统与高内聚，低耦合的设计理念为插件附属开发提供了强有力的支持，这也正是此插件深受开发者与服主喜爱的原因。
+## 1. Perpetua
 
-### expansion
+- 仓库/文档：<https://github.com/IUnlimit/perpetua>
+- 快速开始：<https://iunlimit.github.io/perpetua/#/zh-cn/user/quick-start>
 
-基于 `InfiniteBot3-MineCraft` 的独立类加载系统，插件可加载遵循 [[附属开发规范]]() 的 <u>嵌入式</u> / <u>外置</u> 附属。由作者本人开发的嵌入式附属请见 [infinite-bot-3-expansion](https://github.com/IllTamer/infinite-bot-3-expansion)
+Perpetua 提供的能力包括但不限于：
 
-## for Desktop
+- OneBot WebSocket 连接
+- OneBot Web API 调用封装（`OpenAPIHandling`）
+- 广播/回调事件（用于分布式能力）
 
-[InfiniteBot3-Desktop](https://github.com/IllTamer/infinitebot3-desktop) 是基于 Electron 开发的拥有可视化界面的 InfiniteBot3 桌面控制中心，提供便捷的任务部署、监视与流控功能。
+---
+
+## 2. InfiniteBot4-minecraft
+
+- 仓库：<https://github.com/IllTamer/infinitebot4>
+
+核心特性：
+
+- Bukkit 插件形态部署
+- `config.yml` 管理连接/权限/数据源
+- 独立类加载器的内部附属（jar 热加载/卸载）
+- 外部附属（Hook）：允许其它 Bukkit 插件注册成为 expansion
+- YAML / MySQL 两种玩家数据持久化
+- 分布式事件处理器：多客户端数据收集与回调聚合
+
+---
+
+## 3. Expansions（业务附属）
+
+- 内部附属：放入 `plugins/InfiniteBot4/expansions/`
+- 外部附属：由其它 Bukkit 插件通过 `AbstractExternalExpansion#register` 注册
+
+官方/推荐附属仓库：
+
+- <https://github.com/IllTamer/infinitebot4-expansion>
+
+推荐阅读：
+
+- 《Minecraft 插件使用指南》
+- 《附属（Expansion）开发指南》
+- 《附属编写规范》
+- 《附属能力与可用 API》
