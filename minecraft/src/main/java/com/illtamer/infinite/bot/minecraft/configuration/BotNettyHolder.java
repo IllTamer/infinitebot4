@@ -7,24 +7,17 @@ import com.illtamer.perpetua.sdk.event.Event;
 import com.illtamer.perpetua.sdk.handler.OpenAPIHandling;
 import com.illtamer.perpetua.sdk.websocket.OneBotConnection;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
-import java.lang.reflect.Field;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 public class BotNettyHolder {
 
-    protected ThreadPoolExecutor websocketExecutor = new ThreadPoolExecutor(1, 1,
-            0L, TimeUnit.MILLISECONDS,
-            new LinkedBlockingQueue<>(1));
-
-    private final Consumer<ThreadPoolExecutor> interruptConsumer;
+    private volatile ExecutorService websocketExecutor;
+    private final AtomicBoolean connecting = new AtomicBoolean(false);
     private final Logger logger;
     private final Consumer<Event> eventConsumer;
 
@@ -37,14 +30,48 @@ public class BotNettyHolder {
      * 开启 WebSocket 连接
      * */
     public void connect() {
-        interruptConsumer.accept(websocketExecutor);
-        final BotConfiguration.ConnectionConfig connection = BotConfiguration.connection;
-        websocketExecutor.execute(new WebSocketRunner(connection));
-        BotScheduler.runTaskLater(() -> {
-            OpenAPIHandling.setClientName(connection.name);
-            StaticAPI.getClient().setClientName(connection.name);
-            logger.info("客户端昵称已设置为: " + connection.name);
-        }, 5L);
+        if (!connecting.compareAndSet(false, true)) {
+            logger.info("已有重连任务进行中，跳过本次连接请求");
+            return;
+        }
+
+        try {
+            // 关闭旧的线程池，等待旧连接线程退出
+            final ExecutorService oldExecutor = websocketExecutor;
+            if (oldExecutor != null && !oldExecutor.isShutdown()) {
+                oldExecutor.shutdownNow();
+                try {
+                    if (!oldExecutor.awaitTermination(10, TimeUnit.SECONDS)) {
+                        logger.warning("旧 WebSocket 连接线程未能在 10 秒内退出");
+                    }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+
+            // 创建新的线程池并提交连接任务
+            final BotConfiguration.ConnectionConfig connection = BotConfiguration.connection;
+            websocketExecutor = Executors.newSingleThreadExecutor(r -> {
+                Thread t = new Thread(r, "bot-websocket");
+                t.setDaemon(true);
+                return t;
+            });
+            websocketExecutor.execute(new WebSocketRunner(connection));
+
+            BotScheduler.runTaskLater(() -> {
+                try {
+                    if (OneBotConnection.isRunning()) {
+                        OpenAPIHandling.setClientName(connection.name);
+                        StaticAPI.getClient().setClientName(connection.name);
+                        logger.info("客户端昵称已设置为: " + connection.name);
+                    }
+                } catch (Exception e) {
+                    logger.warning("设置客户端昵称失败: " + e.getMessage());
+                }
+            }, 5L);
+        } finally {
+            connecting.set(false);
+        }
     }
 
     public void checkConnection() {
@@ -57,33 +84,14 @@ public class BotNettyHolder {
 
     public void close() {
         try {
-            websocketExecutor.shutdown();
-            logger.info("WebSocket 连接关闭 " + (websocketExecutor.isShutdown() ? "成功" : "失败"));
+            final ExecutorService executor = websocketExecutor;
+            if (executor != null) {
+                executor.shutdownNow();
+                logger.info("WebSocket 连接关闭 " + (executor.isShutdown() ? "成功" : "失败"));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    {
-        Consumer<ThreadPoolExecutor> consumer;
-        try {
-            final Field field = MethodHandles.Lookup.class.getDeclaredField("IMPL_LOOKUP");
-            field.setAccessible(true);
-            MethodHandles.Lookup IMPL_LOOKUP = (MethodHandles.Lookup) field.get(null);
-            final MethodHandle methodHandle = IMPL_LOOKUP
-                    .findVirtual(ThreadPoolExecutor.class, "interruptWorkers", MethodType.methodType(void.class));
-            consumer = object -> {
-                try {
-                    methodHandle.invoke(object);
-                } catch (Throwable e) {
-                    e.printStackTrace();
-                }
-            };
-        } catch (Exception e) {
-            consumer = object -> {}; // do nothing
-            e.printStackTrace();
-        }
-        this.interruptConsumer = consumer;
     }
 
     private class WebSocketRunner implements Runnable {
@@ -104,9 +112,9 @@ public class BotNettyHolder {
                         eventConsumer
                 );
             } catch (InterruptedException ignore) {
-                // do nothing
+                // 被中断，正常退出
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.warning("WebSocket 连接异常: " + e.getMessage());
             }
             logger.info("WebSocket 连接已关闭");
         }
