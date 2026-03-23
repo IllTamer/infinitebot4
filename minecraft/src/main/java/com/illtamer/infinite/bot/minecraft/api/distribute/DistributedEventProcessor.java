@@ -5,6 +5,7 @@ import com.illtamer.infinite.bot.minecraft.api.IExpansion;
 import com.illtamer.infinite.bot.minecraft.api.StaticAPI;
 import com.illtamer.infinite.bot.minecraft.api.event.EventHandler;
 import com.illtamer.infinite.bot.minecraft.api.event.Listener;
+import com.illtamer.infinite.bot.minecraft.configuration.config.BotConfiguration;
 import com.illtamer.infinite.bot.minecraft.pojo.TimedBlockingCache;
 import com.illtamer.infinite.bot.minecraft.util.StringUtil;
 import com.illtamer.perpetua.sdk.Pair;
@@ -17,6 +18,7 @@ import lombok.NonNull;
 import org.slf4j.Logger;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
@@ -41,6 +43,7 @@ import java.util.stream.Collectors;
 public class DistributedEventProcessor<T> {
 
     private final TimedBlockingCache<String, String> blockingCache = new TimedBlockingCache<>(64);
+    private final Set<String> nonBlankResponseKeys = ConcurrentHashMap.newKeySet();
     private final Map<String, Function<DistributedEventContext, T>> eventHandlers = new HashMap<>();
     private final String expansionName;
     private final Logger logger;
@@ -91,9 +94,12 @@ public class DistributedEventProcessor<T> {
         Client client = StaticAPI.getClient();
         List<Client> clientList = OpenAPIHandling.getClientList();
 
+        logDistribute("[Distribute] [{}] tryProcessEvent: eventKey={}, selfAppId={}, clientList={}",
+                expansionName, eventKey, client.getAppId(), clientList);
+
         // 检查是否为单机模式
         if (isStandaloneMode(client, clientList)) {
-            // 单机模式，直接执行
+            logDistribute("[Distribute] [{}] 单机模式，直接本地执行: eventKey={}", expansionName, eventKey);
             T localData = handler.apply(context);
             DistributedResult<T> result = new DistributedResult<>();
             result.setDataList(Collections.singletonList(localData));
@@ -112,6 +118,8 @@ public class DistributedEventProcessor<T> {
             DistributedResult<T> result = new DistributedResult<>();
             result.setDataList(dataList);
             result.setFailedClientList(pair.getValue());
+            logDistribute("[Distribute] [{}] 分布式处理完成: eventKey={}, success={}, failed={}",
+                    expansionName, eventKey, dataList.size(), pair.getValue().size());
             resultConsumer.accept(result);
         } catch (Exception e) {
             logger.error("分布式事件处理异常: {}", eventKey, e);
@@ -132,26 +140,37 @@ public class DistributedEventProcessor<T> {
         @EventHandler
         public void onClientBroadcast(ClientBroadcastEvent event) {
             BroadcastPayload payload = parsePayload(event.getData());
-            // dataKey=expansionName#eventKey#source.AppId#target.AppId
+            // dataKey=expansionName#eventKey#requestId#source.AppId#target.AppId（兼容旧格式）
             String dataKey = payload.dataKey;
-            String eventKey = dataKey.split("#")[1];
+            String[] parts = dataKey.split("#");
+            // 校验 expansionName，忽略非本附属的广播，避免错误地发送空回调干扰其他附属
+            if (!expansionName.equals(parts[0])) {
+                logDistribute("[Distribute] [{}] 忽略非本附属广播: dataKey={}", expansionName, dataKey);
+                return;
+            }
+            if (parts.length < 4) {
+                logger.warn("[Distribute] [{}] 非法 dataKey，忽略广播: {}", expansionName, dataKey);
+                return;
+            }
+            String eventKey = parts[1];
+            String requestId = parts.length >= 5 ? parts[2] : "legacy";
             Client sourceClient = event.getClient();
+
+            logDistribute("[Distribute] [{}] 收到广播: eventKey={}, requestId={}, source={}, uuid={}",
+                    expansionName, eventKey, requestId, sourceClient.getAppId(), event.getUuid());
 
             Function<DistributedEventContext, T> handler = eventHandlers.get(eventKey);
             if (handler == null) {
-                OpenAPIHandling.sendBroadcastDataCallback(payload(dataKey, payload.context, null), event.getUuid(), sourceClient);
-                return; // 未注册此事件处理器, 返回空响应
+                // 本附属未注册此 eventKey，不发送任何回调，让发送端自然超时
+                logDistribute("[Distribute] [{}] 未找到 handler，忽略广播: eventKey={}", expansionName, eventKey);
+                return;
             }
-
-//            // 验证是否为发送给自己的广播 no need
-//            Client targetClient = StaticAPI.getClient();
-//            if (!isValidBroadcast(dataKey, sourceClient, targetClient)) {
-//                return;
-//            }
 
             // 执行事件处理并返回结果
             T result = handler.apply(payload.context);
             String json = gson.toJson(result);
+            logDistribute("[Distribute] [{}] 处理完成，发送回调: eventKey={}, target={}, resp={}",
+                    expansionName, eventKey, sourceClient.getAppId(), json);
             OpenAPIHandling.sendBroadcastDataCallback(payload(dataKey, payload.context, json), event.getUuid(), sourceClient);
         }
 
@@ -161,9 +180,33 @@ public class DistributedEventProcessor<T> {
         @EventHandler
         public void onClientBroadcastCallback(ClientBroadcastCallbackEvent event) {
             BroadcastPayload payload = parsePayload(event.getData());
-            String cacheKey = buildCacheKey(event.getClient(), payload.dataKey.split("#")[1]);
-            // 未注册此事件的处理器返回的空响应，也需要被放入，避免被误判为超时
-            blockingCache.put(cacheKey, payload.resp == null ? "" : payload.resp);
+            String dataKey = payload.dataKey;
+            String[] parts = dataKey.split("#");
+            // 校验 expansionName，忽略非本附属的回调
+            if (!expansionName.equals(parts[0])) {
+                logDistribute("[Distribute] [{}] 忽略非本附属回调: dataKey={}", expansionName, dataKey);
+                return;
+            }
+            if (parts.length < 4) {
+                logger.warn("[Distribute] [{}] 非法 dataKey，忽略回调: {}", expansionName, dataKey);
+                return;
+            }
+            String eventKey = parts[1];
+            String requestId = parts.length >= 5 ? parts[2] : "legacy";
+            String cacheKey = buildCacheKey(event.getClient(), eventKey, requestId);
+            String resp = payload.resp == null ? "" : payload.resp;
+            logDistribute("[Distribute] [{}] 收到回调: eventKey={}, requestId={}, from={}, cacheKey={}, resp={}",
+                    expansionName, eventKey, requestId, event.getClient().getAppId(), cacheKey, payload.resp);
+
+            // 已有有效响应时，忽略后续空响应，避免偶发被空回调覆盖
+            if (StringUtil.isBlank(resp) && nonBlankResponseKeys.contains(cacheKey)) {
+                logDistribute("[Distribute] [{}] 忽略空回调（已存在有效响应）: cacheKey={}", expansionName, cacheKey);
+                return;
+            }
+            if (StringUtil.isNotBlank(resp)) {
+                nonBlankResponseKeys.add(cacheKey);
+            }
+            blockingCache.put(cacheKey, resp);
         }
     }
 
@@ -183,26 +226,37 @@ public class DistributedEventProcessor<T> {
             return new Pair<>(dataList, failedClientList);
         }
 
+        String requestId = UUID.randomUUID().toString();
+
         // 发送广播到所有其他客户端
         for (Client targetClient : targetClientList) {
-            String dataKey = buildDataKey(client, targetClient, eventKey);
+            String dataKey = buildDataKey(client, targetClient, eventKey, requestId);
+            logDistribute("[Distribute] [{}] 发送广播: eventKey={}, requestId={}, target={}, dataKey={}",
+                    expansionName, eventKey, requestId, targetClient.getAppId(), dataKey);
             OpenAPIHandling.sendBroadcastData(payload(dataKey, context, null), targetClient);
         }
 
         // 收集回调数据
         for (Client targetClient : targetClientList) {
+            String cacheKey = buildCacheKey(targetClient, eventKey, requestId);
             try {
-                String cacheKey = buildCacheKey(targetClient, eventKey);
+                logDistribute("[Distribute] [{}] 等待回调: eventKey={}, requestId={}, target={}, cacheKey={}",
+                        expansionName, eventKey, requestId, targetClient.getAppId(), cacheKey);
                 String json = blockingCache.get(cacheKey, 3, TimeUnit.SECONDS);
+                nonBlankResponseKeys.remove(cacheKey);
                 if (StringUtil.isBlank(json)) {
+                    logDistribute("[Distribute] [{}] 收到空回调（目标节点未注册此事件）: target={}", expansionName, targetClient.getAppId());
                     continue;
                 }
+                logDistribute("[Distribute] [{}] 收到有效回调: target={}, data={}", expansionName, targetClient.getAppId(), json);
                 T data = gson.fromJson(json, dataType);
                 dataList.add(data);
             } catch (InterruptedException | TimeoutException e) {
+                nonBlankResponseKeys.remove(cacheKey);
                 logger.error("获取客户端 {} 数据超时", targetClient, e);
                 failedClientList.add(targetClient);
             } catch (Exception e) {
+                nonBlankResponseKeys.remove(cacheKey);
                 logger.error("解析客户端 {} 数据失败", targetClient, e);
                 failedClientList.add(targetClient);
             }
@@ -235,12 +289,18 @@ public class DistributedEventProcessor<T> {
         return gson.fromJson(payload, BroadcastPayload.class);
     }
 
-    private String buildDataKey(Client source, Client target, String eventKey) {
-        return String.join("#", expansionName, eventKey, source.getAppId(), target.getAppId());
+    private String buildDataKey(Client source, Client target, String eventKey, String requestId) {
+        return String.join("#", expansionName, eventKey, requestId, source.getAppId(), target.getAppId());
     }
 
-    private String buildCacheKey(Client client, String eventKey) {
-        return String.join("#", client.getAppId(), expansionName, eventKey);
+    private String buildCacheKey(Client client, String eventKey, String requestId) {
+        return String.join("#", client.getAppId(), expansionName, eventKey, requestId);
+    }
+
+    private void logDistribute(String format, Object... args) {
+        if (BotConfiguration.main != null && BotConfiguration.main.debug) {
+            logger.info(format, args);
+        }
     }
 
     /**

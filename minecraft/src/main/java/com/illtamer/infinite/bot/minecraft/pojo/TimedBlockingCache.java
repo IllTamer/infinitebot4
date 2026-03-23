@@ -50,35 +50,27 @@ public class TimedBlockingCache<K, V> {
     }
 
     public V get(K key, long timeout, TimeUnit unit) throws InterruptedException, TimeoutException {
-        long timeoutMillis = unit.toMillis(timeout);
+        long deadlineMillis = System.currentTimeMillis() + unit.toMillis(timeout);
         lock.lock();
         try {
-            if (map.containsKey(key)) {
-                return map.get(key);
+            // 循环等待，防止虚假唤醒
+            while (!map.containsKey(key)) {
+                long remaining = deadlineMillis - System.currentTimeMillis();
+                if (remaining <= 0) {
+                    waitConditions.remove(key);
+                    throw new TimeoutException("Timeout waiting for key: " + key);
+                }
+                Condition condition = waitConditions.computeIfAbsent(key, k -> lock.newCondition());
+                boolean timedOut = !condition.await(remaining, TimeUnit.MILLISECONDS);
+                if (timedOut && !map.containsKey(key)) {
+                    waitConditions.remove(key);
+                    throw new TimeoutException("Timeout waiting for key: " + key);
+                }
             }
-
-            // 创建或获取等待条件
-            Condition condition = waitConditions.get(key);
-            if (condition == null) {
-                condition = lock.newCondition();
-                waitConditions.put(key, condition);
-            }
-
-            // 等待超时
-            boolean timedOut = !condition.await(timeoutMillis, TimeUnit.MILLISECONDS);
-            if (timedOut) {
-                // 超时后移除等待条件
-                waitConditions.remove(key);
-                throw new TimeoutException("Timeout waiting for key: " + key);
-            }
-
-            // 被唤醒后检查数据
-            if (map.containsKey(key)) {
-                return map.get(key);
-            } else {
-                // 理论上不会发生（唤醒时数据应存在）
-                throw new TimeoutException("Unexpected timeout for key: " + key);
-            }
+            V value = map.get(key);
+            map.remove(key);
+            waitConditions.remove(key);
+            return value;
         } finally {
             lock.unlock();
         }
