@@ -113,6 +113,8 @@ public class BotConfiguration {
         @NotNull
         public final List<Long> groups = section.getLongList("groups");
 
+        public final boolean debug = section.getBoolean("debug", false);
+
     }
 
     @ToString
