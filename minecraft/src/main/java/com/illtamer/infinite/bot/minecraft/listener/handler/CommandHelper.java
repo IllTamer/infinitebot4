@@ -15,6 +15,7 @@ import com.illtamer.infinite.bot.minecraft.util.BukkitUtil;
 import com.illtamer.infinite.bot.minecraft.util.StringUtil;
 import com.illtamer.perpetua.sdk.entity.transfer.entity.Client;
 import com.illtamer.perpetua.sdk.entity.transfer.entity.LoginInfo;
+import com.illtamer.perpetua.sdk.handler.OpenAPIHandling;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -80,11 +81,7 @@ public class CommandHelper {
             case "query": {
                 if (!ensureBukkitEnv(sender, type)) return true;
                 if (args.length != 3) {
-                    sender.sendMessage(new String[] {
-                            "query 指令用法:",
-                            " ├──/ib4 query qq <qq号>",
-                            " └──/ib4 query name <玩家名>"
-                    });
+                    sendHelp(sender);
                     return true;
                 }
 
@@ -172,6 +169,28 @@ public class CommandHelper {
                 loader.disableExpansion(args[1]);
                 return true;
             }
+            case "send": {
+                if (args.length != 4) {
+                    sendHelp(sender);
+                    return true;
+                }
+                BotScheduler.runTask(() -> {
+                    String msgType = args[1].toLowerCase();
+                    final long userOrGroupId;
+                    try {
+                        userOrGroupId = Long.parseLong(args[2]);
+                    } catch (NumberFormatException e) {
+                        sender.sendMessage("QQ号/QQ群 格式错误: " + args[2]);
+                        return;
+                    }
+                    if ("private".equals(msgType)) {
+                        OpenAPIHandling.sendMessage(args[3], userOrGroupId);
+                    } else if ("group".equals(msgType)) {
+                        OpenAPIHandling.sendGroupMessage(args[3], userOrGroupId);
+                    }
+                });
+                return true;
+            }
             default:
                 return true;
         }
@@ -192,8 +211,11 @@ public class CommandHelper {
                 " │   └──reload: 重载 expansions 目录下所有附属",
                 " ├──load",
                 " │   └──[附属文件名]: 加载名称对应附属",
-                " └──unload",
-                "     └──[附属名称]: 卸载名称对应附属"
+                " ├──unload",
+                " │   └──[附属名称]: 卸载名称对应附属",
+                " └──send",
+                "     ├──private [qq号] [content]",
+                "     └──group [qq群] [content]"
         });
     }
 
@@ -218,7 +240,7 @@ public class CommandHelper {
         if (!sender.isOp()) return null;
         List<String> result = new ArrayList<>();
         if (args.length == 1) {
-            result.addAll(Arrays.asList("help", "check", "reload", "reconnect", "query", "expansions", "load", "unload"));
+            result.addAll(Arrays.asList("help", "check", "reload", "reconnect", "query", "send", "expansions", "load", "unload"));
         } else if (args.length == 2) {
             switch (args[0]) {
                 case "expansions": {
@@ -229,6 +251,11 @@ public class CommandHelper {
                 case "query": {
                     result.add("qq");
                     result.add("name");
+                    break;
+                }
+                case "send": {
+                    result.add("private");
+                    result.add("group");
                     break;
                 }
                 case "unload": {
@@ -254,6 +281,16 @@ public class CommandHelper {
                 result.addAll(BukkitUtil.onlinePlayerNameList());
             } else if ("query".equals(args[0]) && "qq".equals(args[1])) {
                 result.add("<qq>");
+            } else if ("send".equals(args[0]) && "private".equals(args[1])) {
+                result.add("<qq>");
+            } else if ("send".equals(args[0]) && "group".equals(args[1])) {
+                result.add("<qq>");
+            }
+        } else if (args.length == 4) {
+            if ("send".equals(args[0]) && "private".equals(args[1])) {
+                result.add("<content>");
+            } else if ("send".equals(args[0]) && "group".equals(args[1])) {
+                result.add("<content>");
             }
         }
         return result;
