@@ -57,9 +57,11 @@ public class InfinitePluginLoader {
 
             try {
                 infiniteExpansion.setEnabled(true);
+                ExpansionCommandRegistry.registerCommands(expansion);
             } catch (Throwable ex) {
                 logger.severe("Error occurred while enabling " + ExpansionUtil.formatIdentifier(expansion) + " (Is it up to date?)");
                 ex.printStackTrace();
+                disableExpansion(expansion);
             }
         }
     }
@@ -76,9 +78,12 @@ public class InfinitePluginLoader {
 
             try {
                 externalExpansion.setEnabled(true);
+                ExpansionCommandRegistry.registerCommands(expansion);
+                externalExpansion.setRegister(true);
             } catch (Throwable ex) {
                 logger.severe("Error occurred while enabling " + ExpansionUtil.formatIdentifier(expansion) + " (Is it up to date?)");
                 ex.printStackTrace();
+                disableExternalExpansion(expansion);
             }
         }
     }
@@ -95,6 +100,7 @@ public class InfinitePluginLoader {
             // 注销监听
             EventExecutor.unregisterListeners(expansion);
             EventExecutor.unregisterBukkitEventForExpansion(expansion);
+            ExpansionCommandRegistry.unregisterCommands(expansion);
 
             InfiniteExpansion infiniteExpansion = (InfiniteExpansion) expansion;
             ClassLoader classLoader = infiniteExpansion.getClassLoader();
@@ -128,15 +134,16 @@ public class InfinitePluginLoader {
     public void disableExternalExpansion(IExternalExpansion expansion) {
         Assert.isTrue(expansion instanceof AbstractExternalExpansion, "ExternalExpansion is not associated with this PluginLoader");
 
+        final Logger logger = BukkitBootstrap.getInstance().getLogger();
+        final AbstractExternalExpansion externalExpansion = (AbstractExternalExpansion) expansion;
+
+        // 注销监听
+        EventExecutor.unregisterListeners(expansion);
+        EventExecutor.unregisterBukkitEventForExpansion(expansion);
+        ExpansionCommandRegistry.unregisterCommands(expansion);
+
         if (expansion.isEnabled()) {
-            final Logger logger = BukkitBootstrap.getInstance().getLogger();
             logger.info(String.format("Disabling external-expansion %s", ExpansionUtil.formatIdentifier(expansion)));
-            // 注销监听
-            EventExecutor.unregisterListeners(expansion);
-            EventExecutor.unregisterBukkitEventForExpansion(expansion);
-
-            AbstractExternalExpansion externalExpansion = (AbstractExternalExpansion) expansion;
-
             try {
                 externalExpansion.setEnabled(false);
             } catch (Throwable ex) {
@@ -144,6 +151,7 @@ public class InfinitePluginLoader {
                 ex.printStackTrace();
             }
         }
+        externalExpansion.setRegister(false);
     }
 
     void setGlobalClasses(String name, Class<?> clazz) {

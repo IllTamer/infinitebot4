@@ -33,13 +33,11 @@ public abstract class AbstractExternalExpansion implements IExternalExpansion {
     @Override
     public void register(@NotNull Plugin plugin) {
         BukkitBootstrap.getInstance().getExpansionLoader().loadExternalExpansion(this, plugin);
-        register = true;
     }
 
     @Override
     public void unregister() {
         BukkitBootstrap.getInstance().getExpansionLoader().disableExternalExpansion(this);
-        register = false;
     }
 
     /**
@@ -54,6 +52,10 @@ public abstract class AbstractExternalExpansion implements IExternalExpansion {
                 onDisable();
             }
         }
+    }
+
+    void setRegister(boolean register) {
+        this.register = register;
     }
 
     @Override

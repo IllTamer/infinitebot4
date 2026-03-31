@@ -3,10 +3,12 @@ package com.illtamer.infinite.bot.minecraft.util;
 import com.illtamer.infinite.bot.minecraft.start.bukkit.BukkitBootstrap;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 @UtilityClass
@@ -92,6 +94,18 @@ public class StringUtil {
      */
     public static boolean isNotBlank(String str) {
         return !isBlank(str);
+    }
+
+    /**
+     * 格式化指令标签
+     */
+    @Nullable
+    public static String normalizeLabel(@Nullable String label) {
+        if (label == null) {
+            return null;
+        }
+        final String normalized = label.trim();
+        return normalized.isEmpty() ? null : normalized.toLowerCase(Locale.ROOT);
     }
 
 }

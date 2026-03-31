@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -56,6 +57,9 @@ public class ExpansionLoader {
         } catch (InvalidExpansionException e) {
             e.printStackTrace();
         }
+        if (expansion != null && !expansion.isEnabled()) {
+            EXPANSION_MAP.remove(expansion.toString());
+        }
         Assert.isTrue(expansion != null && expansion.isEnabled(), String.format("附属 %s 异常加载!", file.getName()));
     }
 
@@ -73,8 +77,14 @@ public class ExpansionLoader {
         }
         EXTERNAL_EXPANSION_MAP.put(externalExpansion, plugin);
         EXPANSION_MAP.put(externalExpansion.toString(), externalExpansion);
-        PLUGIN_LOADER.enableExternalExpansion(externalExpansion);
-        Assert.isTrue(externalExpansion.isEnabled(), String.format("附属 %s 异常加载!", ExpansionUtil.formatIdentifier(externalExpansion)));
+        try {
+            PLUGIN_LOADER.enableExternalExpansion(externalExpansion);
+            Assert.isTrue(externalExpansion.isEnabled(), String.format("附属 %s 异常加载!", ExpansionUtil.formatIdentifier(externalExpansion)));
+        } catch (Throwable throwable) {
+            EXTERNAL_EXPANSION_MAP.remove(externalExpansion);
+            EXPANSION_MAP.remove(externalExpansion.toString());
+            throw throwable;
+        }
     }
 
     /**
@@ -101,10 +111,13 @@ public class ExpansionLoader {
             }
         }
         log.info(String.format("检测到 %d 个内部附属, 正在初始化...", available));
-        for (IExpansion expansion : EXPANSION_MAP.values()) {
+        for (IExpansion expansion : new ArrayList<>(EXPANSION_MAP.values())) {
             if (expansion instanceof IExternalExpansion && ((IExternalExpansion) expansion).isPersist()) continue;
             Assert.isTrue(!expansion.isEnabled(), String.format("附属 %s 异常加载!", ExpansionUtil.formatIdentifier(expansion)));
             PLUGIN_LOADER.enableExpansion(expansion);
+            if (!expansion.isEnabled()) {
+                EXPANSION_MAP.remove(expansion.toString());
+            }
         }
     }
 
@@ -144,18 +157,16 @@ public class ExpansionLoader {
      * @param persist 是否考虑持久化附属
      * */
     public void disableExpansions(boolean persist) {
-        for (Map.Entry<String, IExpansion> entry : EXPANSION_MAP.entrySet()) {
-            final IExpansion expansion = entry.getValue();
-            if (persist && expansion instanceof IExternalExpansion && ((IExternalExpansion) expansion).isPersist()) {
-                log.info("持久化外部附属 " + entry.getKey() + " 跳过卸载");
+        for (String key : new ArrayList<>(EXPANSION_MAP.keySet())) {
+            final IExpansion expansion = EXPANSION_MAP.get(key);
+            if (expansion == null) {
                 continue;
             }
-            if (expansion instanceof IExternalExpansion)
-                PLUGIN_LOADER.disableExternalExpansion((IExternalExpansion) expansion);
-            else
-                PLUGIN_LOADER.disableExpansion(expansion);
-            EXPANSION_MAP.remove(entry.getKey());
-            Registration.removeAndStoreAutoConfigs(expansion);
+            if (persist && expansion instanceof IExternalExpansion && ((IExternalExpansion) expansion).isPersist()) {
+                log.info("持久化外部附属 " + key + " 跳过卸载");
+                continue;
+            }
+            disableExpansion(key);
         }
         System.gc();
     }
@@ -167,9 +178,16 @@ public class ExpansionLoader {
 
     @Nullable
     public IExternalExpansion getExternalExpansion(Plugin plugin) {
-        for (Map.Entry<IExternalExpansion, Plugin> entry : EXTERNAL_EXPANSION_MAP.entrySet())
-            if (entry.getValue().equals(plugin)) return entry.getKey();
-        return null;
+        final List<IExternalExpansion> expansions = getExternalExpansions(plugin);
+        return expansions.isEmpty() ? null : expansions.get(0);
+    }
+
+    @NotNull
+    public List<IExternalExpansion> getExternalExpansions(Plugin plugin) {
+        return EXTERNAL_EXPANSION_MAP.entrySet().stream()
+                .filter(entry -> entry.getValue().equals(plugin))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
     }
 
     /**

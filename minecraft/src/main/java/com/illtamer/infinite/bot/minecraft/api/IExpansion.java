@@ -1,10 +1,13 @@
 package com.illtamer.infinite.bot.minecraft.api;
 
+import com.illtamer.infinite.bot.minecraft.api.command.ExpansionCommand;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Infinite Bot 附属接口
@@ -63,6 +66,14 @@ public interface IExpansion {
      * 储存附属jar中的资源文件到附属文件夹
      * */
     void saveResource(String path, boolean replace);
+
+    /**
+     * 获取附属期望注册到 Bukkit 的指令
+     * @apiNote 默认返回空集合，加载器会在附属启用成功后自动注册，卸载时自动反注册
+     * */
+    default Collection<? extends ExpansionCommand> getCommands() {
+        return Collections.emptyList();
+    }
 
     @Override
     @NotNull

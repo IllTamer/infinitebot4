@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 public class PluginListener implements Listener {
@@ -24,10 +25,10 @@ public class PluginListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onDisabled(PluginDisableEvent event) {
         final Plugin plugin = event.getPlugin();
-        final IExternalExpansion externalExpansion = expansionLoader.getExternalExpansion(plugin);
-        if (externalExpansion != null) {
+        final List<IExternalExpansion> externalExpansions = expansionLoader.getExternalExpansions(plugin);
+        if (!externalExpansions.isEmpty()) {
             logger.warning("插件 " + plugin.getName() + " 在卸载时未主动注销附属，被动注销中...");
-            expansionLoader.disableExternalExpansion(externalExpansion);
+            externalExpansions.forEach(expansionLoader::disableExternalExpansion);
         }
     }
 
