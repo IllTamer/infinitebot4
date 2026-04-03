@@ -16,6 +16,10 @@ import com.illtamer.infinite.bot.minecraft.util.StringUtil;
 import com.illtamer.perpetua.sdk.entity.transfer.entity.Client;
 import com.illtamer.perpetua.sdk.entity.transfer.entity.LoginInfo;
 import com.illtamer.perpetua.sdk.handler.OpenAPIHandling;
+import com.illtamer.perpetua.sdk.message.CQMessage;
+import com.illtamer.perpetua.sdk.message.JsonMessage;
+import com.illtamer.perpetua.sdk.message.Message;
+import com.illtamer.perpetua.sdk.message.MessageBuilder;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -169,8 +173,9 @@ public class CommandHelper {
                 loader.disableExpansion(args[1]);
                 return true;
             }
+            // /ib4 send private <qq> <content>
             case "send": {
-                if (args.length != 4) {
+                if (args.length < 4) {
                     sendHelp(sender);
                     return true;
                 }
@@ -183,10 +188,20 @@ public class CommandHelper {
                         sender.sendMessage("QQ号/QQ群 格式错误: " + args[2]);
                         return;
                     }
+                    String cqCode = null;
+                    Message message;
+                    try {
+                        cqCode = String.join(" ", Arrays.copyOfRange(args, 3, args.length));
+                        message = MessageBuilder.json().addAll(CQMessage.deserialize(cqCode)).build();
+                    } catch (Exception e) {
+                        sender.sendMessage("CQ码解析失败: " + cqCode);
+                        e.printStackTrace();
+                        return;
+                    }
                     if ("private".equals(msgType)) {
-                        OpenAPIHandling.sendMessage(args[3], userOrGroupId);
+                        OpenAPIHandling.sendMessage(message, userOrGroupId);
                     } else if ("group".equals(msgType)) {
-                        OpenAPIHandling.sendGroupMessage(args[3], userOrGroupId);
+                        OpenAPIHandling.sendGroupMessage(message, userOrGroupId);
                     }
                 });
                 return true;
@@ -213,7 +228,7 @@ public class CommandHelper {
                 " │   └──[附属文件名]: 加载名称对应附属",
                 " ├──unload",
                 " │   └──[附属名称]: 卸载名称对应附属",
-                " └──send",
+                " └──send: 发送消息(支持CQ码)",
                 "     ├──private [qq号] [content]",
                 "     └──group [qq群] [content]"
         });
